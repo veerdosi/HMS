@@ -1,0 +1,148 @@
+classDiagram
+    note for User "Authentication & User Management"
+    class User {
+        -userID String
+        -password String
+        -name String
+        -contactNumber String
+        -email String
+        -role UserRole
+        +login(userID String, password String) boolean
+        +changePassword(newPassword String) void
+        +updateContactInfo(email String, phone String) void
+    }
+
+    class UserRole {
+        <<enumeration>>
+        PATIENT
+        DOCTOR
+        PHARMACIST
+        ADMINISTRATOR
+    }
+
+    note for Patient "Medical Records & Patient Management"
+    class Patient {
+        -patientID String
+        -dateOfBirth Date
+        -gender String
+        -bloodType String
+        -medicalHistory List~MedicalRecord~
+        +viewMedicalRecord() List~MedicalRecord~
+        +updatePersonalInfo(contact String, email String) void
+    }
+
+    class MedicalRecord {
+        -recordID String
+        -recordDate Date
+        -diagnosis String
+        -treatment String
+        -prescriptions List~Prescription~
+        +addPrescription(prescription Prescription) void
+        +updateDiagnosis(diagnosis String) void
+    }
+
+    note for Appointment "Appointment Management"
+    class Appointment {
+        -appointmentID String
+        -dateTime Date
+        -status AppointmentStatus
+        -patientID String
+        -doctorID String
+        +reschedule(newDateTime Date) boolean
+        +cancel() void
+        +updateStatus(status AppointmentStatus) void
+    }
+
+    class AppointmentStatus {
+        <<enumeration>>
+        REQUESTED
+        CONFIRMED
+        CANCELED
+        COMPLETED
+    }
+
+    class AppointmentOutcomeRecord {
+        -appointmentID String
+        -date Date
+        -serviceType String
+        -consultationNotes String
+        -prescriptions List~Prescription~
+        +addPrescription(prescription Prescription) void
+        +updateNotes(notes String) void
+    }
+
+    note for Doctor "Staff Management"
+    class Doctor {
+        -doctorID String
+        -availability List~TimeSlot~
+        -schedule List~Appointment~
+        +setAvailability(slots List~TimeSlot~) void
+        +acceptAppointment(appointment Appointment) void
+        +declineAppointment(appointment Appointment) void
+        +recordAppointmentOutcome(outcome AppointmentOutcomeRecord) void
+    }
+
+    class Pharmacist {
+        -pharmacistID String
+        +updatePrescriptionStatus(prescription Prescription) void
+        +submitReplenishmentRequest(medicine Medicine, quantity int) void
+    }
+
+    class Administrator {
+        -adminID String
+        +addStaff(staff User) void
+        +removeStaff(staffID String) void
+        +approveReplenishmentRequest(request ReplenishmentRequest) void
+        +updateMedicineStock(medicine Medicine, quantity int) void
+    }
+
+    note for Medicine "Inventory Management"
+    class Medicine {
+        -medicineID String
+        -name String
+        -currentStock int
+        -lowStockAlert int
+        +updateStock(quantity int) void
+        +isLowStock() boolean
+    }
+
+    class Prescription {
+        -prescriptionID String
+        -medicineID String
+        -quantity int
+        -status PrescriptionStatus
+        +updateStatus(status PrescriptionStatus) void
+    }
+
+    class PrescriptionStatus {
+        <<enumeration>>
+        PENDING
+        DISPENSED
+        CANCELED
+    }
+
+    class ReplenishmentRequest {
+        -requestID String
+        -medicineID String
+        -requestedQuantity int
+        -status RequestStatus
+        +approve() void
+        +reject() void
+    }
+
+    User <|-- Patient
+    User <|-- Doctor
+    User <|-- Pharmacist
+    User <|-- Administrator
+    
+    Patient "1" --> "*" MedicalRecord
+    Patient "1" --> "*" Appointment
+    Doctor "1" --> "*" Appointment
+    Appointment "1" --> "0..1" AppointmentOutcomeRecord
+    
+    AppointmentOutcomeRecord "1" --> "*" Prescription
+    Prescription "*" --> "1" Medicine
+    
+    Pharmacist "1" --> "*" ReplenishmentRequest
+    Administrator "1" --> "*" ReplenishmentRequest
+    ReplenishmentRequest "*" --> "1" Medicine
