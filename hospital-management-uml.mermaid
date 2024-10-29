@@ -1,4 +1,3 @@
-
 classDiagram
     note for User "Authentication & User Management"
     class User {
@@ -11,6 +10,20 @@ classDiagram
         +login(userID String, password String) boolean
         +changePassword(newPassword String) void
         +updateContactInfo(email String, phone String) void
+        +performRoleSpecificActions() void
+    }
+    <<abstract>> User
+
+    interface AppointmentManageable {
+        +acceptAppointment(appointment Appointment) void
+        +declineAppointment(appointment Appointment) void
+        +setAvailability(slots List~TimeSlot~) void
+    }
+
+    interface InventoryManageable {
+        +updateStock(quantity int) void
+        +submitReplenishmentRequest(medicine Medicine, quantity int) void
+        +approveReplenishmentRequest(request ReplenishmentRequest) void
     }
 
     class UserRole {
@@ -100,9 +113,9 @@ classDiagram
         -doctorID String
         -availability List~TimeSlot~
         -schedule List~Appointment~
-        +setAvailability(slots List~TimeSlot~) void
         +acceptAppointment(appointment Appointment) void
         +declineAppointment(appointment Appointment) void
+        +setAvailability(slots List~TimeSlot~) void
         +recordAppointmentOutcome(outcome AppointmentOutcomeRecord) void
         +getAvailableTimeSlots(date Date) List~TimeSlot~
         +addTimeSlot(timeSlot TimeSlot) void
@@ -161,21 +174,26 @@ classDiagram
     User <|-- Doctor
     User <|-- Pharmacist
     User <|-- Administrator
-    
+    User "1" --> "1" UserRole
+
     Patient "1" --> "*" MedicalRecord
     Patient "1" --> "*" Appointment
     Doctor "1" --> "*" Appointment
     Doctor "1" --> "*" TimeSlot
     Appointment "1" --> "1" TimeSlot
     Appointment "1" --> "0..1" AppointmentOutcomeRecord
-    
+
     AppointmentManager "1" --> "*" Appointment
     AppointmentManager "1" --> "*" TimeSlot
-    
+
     AppointmentOutcomeRecord "1" --> "*" Prescription
     Prescription "*" --> "1" Medicine
-    
+
     Pharmacist "1" --> "*" ReplenishmentRequest
     Administrator "1" --> "*" ReplenishmentRequest
     ReplenishmentRequest "*" --> "1" Medicine
+    Prescription "1" --> "1" PrescriptionStatus
 
+    Doctor ..|> AppointmentManageable
+    Pharmacist ..|> InventoryManageable
+    Administrator ..|> InventoryManageable
