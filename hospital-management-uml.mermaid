@@ -12,15 +12,16 @@ classDiagram
         +updateContactInfo(email: String, phone: String): void
         +performRoleSpecificActions(): void
     }
-    class User << (A, #FFCC00) >>  
 
-    interface AppointmentManageable {
+    class AppointmentManageable {
+        <<interface>>
         +acceptAppointment(appointment: Appointment): void
         +declineAppointment(appointment: Appointment): void
         +setAvailability(slots: List~TimeSlot~): void
     }
 
-    interface InventoryManageable {
+    class InventoryManageable {
+        <<interface>>
         +updateStock(quantity: int): void
         +submitReplenishmentRequest(medicine: Medicine, quantity: int): void
         +approveReplenishmentRequest(request: ReplenishmentRequest): void
