@@ -1,3 +1,5 @@
+package actual;
+
 public class Medicine {
     private String medicineID;
     private String name;
@@ -9,6 +11,16 @@ public class Medicine {
         this.name = name;
         this.currentStock = initialStock;
         this.lowStockAlert = lowStockAlert;
+    }
+
+    // Getter for medicineID
+    public String getMedicineID() {
+        return medicineID;
+    }
+
+    // Getter for name
+    public String getName() {
+        return name;
     }
 
     public void updateStock(int quantity) {

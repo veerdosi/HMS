@@ -12,7 +12,7 @@ classDiagram
         +updateContactInfo(email: String, phone: String): void
         +performRoleSpecificActions(): void
     }
-    class User <<abstract>> 
+    class User << (A, #FFCC00) >>  
 
     interface AppointmentManageable {
         +acceptAppointment(appointment: Appointment): void
@@ -106,7 +106,7 @@ classDiagram
         -prescriptions: List~Prescription~
         +addPrescription(prescription: Prescription): void
         +updateNotes(notes: String): void
-        +setDoctorID(doctorID: String): void // Ensure method is included
+        +setDoctorID(doctorID: String): void
     }
 
     note for Doctor "Staff Management"

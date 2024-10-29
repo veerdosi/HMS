@@ -1,3 +1,5 @@
+package actual;
+
 import java.util.List;
 
 public class Patient extends User {
@@ -15,6 +17,10 @@ public class Patient extends User {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bloodType = bloodType;
+    }
+
+    public String getPatientID() {
+        return patientID;
     }
 
     // View medical record

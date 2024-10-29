@@ -1,5 +1,7 @@
+package actual;
+
 public interface InventoryManageable {
-    void updateStock(int quantity);
+    void updateStock(String medicineID, int quantity);
 
     void submitReplenishmentRequest(Medicine medicine, int quantity);
 

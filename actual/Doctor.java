@@ -1,3 +1,5 @@
+package actual;
+
 import java.util.List;
 
 public class Doctor extends User implements AppointmentManageable {
@@ -8,6 +10,10 @@ public class Doctor extends User implements AppointmentManageable {
     public Doctor(String userID, String password, String name, String contactNumber, String email, String doctorID) {
         super(userID, password, name, contactNumber, email, UserRole.DOCTOR);
         this.doctorID = doctorID;
+    }
+
+    public String getDoctorID() {
+        return doctorID;
     }
 
     // Set availability

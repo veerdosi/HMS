@@ -1,3 +1,5 @@
+package actual;
+
 public class ReplenishmentRequest {
     private String requestID;
     private String medicineID;
@@ -9,6 +11,10 @@ public class ReplenishmentRequest {
         this.medicineID = medicineID;
         this.requestedQuantity = requestedQuantity;
         this.status = RequestStatus.PENDING;
+    }
+
+    public String getMedicineID() {
+        return medicineID;
     }
 
     private String generateRequestID() {
