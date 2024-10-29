@@ -22,7 +22,7 @@ classDiagram
 
     class InventoryManageable {
         <<interface>>
-        +updateStock(quantity: int): void
+        +updateStock(medicineID: String, quantity: int): void
         +submitReplenishmentRequest(medicine: Medicine, quantity: int): void
         +approveReplenishmentRequest(request: ReplenishmentRequest): void
     }
@@ -35,7 +35,7 @@ classDiagram
         ADMINISTRATOR
     }
 
-    note for Patient "Medical Records & Patient Management"
+    note for Patient "Medical Records & Appointment Management"
     class Patient {
         -patientID: String
         -dateOfBirth: Date
@@ -43,9 +43,11 @@ classDiagram
         -bloodType: String
         -medicalHistory: List~MedicalRecord~
         +viewMedicalRecord(): List~MedicalRecord~
-        +updatePersonalInfo(contact: String, email: String): void
+        +updatePersonalInfo(email: String, contact: String): void
         +requestAppointment(doctorID: String, timeSlot: TimeSlot): Appointment
         +viewAvailableTimeSlots(doctorID: String): List~TimeSlot~
+        +viewScheduledAppointments(): List~Appointment~
+        +viewAppointmentOutcomeRecords(): List~AppointmentOutcomeRecord~
     }
 
     class TimeSlot {
@@ -89,6 +91,7 @@ classDiagram
         +cancel(): void
         +updateStatus(status: AppointmentStatus): void
         +getTimeSlot(): TimeSlot
+        +getAppointmentID(): String
     }
 
     class AppointmentStatus {
@@ -110,7 +113,7 @@ classDiagram
         +setDoctorID(doctorID: String): void
     }
 
-    note for Doctor "Staff Management"
+    note for Doctor "Medical & Appointment Management"
     class Doctor {
         -doctorID: String
         -availability: List~TimeSlot~
@@ -122,12 +125,14 @@ classDiagram
         +getAvailableTimeSlots(date: Date): List~TimeSlot~
         +addTimeSlot(timeSlot: TimeSlot): void
         +removeTimeSlot(timeSlot: TimeSlot): void
+        +getDoctorID(): String
     }
 
     class Pharmacist {
         -pharmacistID: String
         +updatePrescriptionStatus(prescription: Prescription): void
         +submitReplenishmentRequest(medicine: Medicine, quantity: int): void
+        +viewAppointmentOutcomeRecords(): List~AppointmentOutcomeRecord~
     }
 
     class Administrator {
@@ -137,6 +142,7 @@ classDiagram
         +approveReplenishmentRequest(request: ReplenishmentRequest): void
         +updateMedicineStock(medicine: Medicine, quantity: int): void
         +viewAllAppointments(): List~Appointment~
+        +getAdminID(): String
     }
 
     class Medicine {

@@ -28,15 +28,14 @@ public class Pharmacist extends User implements InventoryManageable {
         }
     }
 
-    @Override
+    public void updatePrescriptionStatus(Prescription prescription, PrescriptionStatus status) {
+        prescription.updateStatus(status);
+        System.out.println("Prescription status updated to: " + status);
+    }
+
     public void submitReplenishmentRequest(Medicine medicine, int quantity) {
-        // Logic to submit a replenishment request for medication
-        // Assuming we have a system in place to handle these requests
         ReplenishmentRequest request = new ReplenishmentRequest(medicine.getMedicineID(), quantity);
-        System.out.println(
-                "Submitted replenishment request for medicine " + medicine.getName() + " with quantity: " + quantity);
-        // Here you would typically send this request to a system or service for
-        // processing
+        System.out.println("Replenishment request submitted for " + medicine.getName());
     }
 
     @Override

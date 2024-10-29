@@ -35,13 +35,14 @@ public class AppointmentManager {
     public boolean rescheduleAppointment(String appointmentID, TimeSlot newTimeSlot) {
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
+                appointment.getTimeSlot().release(); // Release old time slot
                 appointment.reschedule(newTimeSlot);
-                System.out.println("Rescheduled appointment: " + appointmentID);
-                return true; // Appointment rescheduled successfully
+                System.out.println("Appointment rescheduled.");
+                return true;
             }
         }
-        System.out.println("Appointment not found: " + appointmentID);
-        return false; // Appointment not found
+        System.out.println("Appointment not found.");
+        return false;
     }
 
     // Method to retrieve available slots for a doctor on a specific date

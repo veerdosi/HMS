@@ -16,6 +16,13 @@ public class Doctor extends User implements AppointmentManageable {
         return doctorID;
     }
 
+    public void updateMedicalRecord(Patient patient, String diagnosis, String treatment, Prescription prescription) {
+        MedicalRecord record = new MedicalRecord(diagnosis, treatment);
+        record.addPrescription(prescription);
+        patient.getMedicalHistory().add(record);
+        System.out.println("Medical record updated.");
+    }
+
     // Set availability
     @Override
     public void setAvailability(List<TimeSlot> slots) {

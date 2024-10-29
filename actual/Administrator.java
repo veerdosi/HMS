@@ -20,6 +20,16 @@ public class Administrator extends User implements InventoryManageable {
         System.out.println("Added staff: " + staff.getName() + " with ID: " + staff.getUserID());
     }
 
+    public List<User> filterStaffByRole(UserRole role) {
+        List<User> filteredStaff = new ArrayList<>();
+        for (User staff : staffList) {
+            if (staff.getRole() == role) {
+                filteredStaff.add(staff);
+            }
+        }
+        return filteredStaff;
+    }
+
     // Remove staff
     public void removeStaff(String staffID) {
         staffList.removeIf(staff -> staff.getUserID().equals(staffID));
@@ -28,10 +38,14 @@ public class Administrator extends User implements InventoryManageable {
 
     @Override
     public void updateStock(String medicineID, int quantity) {
-        // Logic to update stock of medications
-        // This can be similar to the Pharmacist, or you can choose to restrict certain
-        // actions
-        System.out.println("Administrator can update stock if needed, consider delegation to pharmacists.");
+        for (Medicine medicine : inventory) {
+            if (medicine.getMedicineID().equals(medicineID)) {
+                medicine.updateStock(quantity);
+                System.out.println("Stock updated for: " + medicine.getName());
+                return;
+            }
+        }
+        System.out.println("Medicine not found.");
     }
 
     @Override
@@ -45,7 +59,7 @@ public class Administrator extends User implements InventoryManageable {
     @Override
     public void approveReplenishmentRequest(ReplenishmentRequest request) {
         request.approve();
-        System.out.println("Approved replenishment request for medicine: " + request.getMedicineID());
+        System.out.println("Replenishment request approved for medicine: " + request.getMedicineID());
     }
 
     @Override
