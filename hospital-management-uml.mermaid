@@ -1,3 +1,4 @@
+
 classDiagram
     note for User "Authentication & User Management"
     class User {
@@ -29,6 +30,28 @@ classDiagram
         -medicalHistory List~MedicalRecord~
         +viewMedicalRecord() List~MedicalRecord~
         +updatePersonalInfo(contact String, email String) void
+        +requestAppointment(doctorID String, timeSlot TimeSlot) Appointment
+        +viewAvailableTimeSlots(doctorID String) List~TimeSlot~
+    }
+
+    class TimeSlot {
+        -startTime DateTime
+        -endTime DateTime
+        -isAvailable boolean
+        -doctorID String
+        +isAvailableForBooking() boolean
+        +book() boolean
+        +release() void
+    }
+
+    class AppointmentManager {
+        -appointments List~Appointment~
+        +createAppointment(patient Patient, doctor Doctor, timeSlot TimeSlot) Appointment
+        +cancelAppointment(appointmentID String) boolean
+        +rescheduleAppointment(appointmentID String, newTimeSlot TimeSlot) boolean
+        +getAvailableSlots(doctorID String, date Date) List~TimeSlot~
+        +getDoctorSchedule(doctorID String) List~Appointment~
+        +getPatientAppointments(patientID String) List~Appointment~
     }
 
     class MedicalRecord {
@@ -41,16 +64,17 @@ classDiagram
         +updateDiagnosis(diagnosis String) void
     }
 
-    note for Appointment "Appointment Management"
     class Appointment {
         -appointmentID String
         -dateTime Date
         -status AppointmentStatus
         -patientID String
         -doctorID String
-        +reschedule(newDateTime Date) boolean
+        -timeSlot TimeSlot
+        +reschedule(newTimeSlot TimeSlot) boolean
         +cancel() void
         +updateStatus(status AppointmentStatus) void
+        +getTimeSlot() TimeSlot
     }
 
     class AppointmentStatus {
@@ -80,6 +104,9 @@ classDiagram
         +acceptAppointment(appointment Appointment) void
         +declineAppointment(appointment Appointment) void
         +recordAppointmentOutcome(outcome AppointmentOutcomeRecord) void
+        +getAvailableTimeSlots(date Date) List~TimeSlot~
+        +addTimeSlot(timeSlot TimeSlot) void
+        +removeTimeSlot(timeSlot TimeSlot) void
     }
 
     class Pharmacist {
@@ -94,9 +121,9 @@ classDiagram
         +removeStaff(staffID String) void
         +approveReplenishmentRequest(request ReplenishmentRequest) void
         +updateMedicineStock(medicine Medicine, quantity int) void
+        +viewAllAppointments() List~Appointment~
     }
 
-    note for Medicine "Inventory Management"
     class Medicine {
         -medicineID String
         -name String
@@ -138,7 +165,12 @@ classDiagram
     Patient "1" --> "*" MedicalRecord
     Patient "1" --> "*" Appointment
     Doctor "1" --> "*" Appointment
+    Doctor "1" --> "*" TimeSlot
+    Appointment "1" --> "1" TimeSlot
     Appointment "1" --> "0..1" AppointmentOutcomeRecord
+    
+    AppointmentManager "1" --> "*" Appointment
+    AppointmentManager "1" --> "*" TimeSlot
     
     AppointmentOutcomeRecord "1" --> "*" Prescription
     Prescription "*" --> "1" Medicine
@@ -146,3 +178,4 @@ classDiagram
     Pharmacist "1" --> "*" ReplenishmentRequest
     Administrator "1" --> "*" ReplenishmentRequest
     ReplenishmentRequest "*" --> "1" Medicine
+
