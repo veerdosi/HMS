@@ -1,4 +1,4 @@
-package actual;
+package old;
 
 public interface InventoryManageable {
     void updateStock(String medicineID, int quantity);

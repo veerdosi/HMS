@@ -1,4 +1,4 @@
-package actual;
+package old;
 
 public class Medicine {
     private String medicineID;
