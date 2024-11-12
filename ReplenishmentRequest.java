@@ -1,49 +1,26 @@
-// File: ReplenishmentRequest.java
 
 public class ReplenishmentRequest {
     private String requestID;
-    private String medicineID;
+    private Medicine medicine;
     private int requestedQuantity;
-    private String requestStatus; // e.g., "pending", "approved", "rejected"
+    private boolean approved;
 
-    // Constructor
-    public ReplenishmentRequest(String requestID, String medicineID, int requestedQuantity) {
+    public ReplenishmentRequest(String requestID, Medicine medicine, int requestedQuantity) {
         this.requestID = requestID;
-        this.medicineID = medicineID;
+        this.medicine = medicine;
         this.requestedQuantity = requestedQuantity;
-        this.requestStatus = "pending";
+        this.approved = false;
     }
 
-    // Getters
-    public String getRequestID() {
-        return requestID;
+    public void approve() {
+        this.approved = true;
     }
 
-    public String getMedicineID() {
-        return medicineID;
+    public Medicine getMedicine() {
+        return medicine;
     }
 
     public int getRequestedQuantity() {
         return requestedQuantity;
-    }
-
-    public String getRequestStatus() {
-        return requestStatus;
-    }
-
-    // Approve the replenishment request
-    public void approve() {
-        this.requestStatus = "approved";
-    }
-
-    // Reject the replenishment request
-    public void reject() {
-        this.requestStatus = "rejected";
-    }
-
-    // Display request details
-    public void displayRequestInfo() {
-        System.out.println("Request ID: " + requestID + ", Medicine ID: " + medicineID 
-                + ", Requested Quantity: " + requestedQuantity + ", Status: " + requestStatus);
     }
 }
