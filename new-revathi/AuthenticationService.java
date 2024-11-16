@@ -1,4 +1,3 @@
-package HMSpkg;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,34 +27,22 @@ public class AuthenticationService {
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 7) continue;
+                if (fields.length < 8) continue;
 
                 String patientID = fields[0].trim();
                 String name = fields[1].trim();
-                String dateOfBirthStr = fields[2].trim();
+                String dateOfBirth = fields[2].trim();
                 String gender = fields[3].trim();
                 String bloodType = fields[4].trim();
-                String contactInfo = fields[5].trim();
-                String password = fields[6].trim();
+                String contactEmail = fields[5].trim();
+                String contactNumber = fields[6].trim();
+                String password = fields[7].trim();
 
-                //REV EDIT
-                Date dateOfBirth = convertStringToDate(dateOfBirthStr);
-
-                Patient patient = new Patient(patientID, password, contactInfo, name, dateOfBirth, gender, bloodType);
+                Patient patient = new Patient(patientID, name, password, gender, contactEmail, contactNumber, dateOfBirth, bloodType);
                 users.put(patientID, patient);
             }
         } catch (IOException e) {
             System.err.println("Error loading patient data: " + e.getMessage());
-        }
-    }
-    //REV EDIT
-    private Date convertStringToDate(String dateStr) {
-        try {
-            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd-MM-yyyy");  // Format is dd-MM-yyyy
-            return dateFormat.parse(dateStr);  // Convert to Date
-        } catch (java.text.ParseException e) {
-            System.err.println("Error parsing date: " + e.getMessage());
-            return null;  // Return null if the date cannot be parsed
         }
     }
 
@@ -65,25 +52,27 @@ public class AuthenticationService {
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 6) continue;
+                if (fields.length < 8) continue;
 
                 String staffID = fields[0].trim();
                 String name = fields[1].trim();
                 String role = fields[2].trim();
                 String gender = fields[3].trim();
                 int age = Integer.parseInt(fields[4].trim());
-                String password = fields[5].trim();
+                String contactEmail = fields[5].trim();
+                String contactNumber = fields[6].trim();
+                String password = fields[7].trim();
 
                 User user = null;
                 switch (role.toLowerCase()) {
                     case "doctor":
-                        user = new Doctor(staffID, password, "", name, age, gender);
+                        user = new Doctor(staffID, name, password, gender, contactEmail, contactNumber, age);
                         break;
                     case "pharmacist":
-                        user = new Pharmacist(staffID, password, "", name, age, gender);
+                        user = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber, age);
                         break;
                     case "administrator":
-                        user = new Admin(staffID, password, "", name, age, gender);
+                        user = new Admin(staffID, name,  password, gender, contactEmail, contactNumber, age);
                         break;
                     default:
                         System.out.println("Unrecognized role for staff ID " + staffID);
@@ -103,5 +92,16 @@ public class AuthenticationService {
             return user;
         }
         return null;  // Authentication failed
+    }
+
+    //REV EDIT
+    private Date convertStringToDate(String dateStr) {
+        try {
+            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd-MM-yyyy");  // Format is dd-MM-yyyy
+            return dateFormat.parse(dateStr);  // Convert to Date
+        } catch (java.text.ParseException e) {
+            System.err.println("Error parsing date: " + e.getMessage());
+            return null;  // Return null if the date cannot be parsed
+        }
     }
 }
