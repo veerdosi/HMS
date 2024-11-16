@@ -25,11 +25,7 @@ public class Pharmacist extends User implements InventoryManageable {
         // Logic to create and submit a ReplenishmentRequest
     }
 
-    // Approve a replenishment request
-    @Override
-    public void approveReplenishmentRequest(ReplenishmentRequest request) {
-        System.out.println("Approving replenishment request for Medicine ID: " + request.getMedicineID());
-        request.approve();
+
     }
 
     // Method to view appointment outcome records (Placeholder for now)
