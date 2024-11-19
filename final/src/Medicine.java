@@ -10,7 +10,8 @@ public class Medicine {
         this.lowStockAlert = lowStockAlert;
     }
 
-    // Update the stock of the medicine by a given quantity (positive to add, negative to subtract)
+    // Update the stock of the medicine by a given quantity (positive to add,
+    // negative to subtract)
     public void updateStock(int quantity) {
         this.currentStock += quantity;
         if (this.currentStock < 0) {
@@ -24,12 +25,53 @@ public class Medicine {
         return currentStock <= lowStockAlert;
     }
 
-    // Getters for name and current stock, if needed in other parts of the system
+    // Setters for stock and alert level
+    public void setStock(int stock) {
+        if (stock >= 0) {
+            this.currentStock = stock;
+        } else {
+            System.out.println("Stock value cannot be negative. Stock not updated.");
+        }
+    }
+
+    public void setLowStockAlert(int alertLevel) {
+        if (alertLevel >= 0) {
+            this.lowStockAlert = alertLevel;
+        } else {
+            System.out.println("Alert level cannot be negative. Alert level not updated.");
+        }
+    }
+
+    // Replenish stock
+    public void replenishStock(int quantity) {
+        if (quantity > 0) {
+            this.currentStock += quantity;
+            System.out.println("Replenished " + quantity + " units of " + name + ". Current stock: " + currentStock);
+        } else {
+            System.out.println("Invalid replenishment quantity. Must be greater than zero.");
+        }
+    }
+
+    // Getters for all fields
     public String getName() {
         return name;
     }
 
     public int getCurrentStock() {
         return currentStock;
+    }
+
+    public int getLowStockAlert() {
+        return lowStockAlert;
+    }
+
+    // toString override for better debugging and logs
+    @Override
+    public String toString() {
+        return "Medicine{" +
+                "name='" + name + '\'' +
+                ", currentStock=" + currentStock +
+                ", lowStockAlert=" + lowStockAlert +
+                '}';
     }
 }

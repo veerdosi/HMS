@@ -1,5 +1,3 @@
-// File: ReplenishmentRequest.java
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,7 +15,8 @@ public class ReplenishmentRequest {
     }
 
     // Constructor
-    public ReplenishmentRequest(String requestID, String medicineID, int requestedQuantity, MedicineInventory inventory) {
+    public ReplenishmentRequest(String requestID, String medicineID, int requestedQuantity,
+            MedicineInventory inventory) {
         Medicine medicine = inventory.getMedicineByName(medicineID);
         if (medicine == null) {
             throw new IllegalArgumentException("Invalid medicineID: Medicine not found in inventory");
@@ -46,41 +45,62 @@ public class ReplenishmentRequest {
         return requestStatus;
     }
 
+    // Approve the replenishment request
+    public void approve() {
+        if (this.requestStatus == RequestStatus.PENDING) {
+            this.requestStatus = RequestStatus.APPROVED;
+            inventory.updateStock(medicineID, requestedQuantity);
+            System.out.println(
+                    "Replenishment request approved. Request ID: " + requestID + ", Medicine ID: " + medicineID);
+            logApproval();
+        } else {
+            System.out.println("Replenishment request cannot be approved as it is not in PENDING state.");
+        }
+    }
+
     // Reject the replenishment request
     public void reject() {
         if (this.requestStatus == RequestStatus.PENDING) {
             this.requestStatus = RequestStatus.REJECTED;
-            System.out.println("Replenishment request rejected. Request ID: " + requestID + ", Medicine ID: " + medicineID);
-            // Log the rejection for administrative tracking
+            System.out.println(
+                    "Replenishment request rejected. Request ID: " + requestID + ", Medicine ID: " + medicineID);
             logRejection();
         } else {
             System.out.println("Replenishment request cannot be rejected as it is not in PENDING state.");
         }
     }
 
-    // Log the rejection details
+    // Log approval details
+    private void logApproval() {
+        logToFile("[LOG] Replenishment request approved: Request ID: " + requestID + ", Medicine ID: " + medicineID
+                + ", Requested Quantity: " + requestedQuantity);
+    }
+
+    // Log rejection details
     private void logRejection() {
-        try (PrintWriter out = new PrintWriter(new FileWriter("replenishment_log.txt", true))) {
-            out.println("[LOG] Replenishment request rejected: Request ID: " + requestID + ", Medicine ID: " + medicineID + ", Requested Quantity: " + requestedQuantity);
-        } catch (IOException e) {
-            System.err.println("Error logging rejection: " + e.getMessage());
-        }
+        logToFile("[LOG] Replenishment request rejected: Request ID: " + requestID + ", Medicine ID: " + medicineID
+                + ", Requested Quantity: " + requestedQuantity);
     }
 
     // Display request details
     public void displayRequestInfo() {
-        System.out.println("Request ID: " + requestID + ", Medicine ID: " + medicineID 
+        System.out.println("Request ID: " + requestID + ", Medicine ID: " + medicineID
                 + ", Requested Quantity: " + requestedQuantity + ", Status: " + requestStatus);
         logDisplayInfo();
     }
 
     // Log the display details
     private void logDisplayInfo() {
+        logToFile("[LOG] Displaying request info: Request ID: " + requestID + ", Medicine ID: " + medicineID
+                + ", Requested Quantity: " + requestedQuantity + ", Status: " + requestStatus);
+    }
+
+    // Utility method to log to a file
+    private void logToFile(String message) {
         try (PrintWriter out = new PrintWriter(new FileWriter("replenishment_log.txt", true))) {
-            out.println("[LOG] Displaying request info: Request ID: " + requestID + ", Medicine ID: " + medicineID 
-                    + ", Requested Quantity: " + requestedQuantity + ", Status: " + requestStatus);
+            out.println(message);
         } catch (IOException e) {
-            System.err.println("Error logging display info: " + e.getMessage());
+            System.err.println("Error logging information: " + e.getMessage());
         }
     }
 }

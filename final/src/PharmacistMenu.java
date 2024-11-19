@@ -22,48 +22,58 @@ public class PharmacistMenu {
             System.out.println("5. Logout");
             System.out.print("Please select an option: ");
 
-            choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            choice = readMenuChoice();
+            processChoice(choice);
+        }
+    }
 
-            switch (choice) {
-                case 1:
-                    viewAppointmentOutcome();
-                    break;
-                case 2:
-                    updatePrescriptionStatus();
-                    break;
-                case 3:
-                    viewMedicationInventory();
-                    break;
-                case 4:
-                    submitReplenishmentRequest();
-                    break;
-                case 5:
-                    System.out.println("Logging out...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+    // Process menu choices
+    private void processChoice(int choice) {
+        switch (choice) {
+            case 1:
+                viewAppointmentOutcome();
+                break;
+            case 2:
+                updatePrescriptionStatus();
+                break;
+            case 3:
+                viewMedicationInventory();
+                break;
+            case 4:
+                submitReplenishmentRequest();
+                break;
+            case 5:
+                System.out.println("Logging out...");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
         }
     }
 
     // View Appointment Outcome Record
     private void viewAppointmentOutcome() {
-        System.out.print("Enter Appointment ID: ");
-        String appointmentID = scanner.nextLine();
-        pharmacist.viewAppointmentOutcome(appointmentID);
+        String appointmentID = readStringInput("Enter Appointment ID: ");
+        if (validateInput(appointmentID)) {
+            pharmacist.viewAppointmentOutcome(appointmentID);
+        } else {
+            System.out.println("Invalid Appointment ID. Please try again.");
+        }
     }
 
     // Update Prescription Status
     private void updatePrescriptionStatus() {
-        System.out.print("Enter Prescription ID: ");
-        String prescriptionID = scanner.nextLine();
-        System.out.print("Enter new status (PENDING, DISPENSED, CANCELLED): ");
-        String statusStr = scanner.nextLine().toUpperCase();
-        try {
-            PrescriptionStatus status = PrescriptionStatus.valueOf(statusStr);
+        String prescriptionID = readStringInput("Enter Prescription ID: ");
+        if (!validateInput(prescriptionID)) {
+            System.out.println("Invalid Prescription ID. Please try again.");
+            return;
+        }
+
+        String statusStr = readStringInput("Enter new status (PENDING, DISPENSED, CANCELLED): ");
+        if (validateEnumInput(statusStr, PrescriptionStatus.class)) {
+            PrescriptionStatus status = PrescriptionStatus.valueOf(statusStr.toUpperCase());
             pharmacist.updatePrescriptionStatus(prescriptionID, status);
-        } catch (IllegalArgumentException e) {
+            System.out.println("Prescription status updated successfully.");
+        } else {
             System.out.println("Invalid status. Please enter a valid status.");
         }
     }
@@ -75,13 +85,57 @@ public class PharmacistMenu {
 
     // Submit Replenishment Request
     private void submitReplenishmentRequest() {
-        System.out.print("Enter Medicine Name: ");
-        String medicineName = scanner.nextLine();
+        String medicineName = readStringInput("Enter Medicine Name: ");
+        if (!validateInput(medicineName)) {
+            System.out.println("Invalid Medicine Name. Please try again.");
+            return;
+        }
+
         System.out.print("Enter Quantity to Replenish: ");
-        int quantity = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        pharmacist.submitReplenishmentRequest(medicineName, quantity);
+        if (scanner.hasNextInt()) {
+            int quantity = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            if (quantity > 0) {
+                pharmacist.submitReplenishmentRequest(medicineName, quantity);
+                System.out.println("Replenishment request submitted successfully.");
+            } else {
+                System.out.println("Quantity must be greater than zero.");
+            }
+        } else {
+            System.out.println("Invalid input for quantity. Please enter a positive number.");
+            scanner.nextLine(); // Consume invalid input
+        }
+    }
+
+    // Input validation methods
+    private boolean validateInput(String input) {
+        return input != null && !input.trim().isEmpty();
+    }
+
+    private boolean validateEnumInput(String input, Class<? extends Enum<?>> enumClass) {
+        try {
+            Enum.valueOf(enumClass, input.toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    private int readMenuChoice() {
+        while (true) {
+            if (scanner.hasNextInt()) {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                return choice;
+            } else {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume invalid input
+            }
+        }
+    }
+
+    private String readStringInput(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
     }
 }
-
-
