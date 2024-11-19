@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.regex.Pattern;
 import java.util.Date;
 
 public class PatientMenu {
@@ -69,23 +70,99 @@ public class PatientMenu {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
-        scanner.close();
     }
-
+    //CASE 1: View Medical Record
     private void viewMedicalRecord() {
         // Implement view medical record
         System.out.println("Fetching Medical Record...");
         patient.viewMedicalRecord(patient);
     }
-
+    //CASE 2: Update Personal Information
     private void updatePersonalInformation() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter new contact number:");
+
+        while (true) {
+            System.out.println("---- Update Personal Information ----");
+            System.out.println("1. Update Contact Number");
+            System.out.println("2. Update Email Address");
+            System.out.println("3. Update Both");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            int option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    updateContactNumber(scanner);
+                    break;
+                case 2:
+                    updateEmailAddress(scanner);
+                    break;
+                case 3:
+                    updateBothContactInfo(scanner);
+                    break;
+                case 4:
+                    System.out.println("Returning to main menu...");
+                    return; // Exit the submenu
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+    //Input-Validation -MobileNum
+    private boolean validateContactNumber(String contactNumber) {
+        // Regex to validate exactly 8 digits
+        String regex = "^[0-9]{8}$";
+        return Pattern.matches(regex, contactNumber);
+    }
+    //Input-Validation -Email
+    private boolean validateEmailAddress(String email) {
+        // Regex to validate presence of @
+        String regex = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
+        return Pattern.matches(regex, email);
+    }
+
+    private void updateContactNumber(Scanner scanner) {
+        System.out.print("Enter new contact number (8 digits): ");
         String newContact = scanner.next();
-        System.out.println("Enter new email:");
+        if (validateContactNumber(newContact)) {
+            patient.updateContactNumber(newContact);
+            System.out.println("Contact number updated successfully.");
+        } else {
+            System.out.println("Invalid contact number. It must be exactly 8 digits.");
+        }
+    }
+
+    private void updateEmailAddress(Scanner scanner) {
+        System.out.print("Enter new email address: ");
         String newEmail = scanner.next();
-        patient.updateContactInfo(newEmail, newContact);
-        scanner.close();
+        if (validateEmailAddress(newEmail)) {
+            patient.updateEmailAddress(newEmail);
+            System.out.println("Email address updated successfully.");
+        } else {
+            System.out.println("Invalid email address. It must contain '@'.");
+        }
+    }
+
+    private void updateBothContactInfo(Scanner scanner) {
+        System.out.print("Enter new contact number (8 digits): ");
+        String newContact = scanner.next();
+        System.out.print("Enter new email address: ");
+        String newEmail = scanner.next();
+
+        boolean isContactValid = validateContactNumber(newContact);
+        boolean isEmailValid = validateEmailAddress(newEmail);
+
+        if (isContactValid && isEmailValid) {
+            patient.updateContactInfo(newEmail, newContact);
+            System.out.println("Contact information updated successfully.");
+        } else {
+            if (!isContactValid) {
+                System.out.println("Invalid contact number. It must be exactly 8 digits.");
+            }
+            if (!isEmailValid) {
+                System.out.println("Invalid email address. It must contain '@'.");
+            }
+        }
     }
 
     private void viewAvailableAppointments() {
