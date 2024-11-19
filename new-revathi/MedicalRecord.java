@@ -1,8 +1,7 @@
-package HMSpkg;
 import java.util.ArrayList;
 import java.util.List;
 
-
+//COMPLETE
 public class MedicalRecord implements PatientMedicalRecordAccess {
     private String patientId;
     private String bloodType;
