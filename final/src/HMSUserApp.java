@@ -12,14 +12,14 @@ public class HMSUserApp {
     private HMSUserApp() {
         authService = new AuthenticationService();
         scanner = new Scanner(System.in);
-        running = true;  // Set running to true initially
+        running = true; // Set running to true initially
 
         // Define the file paths directly within the constructor
-        String patientFilePath = "C:/Users/LENOVO/Desktop/HMS/Data/Patient_List(Sheet1).csv";
-        String staffFilePath = "C:/Users/LENOVO/Desktop/HMS/Data/Staff_List(Sheet1).csv";
-        String medicineFilePath = "C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv";
+        String patientFilePath = "Data/Patient_List(Sheet1).csv";
+        String staffFilePath = "Data/Staff_List(Sheet1).csv";
+        String medicineFilePath = "Data/Medicine_List(Sheet1).csv";
         // Initialize the AppointmentServiceFacade with the file paths
-       facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);  // Correctly initialize facade
+        facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath); // Correctly initialize facade
 
         // Initialize the MedicineInventory with the file path
         medicineInventory = MedicineInventory.getInstance(medicineFilePath);
@@ -34,7 +34,7 @@ public class HMSUserApp {
     }
 
     public void start() {
-        while (running) {  // Check the running flag to continue or stop
+        while (running) { // Check the running flag to continue or stop
             login();
         }
         System.out.println("Exiting the program. Thank you for accessing Hospital Management Software!");
@@ -47,7 +47,7 @@ public class HMSUserApp {
         String choice = scanner.nextLine();
 
         if (choice.equals("2")) {
-            running = false;  // Set running to false to exit the main loop
+            running = false; // Set running to false to exit the main loop
             return;
         } else if (!choice.equals("1")) {
             System.out.println("Invalid choice. Please try again.");
@@ -73,11 +73,11 @@ public class HMSUserApp {
     private void displayUserMenu(User user) {
         boolean loggedIn = true;
 
-        while (loggedIn){
+        while (loggedIn) {
             switch (user.getRole()) {
                 case DOCTOR:
                     DoctorMenu doctorMenu = new DoctorMenu((Doctor) user);
-                    loggedIn = doctorMenu.display();  // display() returns false if logout is chosen
+                    loggedIn = doctorMenu.display(); // display() returns false if logout is chosen
                     break;
                 case PATIENT:
                     PatientMenu patientMenu = new PatientMenu((Patient) user);
