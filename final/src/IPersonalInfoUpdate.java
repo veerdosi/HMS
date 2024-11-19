@@ -1,5 +1,5 @@
 //COMPLETE
-public interface PersonalInfoUpdate {
+public interface IPersonalInfoUpdate {
     void updateContactNumber(String newContactNumber);
 
     void updateEmailAddress(String newEmailAddress);

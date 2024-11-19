@@ -52,7 +52,7 @@ public void displayRecord() {
 @Override
 public MedicalRecord viewMedicalRecord(User user) {
     // Assuming a user role check or similar mechanism is implemented elsewhere
-    if (this.patientId.equals(user.userID) || user.isDoctor()) {
+    if (this.patientId.equals(user.userID) || user.getRole()== UserRole.DOCTOR) {
         displayRecord(); // Show the record for patients or doctors
         return this;
     } else {
