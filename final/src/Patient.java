@@ -3,14 +3,6 @@
 public class Patient extends User implements PatientMedicalRecordAccess,PersonalInfoUpdate{
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
-
-    /*
-     * public void requestAppointment(String doctorId, Date dateTime) {
-        AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
-        facade.scheduleAppointment(this, doctorId, dateTime);
-        System.out.println("Appointment requested with Doctor ID: " + doctorId + " at " + dateTime);
-    }
-     */
     
     public Patient(String userID, String name, String password, UserRole role, String gender, String contactEmail, String contactNumber, 
                    String dateOfBirth, String bloodType) {
@@ -19,6 +11,13 @@ public class Patient extends User implements PatientMedicalRecordAccess,Personal
         this.medicalRecord = new MedicalRecord(userID, bloodType);
         //AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
     }
+/*
+    public void requestAppointment(String doctorId, Date dateTime) {
+        AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
+        facade.scheduleAppointment(this, doctorId, dateTime);
+        System.out.println("Appointment requested with Doctor ID: " + doctorId + " at " + dateTime);
+    }
+*/
 
     public String getDateOfBirth() {
         return dateOfBirth;

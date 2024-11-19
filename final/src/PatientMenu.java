@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class PatientMenu {
@@ -51,10 +52,11 @@ public class PatientMenu {
                     break;
                 case 6:
                     cancelAppointment();
-
+                    //Set appointment status to cancelled
+                    //
                     break;
                 case 7:
-                    viewScheduledApointments();
+                    viewScheduledAppointments();
 
                     break;
                 case 8:
@@ -170,98 +172,111 @@ public class PatientMenu {
     }
     //CASE 4: Schedule Appointment/////////////////////////////////////////////////////////////////////
     private void scheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        String doctorId;
-        Date dateTime = null;
-    
-        // Prompt for Doctor ID
-        while (true) {
-            System.out.println("Enter Doctor ID:");
-            doctorId = scanner.next();
-            if (doctorId != null && !doctorId.trim().isEmpty()) {
-                break;
-            } else {
-                System.out.println("Invalid Doctor ID. Please try again.");
-            }
+    Scanner scanner = new Scanner(System.in);
+    String doctorId;
+    LocalDateTime dateTime = null;
+
+    // Prompt for Doctor ID
+    while (true) {
+        System.out.println("Enter Doctor ID:");
+        doctorId = scanner.next();
+        if (doctorId != null && !doctorId.trim().isEmpty()) {
+            break;
+        } else {
+            System.out.println("Invalid Doctor ID. Please try again.");
         }
-    
-        // Prompt for Appointment Date and Time
-        while (true) {
-            System.out.println("Enter Appointment Date (dd-MM-yyyy):");
-            String dateStr = scanner.next();
-            System.out.println("Enter Appointment Time (HH:mm):");
-            String timeStr = scanner.next();
-        
-            dateTime = DateTimeHelper.parseDateTime(dateStr + " " + timeStr);
+    }
+
+    // Prompt for Appointment Date and Hour
+    while (true) {
+        System.out.println("Enter Appointment Date (dd-MM-yyyy):");
+        String dateStr = scanner.next();
+        System.out.println("Enter Appointment Hour (9-16):");
+        int hour;
+
+        try {
+            hour = scanner.nextInt();
+            if (hour < 9 || hour > 16) {
+                System.out.println("Invalid hour. Please enter a value between 9 and 16.");
+                continue;
+            }
+
+            // Parse and set the date-time with hour and 00 minutes
+            dateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
             if (dateTime == null) {
-                System.out.println("Invalid date or time format. Please try again.");
-            } else if (dateTime.before(new Date())) {
+                System.out.println("Invalid date format. Please try again.");
+            } else if (dateTime.isBefore(LocalDateTime.now())) {
                 System.out.println("The appointment date and time cannot be in the past. Please enter a valid future date and time.");
             } else {
                 break; // Valid date and time entered
             }
+        } catch (Exception e) {
+            System.out.println("Invalid input for hour. Please enter a numeric value between 9 and 16.");
+            scanner.next(); // Clear invalid input
         }
-    
-        // Schedule the appointment
-        facade.scheduleAppointment(patient, doctorId, dateTime);
-        System.out.println("Appointment scheduled successfully.");
     }
-    
 
-    private void rescheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        String appointmentId;
-        Date newDateTime = null;
+    // Schedule the appointment
+    facade.scheduleAppointment(patient, doctorId, dateTime);
+    System.out.println("Appointment scheduled successfully.");
+}
+
     
-        // Prompt for Appointment ID
-        while (true) {
-            System.out.println("Enter Appointment ID to Reschedule:");
-            appointmentId = scanner.next();
-            if (appointmentId != null && !appointmentId.trim().isEmpty()) {
-                break;
-            } else {
-                System.out.println("Invalid Appointment ID. Please try again.");
-            }
-        }
-    
-        // Prompt for New Date and Hour
-        while (true) {
-            System.out.println("Enter New Appointment Date (dd-MM-yyyy):");
-            String dateStr = scanner.next();
-            System.out.println("Enter Appointment Hour (9-16):");
-            int hour;
-    
-            try {
-                hour = scanner.nextInt();
-                if (hour < 9 || hour > 16) {
-                    System.out.println("Invalid hour. Please enter a value between 9 and 16.");
-                    continue;
-                }
-    
-                // Parse and set the date-time with hour and 00 minutes
-                newDateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
-                if (newDateTime == null) {
-                    System.out.println("Invalid date format. Please try again.");
-                } else if (newDateTime.before(new Date())) {
-                    System.out.println("The new appointment date and time cannot be in the past. Please enter a valid future date and time.");
-                } else {
-                    break; // Valid date and time entered
-                }
-            } catch (Exception e) {
-                System.out.println("Invalid input for hour. Please enter a numeric value between 0 and 23.");
-                scanner.next(); // Clear invalid input
-            }
-        }
-    
-        // Attempt to reschedule the appointment
-        if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
-            System.out.println("Appointment rescheduled successfully.");
+//CASE 5: Reschedule Appointment/////////////////////////////////////////////////////////////////////////////////////
+private void rescheduleAppointment() {
+    Scanner scanner = new Scanner(System.in);
+    String appointmentId;
+    LocalDateTime newDateTime = null;
+
+    // Prompt for Appointment ID
+    while (true) {
+        System.out.println("Enter Appointment ID to Reschedule:");
+        appointmentId = scanner.next();
+        if (appointmentId != null && !appointmentId.trim().isEmpty()) {
+            break;
         } else {
-            System.out.println("Failed to reschedule the appointment. Please check the Appointment ID and try again.");
+            System.out.println("Invalid Appointment ID. Please try again.");
         }
     }
-    
 
+    // Prompt for New Date and Hour
+    while (true) {
+        System.out.println("Enter New Appointment Date (dd-MM-yyyy):");
+        String dateStr = scanner.next();
+        System.out.println("Enter Appointment Hour (9-16):");
+        int hour;
+
+        try {
+            hour = scanner.nextInt();
+            if (hour < 9 || hour > 16) {
+                System.out.println("Invalid hour. Please enter a value between 9 and 16.");
+                continue;
+            }
+
+            // Parse and set the date-time with hour and 00 minutes
+            newDateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
+            if (newDateTime == null) {
+                System.out.println("Invalid date format. Please try again.");
+            } else if (newDateTime.isBefore(LocalDateTime.now())) {
+                System.out.println("The new appointment date and time cannot be in the past. Please enter a valid future date and time.");
+            } else {
+                break; // Valid date and time entered
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid input for hour. Please enter a numeric value between 9 and 16.");
+            scanner.next(); // Clear invalid input
+        }
+    }
+
+    // Attempt to reschedule the appointment
+    if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
+        System.out.println("Appointment rescheduled successfully.");
+    } else {
+        System.out.println("Failed to reschedule the appointment. Please check the Appointment ID and try again.");
+    }
+}
+
+    
 
     private void cancelAppointment() {
         Scanner scanner = new Scanner(System.in);
@@ -270,5 +285,30 @@ public class PatientMenu {
         patientService.cancelAppointment(appointmentId);
         scanner.close();
     }
+    /*
+    private void cancelAppointment() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter Appointment ID to Cancel:");
+        String appointmentId = scanner.next();
+        facade.processAppointment(appointmentId, false); // Assuming 'false' means cancellation
+        System.out.println("Appointment canceled successfully.");
+    }
+
+    private void viewScheduledAppointments() {
+        // Placeholder for retrieving scheduled appointments
+        System.out.println("Fetching scheduled appointments...");
+    }
+
+    private void viewPastAppointmentOutcomes() {
+        List<Appointment> pastAppointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
+        if (pastAppointments.isEmpty()) {
+            System.out.println("No past appointments found.");
+        } else {
+            pastAppointments.forEach(System.out::println);
+        }
+    }
+}
+
+     */
 
 }
