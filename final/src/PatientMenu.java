@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class PatientMenu {
     private Patient patient;
@@ -222,8 +223,8 @@ public class PatientMenu {
 }
 
     
-//CASE 5: Reschedule Appointment/////////////////////////////////////////////////////////////////////////////////////
-private void rescheduleAppointment() {
+    //CASE 5: Reschedule Appointment/////////////////////////////////////////////////////////////////////////////////////
+    private void rescheduleAppointment() {
     Scanner scanner = new Scanner(System.in);
     String appointmentId;
     LocalDateTime newDateTime = null;
@@ -274,18 +275,9 @@ private void rescheduleAppointment() {
     } else {
         System.out.println("Failed to reschedule the appointment. Please check the Appointment ID and try again.");
     }
-}
-
-    
-
-    private void cancelAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter Appointment ID to Cancel:");
-        String appointmentId = scanner.next();
-        patientService.cancelAppointment(appointmentId);
-        scanner.close();
     }
-    /*
+
+    //CASE 6: Cancel Appointment//////////////////////////////////////////////////////////////////////////
     private void cancelAppointment() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Appointment ID to Cancel:");
@@ -294,21 +286,45 @@ private void rescheduleAppointment() {
         System.out.println("Appointment canceled successfully.");
     }
 
+    //CASE 7: View Scheduled Appointments///////////////////////////////////////////////////////////////
     private void viewScheduledAppointments() {
-        // Placeholder for retrieving scheduled appointments
-        System.out.println("Fetching scheduled appointments...");
-    }
-
-    private void viewPastAppointmentOutcomes() {
-        List<Appointment> pastAppointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
-        if (pastAppointments.isEmpty()) {
-            System.out.println("No past appointments found.");
+        // Retrieve all appointments for the patient
+        List<Appointment> allAppointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
+    
+        // Filter appointments where status != COMPLETED
+        List<Appointment> nonCompletedAppointments = allAppointments.stream()
+                .filter(appointment -> appointment.getStatus() != AppointmentStatus.COMPLETED)
+                .toList();
+    
+        // Display the filtered list
+        if (nonCompletedAppointments.isEmpty()) {
+            System.out.println("No scheduled appointments found.");
         } else {
-            pastAppointments.forEach(System.out::println);
+            System.out.println("Scheduled Appointments (Status shown):");
+            nonCompletedAppointments.forEach(appointment -> 
+                System.out.println(appointment + " [Status: " + appointment.getStatus() + "]")
+            );
         }
     }
-}
+    
 
-     */
+    //CASE 8: ViewPastAppointmentRecords////////////////////////////////////////////////////////////////
+    private void viewPastAppointmentOutcomes() {
+        // Retrieve all past appointments for the patient
+        List<Appointment> pastAppointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
+    
+        // Filter appointments to include only those with status COMPLETED
+        List<Appointment> completedAppointments = pastAppointments.stream()
+                .filter(appointment -> appointment.getStatus() == AppointmentStatus.COMPLETED)
+                .toList();
+    
+        // Display the filtered list
+        if (completedAppointments.isEmpty()) {
+            System.out.println("No past appointments found.");
+        } else {
+            System.out.println("Past Appointment Records:");
+            completedAppointments.forEach(System.out::println);
+        }
+    }
 
 }

@@ -1,6 +1,6 @@
 //COMPLETE
 
-public class Patient extends User implements PatientMedicalRecordAccess,PersonalInfoUpdate{
+public class Patient extends User implements IPatientMedicalRecordAccess,IPersonalInfoUpdate{
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
     
