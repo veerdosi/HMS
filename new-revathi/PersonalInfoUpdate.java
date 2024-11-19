@@ -1,11 +1,13 @@
-package HMSpkg;
-
+//COMPLETE
 public interface PersonalInfoUpdate {
-    public void updateContactNumber(String newContact);
+    void updateContactNumber(String newContactNumber);
 
-    public void updateEmailAddress(String newEmail);
+    void updateEmailAddress(String newEmailAddress);
 
-    public void updateContactInfo (String email, String contactNum);
+    default void updateContactInfo(String newEmailAddress, String newContactNumber) {
+        updateContactNumber(newContactNumber);
+        updateEmailAddress(newEmailAddress);
+    }
 
     public boolean changePassword(String oldPass, String newPass);
 }
