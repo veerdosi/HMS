@@ -4,12 +4,21 @@ public class Patient extends User implements PatientMedicalRecordAccess,Personal
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
 
+    /*
+     * public void requestAppointment(String doctorId, Date dateTime) {
+        AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
+        facade.scheduleAppointment(this, doctorId, dateTime);
+        System.out.println("Appointment requested with Doctor ID: " + doctorId + " at " + dateTime);
+    }
+     */
+    
     public Patient(String userID, String name, String password, 
                 String gender, String email, String contactNumber, 
                    String dateOfBirth, String bloodType) {
         super(userID, name, password, contactNumber, email, UserRole.PATIENT, gender);
         this.dateOfBirth = dateOfBirth;
         this.medicalRecord = new MedicalRecord(userID, bloodType);
+        //AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
     }
 
     public String getDateOfBirth() {
