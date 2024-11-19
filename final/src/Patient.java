@@ -12,10 +12,9 @@ public class Patient extends User implements PatientMedicalRecordAccess,Personal
     }
      */
     
-    public Patient(String userID, String name, String password, 
-                String gender, String email, String contactNumber, 
+    public Patient(String userID, String name, String password, UserRole role, String gender, String contactEmail, String contactNumber, 
                    String dateOfBirth, String bloodType) {
-        super(userID, name, password, contactNumber, email, UserRole.PATIENT, gender);
+        super(userID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber);
         this.dateOfBirth = dateOfBirth;
         this.medicalRecord = new MedicalRecord(userID, bloodType);
         //AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
@@ -45,13 +44,13 @@ public class Patient extends User implements PatientMedicalRecordAccess,Personal
 
     @Override
     public void updateEmailAddress(String newEmail) {
-        this.email = newEmail;
+        this.contactEmail = newEmail;
         System.out.println("Email address updated successfully.");
     }
 
     @Override
     public void updateContactInfo(String newEmail, String newContact) {
-        this.email = newEmail;
+        this.contactEmail = newEmail;
         this.contactNumber = newContact;
         System.out.println("Contact information updated successfully.");
     }
