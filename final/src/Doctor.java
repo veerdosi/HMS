@@ -2,7 +2,6 @@ import java.util.List;
 
 public class Doctor extends User {
     private int age;
-    private String specialization;
     private List<TimeSlot> availability; // List of time slots representing availability
     private List<Appointment> schedule; // List of scheduled appointments
     private AppointmentServiceFacade appointmentServiceFacade;
@@ -10,22 +9,17 @@ public class Doctor extends User {
     // Standardized Constructor
     public Doctor(String userID, String name, String password, String gender,
             String contactEmail, String contactNumber, int age,
-            String specialization, AppointmentServiceFacade appointmentServiceFacade) {
+            String patientFilePath, String staffFilePath) {
         super(userID, name, password, UserRole.DOCTOR, gender, contactEmail, contactNumber);
         this.age = age;
-        this.specialization = specialization;
         this.availability = null; // Default to no availability
         this.schedule = null; // Default to no schedule
-        this.appointmentServiceFacade = appointmentServiceFacade;
+        this.appointmentServiceFacade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
     }
 
     // Getter methods
     public int getAge() {
         return age;
-    }
-
-    public String getSpecialization() {
-        return specialization;
     }
 
     public List<TimeSlot> getAvailability() {
@@ -112,7 +106,6 @@ public class Doctor extends User {
         return "Doctor{" +
                 "name='" + getName() + '\'' +
                 ", age=" + age +
-                ", specialization='" + specialization + '\'' +
                 ", contactEmail='" + getEmail() + '\'' +
                 ", contactNumber='" + getContactNumber() + '\'' +
                 '}';
