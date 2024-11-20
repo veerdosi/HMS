@@ -32,10 +32,10 @@ public class AppointmentServiceFacade {
         appointmentService.scheduleAppointment(patient, doctorId, dateTime);
     }
     //might be useless considering if cancelled
-/*
+
     public void cancelAppointment(String appointmentId) {
         appointmentService.cancelAppointment(appointmentId);
-    } */
+    } 
 
     public void processAppointment(String appointmentId, boolean accept) {
         appointmentService.processAppointment(appointmentId, accept);
