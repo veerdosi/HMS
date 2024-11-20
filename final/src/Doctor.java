@@ -7,11 +7,11 @@ public class Doctor extends User {
     private List<TimeSlot> availability; // List of time slots representing availability
     private List<Appointment> schedule; // List of scheduled appointments
     private DoctorAvailabilityRepository availabilityRepository; // Centralized repository
+    DoctorAvailabilityRepository repository;
 
     // Constructor
     public Doctor(String userID, String name, String password, String gender,
-            String contactEmail, String contactNumber, int age,
-            DoctorAvailabilityRepository repository) {
+            String contactEmail, String contactNumber, int age) {
         super(userID, name, password, UserRole.DOCTOR, gender, contactEmail, contactNumber);
         this.age = age;
         this.availabilityRepository = repository; // Sync repository
