@@ -1,4 +1,4 @@
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AppointmentService {
@@ -17,7 +17,7 @@ public class AppointmentService {
         return "A" + (appointmentCounter++);
     }
 
-    public void scheduleAppointment(Patient patient, String doctorId, Date dateTime) {
+    public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
         Doctor doctor = doctorService.getDoctorById(doctorId);
         Appointment appointment = new Appointment(generateAppointmentID(), patient.getUserID(), doctorId, dateTime);
        //addappointment in doctor class is NOT being implemented because doctors can directly access their appointments through appointment outcome records
@@ -80,7 +80,7 @@ public void cancelAppointment(String appointmentId) {
     }
 
     // Method to reschedule an existing appointment
-    public boolean rescheduleAppointment(String appointmentID, Date newDateTime) {
+    public boolean rescheduleAppointment(String appointmentID, LocalDateTime newDateTime) {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentID);
         if (appointment != null) {
             Doctor doctor = doctorService.getDoctorById(appointment.getDoctorID());

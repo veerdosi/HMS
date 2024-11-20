@@ -1,121 +1,122 @@
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+public class Admin extends User {
+    private int age;
 
-public class Admin {
-    private List<Staff> staffList; // List of hospital staff
-    private Map<String, Medicine> inventory; // Map of medicine by name
-    private List<ReplenishmentRequest> replenishmentRequests; // List of replenishment requests
-    private AppointmentServiceFacade appointmentServiceFacade; // Appointment Service Facade for appointments
-
-    // Constructor
-    public Admin(AppointmentServiceFacade appointmentServiceFacade, Map<String, Medicine> inventory,
-            List<Staff> initialStaff) {
-        this.staffList = initialStaff != null ? new ArrayList<>(initialStaff) : new ArrayList<>();
-        this.replenishmentRequests = new ArrayList<>();
-        this.appointmentServiceFacade = appointmentServiceFacade;
-        this.inventory = inventory != null ? inventory : new HashMap<>();
+    public Admin(String userID, String name, String password, String gender, String contactEmail, String contactNumber, int age) {
+        super(userID, name, password, UserRole.ADMIN, gender, contactEmail, contactNumber);
+        this.age = age;
     }
 
-    // Add Staff
-    public void addStaff(String staffDetails) {
-        String[] details = staffDetails.split(",");
-        if (details.length == 4) {
-            Staff newStaff = new Staff(details[0], details[1], Integer.parseInt(details[2]), details[3]);
-            staffList.add(newStaff);
-            System.out.println("Staff added successfully: " + newStaff);
-        } else {
-            System.out.println("Invalid format. Staff not added.");
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    // Update staff details
+    public void updateStaff(String staffID, String fieldToUpdate, String newValue) {
+        boolean success = StaffServiceFacade.getInstance().updateStaff(staffID, fieldToUpdate, newValue);
+        if (!success) {
+            System.out.println("Failed to update staff details.");
         }
     }
 
-    // Remove Staff
+    public void addStaff(User staffMember) {
+        StaffServiceFacade.getInstance().addStaff(staffMember);
+    }
+
     public void removeStaff(String staffID) {
-        boolean removed = staffList.removeIf(staff -> staff.getId().equals(staffID));
-        if (removed) {
-            System.out.println("Staff removed successfully.");
+        StaffServiceFacade.getInstance().removeStaff(staffID);
+    }
+
+    // Retrieve a staff member by ID
+    public void viewStaffDetails(String staffID) {
+        User staff = StaffServiceFacade.getInstance().getStaffById(staffID);
+        if (staff != null) {
+            System.out.println("Staff Details:\n" + staff);
         } else {
-            System.out.println("Staff ID not found.");
+            System.out.println("No staff member found with ID: " + staffID);
         }
     }
 
-    // Update Staff Details
-    public void updateStaff(String updateDetails) {
-        String[] details = updateDetails.split(",");
-        if (details.length == 2) {
-            for (Staff staff : staffList) {
-                if (staff.getId().equals(details[0])) {
-                    staff.updateDetails(details[1]);
-                    System.out.println("Staff updated successfully.");
-                    return;
-                }
-            }
-            System.out.println("Staff ID not found.");
+    // Filter and display staff
+    public void displayFilteredStaff(String filterType, String filterValue) {
+        StaffServiceFacade.getInstance().displayFilteredStaff(filterType, filterValue);
+    }
+
+    public void displayAllStaff() {
+        StaffServiceFacade.getInstance().displayAllStaff();
+    }
+
+    // Approve a replenishment request
+    public void approveRequest(int requestId) {
+        ReplenishmentRequest request = RequestRecord.getInstance().getRequestById(requestId);
+        if (request != null && request.getStatus() == RequestStatus.PENDING) {
+            request.setStatus(RequestStatus.APPROVED);
+
+            // Access MedicineInventory Singleton directly here
+            MedicineInventory.getInstance(null).updateStock(request.getMedicineName(), request.getRequestedQuantity());
+
+            System.out.println("Request approved: " + request);
         } else {
-            System.out.println("Invalid format. Staff not updated.");
+            System.out.println("Request ID " + requestId + " not found or already processed.");
         }
     }
 
-    // View Appointment Details via AppointmentServiceFacade
-    public void viewAppointmentDetails() {
-        try {
-            List<Appointment> appointments = appointmentServiceFacade.getAppointmentService().getAllAppointments();
-            if (appointments.isEmpty()) {
-                System.out.println("No appointments found.");
-            } else {
-                System.out.println("Appointments:");
-                for (Appointment appointment : appointments) {
-                    System.out.println(appointment);
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error fetching appointments: " + e.getMessage());
-        }
-    }
-
-    // Add Medication
-    public void addMedication(String medicineDetails) {
-        String[] details = medicineDetails.split(",");
-        if (details.length == 3) {
-            Medicine newMedicine = new Medicine(details[0], Integer.parseInt(details[1]), Integer.parseInt(details[2]));
-            inventory.put(details[0], newMedicine);
-            System.out.println("Medication added successfully: " + newMedicine);
+    // Reject a replenishment request
+    public void rejectRequest(int requestId) {
+        ReplenishmentRequest request = RequestRecord.getInstance().getRequestById(requestId);
+        if (request != null && request.getStatus() == RequestStatus.PENDING) {
+            request.setStatus(RequestStatus.REJECTED);
+            System.out.println("Request rejected: " + request);
         } else {
-            System.out.println("Invalid format. Medication not added.");
+            System.out.println("Request ID " + requestId + " not found or already processed.");
         }
     }
 
-    // Update Stock Levels
-    public void updateStockLevels(String updateStock) {
-        String[] details = updateStock.split(",");
-        if (details.length == 2 && inventory.containsKey(details[0])) {
-            Medicine medicine = inventory.get(details[0]);
-            medicine.setStock(Integer.parseInt(details[1]));
-            System.out.println("Stock updated successfully: " + medicine);
-        } else {
-            System.out.println("Invalid format or medication not found.");
+    // View all replenishment requests
+    public void viewAllRequests() {
+        List<ReplenishmentRequest> requests = RequestRecord.getInstance().getAllRequests();
+        if (requests.isEmpty()) {
+            System.out.println("No replenishment requests found.");
+            return;
+        }
+        System.out.println("All replenishment requests:");
+        for (ReplenishmentRequest request : requests) {
+            System.out.println(request);
         }
     }
 
-    // Approve Replenishment Requests
-    public void approveReplenishmentRequests() {
-        for (ReplenishmentRequest request : replenishmentRequests) {
-            if (!request.isApproved()) {
-                request.approve();
-                Medicine medicine = inventory.get(request.getMedicineID());
-                if (medicine != null) {
-                    medicine.replenishStock(request.getRequestedQuantity());
-                    System.out.println("Stock updated for medicine: " + medicine.getName());
-                } else {
-                    System.out.println("Medicine not found: " + request.getMedicineID());
-                }
-            }
+    // View requests by status
+    public void viewRequestsByStatus(RequestStatus status) {
+        List<ReplenishmentRequest> requests = RequestRecord.getInstance().getRequestsByStatus(status);
+        if (requests.isEmpty()) {
+            System.out.println("No replenishment requests with status: " + status);
+            return;
+        }
+        System.out.println("Replenishment requests with status: " + status);
+        for (ReplenishmentRequest request : requests) {
+            System.out.println(request);
         }
     }
 
-    // Add Replenishment Request
-    public void addReplenishmentRequest(ReplenishmentRequest request) {
-        replenishmentRequests.add(request);
-        System.out.println("Replenishment request added: " + request);
+    // View low stock medicines
+    public void viewLowStockMedicines() {
+        System.out.println("Medicines low on stock:");
+        MedicineInventory.getInstance(null).checkLowStock();
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + userID +
+                ", Name: " + name +
+                ", Role: " + role +
+                ", Gender: " + gender +
+                ", Age: " + age +
+                ", Email: " + contactEmail +
+                ", Contact: " + contactNumber;
+    }
+
 }

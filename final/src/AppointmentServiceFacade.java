@@ -1,4 +1,4 @@
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AppointmentServiceFacade {
@@ -25,17 +25,33 @@ public class AppointmentServiceFacade {
         return instance;
     }
 
+     // Retrieve availability for a specific doctor
+    public DoctorAvailability getDoctorAvailability(String doctorId) {
+        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        return availabilityRepository.getDoctorAvailability(doctorId);
+    }
 
+    // Retrieve all doctor availabilities
+    public List<DoctorAvailability> getAllDoctorAvailabilities() {
+        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        return availabilityRepository.getAllDoctorAvailabilities();
+    }
+
+    // Print all doctor availabilities
+    public void printAllDoctorAvailabilities() {
+        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        availabilityRepository.printAllDoctorAvailabilities();
+    }
 
     // Public methods for managing appointments through the facade
-    public void scheduleAppointment(Patient patient, String doctorId, Date dateTime) {
+    public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
         appointmentService.scheduleAppointment(patient, doctorId, dateTime);
     }
     //might be useless considering if cancelled
 
     public void cancelAppointment(String appointmentId) {
         appointmentService.cancelAppointment(appointmentId);
-    } 
+    }
 
     public void processAppointment(String appointmentId, boolean accept) {
         appointmentService.processAppointment(appointmentId, accept);
@@ -66,7 +82,7 @@ public class AppointmentServiceFacade {
         return patientService.getPatientById(patientId);
     }
 
-    public boolean rescheduleAppointment(String appointmentID, Date newDateTime) {
+    public boolean rescheduleAppointment(String appointmentID, LocalDateTime newDateTime) {
         return appointmentService.rescheduleAppointment(appointmentID, newDateTime);
     }
 }

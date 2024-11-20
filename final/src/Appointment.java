@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Appointment {
     private String id;
     private String patientID;
     private String doctorID;
-    private Date dateTime;
+    private LocalDateTime dateTime;
     private AppointmentStatus status;
     private String consultationNotes;
     private TypeOfService typeOfService;
@@ -14,7 +14,7 @@ public class Appointment {
 
 
     // Constructor
-    public Appointment(String id, String patientID, String doctorID, Date dateTime) {
+    public Appointment(String id, String patientID, String doctorID, LocalDateTime dateTime) {
         this.id = id;
         this.patientID = patientID;
         this.doctorID = doctorID;
@@ -40,12 +40,20 @@ public class Appointment {
         return status;
     }
 
-    public Date getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
     public List<Prescription> getPrescriptions() {
         return prescriptions;
+    }
+
+    public String getConsultationNotes() {
+        return consultationNotes;
+    }
+
+    public TypeOfService getTypeOfService() {
+        return typeOfService;
     }
 
     // Setter for status
@@ -64,7 +72,7 @@ public class Appointment {
     }
 
     //Setter for Date & Time
-    public void setDateTime(Date dateTime) { this.dateTime = dateTime; }
+    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 
     // Method to add a prescription
     public void addPrescription(Prescription prescription) {
