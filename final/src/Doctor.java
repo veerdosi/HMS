@@ -32,9 +32,7 @@ public class Doctor extends User {
         this.availability = availability;
         System.out.println("Availability updated for Doctor: " + this.getName());
         // Sync with centralized repository
-        if (availabilityRepository != null) {
-            availabilityRepository.setDoctorAvailability(getUserID(), availability);
-        }
+        DoctorAvailabilityRepository.getInstance().setDoctorAvailability(getUserID(), availability);
     }
 
     public List<Appointment> getSchedule() {

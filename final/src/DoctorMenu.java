@@ -3,12 +3,10 @@ import java.util.List;
 
 public class DoctorMenu {
     private Doctor doctor;
-    private DoctorAvailabilityRepository availabilityRepository; // Centralized repository
 
     // Constructor
-    public DoctorMenu(Doctor doctor, DoctorAvailabilityRepository repository) {
+    public DoctorMenu(Doctor doctor) {
         this.doctor = doctor;
-        this.availabilityRepository = repository;
     }
 
     // Display menu and handle interactions
@@ -81,10 +79,11 @@ public class DoctorMenu {
         }
 
         // Sync the updated availability with the centralized repository
-        availabilityRepository.setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
+        DoctorAvailabilityRepository.getInstance()
+                .setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
     }
 
-    // Other menu methods...
+    // Accept Appointment
     private void acceptAppointment(Scanner scanner) {
         System.out.println("\n--- Accept Appointment ---");
         doctor.viewSchedule(); // Display current appointments
@@ -97,6 +96,7 @@ public class DoctorMenu {
         }
     }
 
+    // Decline Appointment
     private void declineAppointment(Scanner scanner) {
         System.out.println("\n--- Decline Appointment ---");
         doctor.viewSchedule(); // Display current appointments
@@ -109,6 +109,7 @@ public class DoctorMenu {
         }
     }
 
+    // Add Consultation Notes
     private void addConsultationNotes(Scanner scanner) {
         System.out.println("\n--- Add Consultation Notes ---");
         System.out.print("Enter Appointment ID: ");
@@ -119,6 +120,7 @@ public class DoctorMenu {
         doctor.recordAppointmentOutcome(appointmentId, notes, null, null);
     }
 
+    // Add Prescription
     private void addPrescription(Scanner scanner) {
         System.out.println("\n--- Add Prescription ---");
         System.out.print("Enter Appointment ID: ");

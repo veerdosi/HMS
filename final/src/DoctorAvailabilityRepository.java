@@ -3,11 +3,20 @@ import java.util.List;
 import java.util.Map;
 
 public class DoctorAvailabilityRepository {
+    private static DoctorAvailabilityRepository instance; // Singleton instance
     private Map<String, DoctorAvailability> doctorAvailabilityMap; // Centralized repository
 
-    // Constructor
-    public DoctorAvailabilityRepository() {
+    // Private constructor to prevent direct instantiation
+    private DoctorAvailabilityRepository() {
         this.doctorAvailabilityMap = new HashMap<>();
+    }
+
+    // Public method to get the single instance
+    public static synchronized DoctorAvailabilityRepository getInstance() {
+        if (instance == null) {
+            instance = new DoctorAvailabilityRepository();
+        }
+        return instance;
     }
 
     // Add or update a doctor's availability
