@@ -27,19 +27,19 @@ public class AppointmentServiceFacade {
 
      // Retrieve availability for a specific doctor
     public DoctorAvailability getDoctorAvailability(String doctorId) {
-        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        DoctorAvailabilityRepository availabilityRepository = DoctorAvailabilityRepository.getInstance();
         return availabilityRepository.getDoctorAvailability(doctorId);
     }
 
     // Retrieve all doctor availabilities
     public List<DoctorAvailability> getAllDoctorAvailabilities() {
-        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        DoctorAvailabilityRepository availabilityRepository = DoctorAvailabilityRepository.getInstance();
         return availabilityRepository.getAllDoctorAvailabilities();
     }
 
     // Print all doctor availabilities
     public void printAllDoctorAvailabilities() {
-        DoctorAvailability availabilityRepository = DoctorAvailability.getInstance();
+        DoctorAvailabilityRepository availabilityRepository = DoctorAvailabilityRepository.getInstance();
         availabilityRepository.printAllDoctorAvailabilities();
     }
 
