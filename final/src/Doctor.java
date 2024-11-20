@@ -1,18 +1,22 @@
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Doctor extends User {
     private int age;
     private List<TimeSlot> availability; // List of time slots representing availability
     private List<Appointment> schedule; // List of scheduled appointments
-    private AppointmentServiceFacade appointmentServiceFacade;
+    private DoctorAvailabilityRepository availabilityRepository; // Centralized repository
 
+    // Constructor
     public Doctor(String userID, String name, String password, String gender,
-            String contactEmail, String contactNumber, int age) {
+            String contactEmail, String contactNumber, int age,
+            DoctorAvailabilityRepository repository) {
         super(userID, name, password, UserRole.DOCTOR, gender, contactEmail, contactNumber);
         this.age = age;
-        this.availability = null; // Default to no availability
-        this.schedule = null; // Default to no schedule
-        this.appointmentServiceFacade = AppointmentServiceFacade.getInstance(); // Singleton instance
+        this.availabilityRepository = repository; // Sync repository
+        this.availability = new ArrayList<>(); // Initialize availability
+        this.schedule = new ArrayList<>(); // Initialize schedule
     }
 
     // Getter methods
@@ -26,6 +30,11 @@ public class Doctor extends User {
 
     public void setAvailability(List<TimeSlot> availability) {
         this.availability = availability;
+        System.out.println("Availability updated for Doctor: " + this.getName());
+        // Sync with centralized repository
+        if (availabilityRepository != null) {
+            availabilityRepository.setDoctorAvailability(getUserID(), availability);
+        }
     }
 
     public List<Appointment> getSchedule() {
@@ -36,69 +45,69 @@ public class Doctor extends User {
         this.schedule = schedule;
     }
 
-    // Appointment-related methods
-
-    // Accept an appointment
-    public void acceptAppointment(Appointment appointment) {
-        appointmentServiceFacade.processAppointment(appointment.getAppointmentID(), true);
-        System.out.println("Appointment accepted for patient: " + appointment.getPatient().getName());
+    // Generate default availability slots
+    public void generateDefaultAvailability() {
+        availability = AppointmentSlotUtil.generateDailySlots(); // Utility method to generate slots
+        System.out.println("Default availability generated for Doctor: " + getName());
+        // Sync with centralized repository
+        if (availabilityRepository != null) {
+            availabilityRepository.setDoctorAvailability(getUserID(), availability);
+        }
     }
 
-    // Decline an appointment
-    public void declineAppointment(Appointment appointment) {
-        appointmentServiceFacade.processAppointment(appointment.getAppointmentID(), false);
-        System.out.println("Appointment declined for patient: " + appointment.getPatient().getName());
-    }
-
-    // Record the outcome of an appointment
-    public void recordAppointmentOutcome(Appointment appointment, AppointmentOutcomeRecord outcome) {
-        appointmentServiceFacade.addConsultationNotes(appointment.getAppointmentID(), outcome.getNotes());
-        appointmentServiceFacade.setTypeOfService(appointment.getAppointmentID(), outcome.getTypeOfService());
-        appointmentServiceFacade.addPrescription(appointment.getAppointmentID(), outcome.getPrescriptions());
-        System.out.println("Outcome recorded for appointment with patient: " + appointment.getPatient().getName());
-    }
-
-    // View the doctor's schedule
+    // View schedule
     public void viewSchedule() {
-        System.out.println("Viewing schedule for Doctor: " + this.getName());
-        if (schedule != null && !schedule.isEmpty()) {
-            for (Appointment appointment : schedule) {
-                System.out.println(appointment);
-            }
-        } else {
+        System.out.println("\n--- Schedule for Doctor: " + getName() + " ---");
+        if (schedule == null || schedule.isEmpty()) {
             System.out.println("No scheduled appointments.");
+        } else {
+            for (int i = 0; i < schedule.size(); i++) {
+                System.out.println(i + ": " + schedule.get(i));
+            }
         }
     }
 
-    // View a patient's medical record
-    public void viewMedicalRecord(Patient patient) {
-        System.out.println("Viewing medical record of patient: " + patient.getName());
-        List<MedicalRecord> records = appointmentServiceFacade.getPatientMedicalRecords(patient.getUserID());
-        for (MedicalRecord record : records) {
-            System.out.println(record);
+    // Process appointment (accept or decline)
+    public void processAppointment(Appointment appointment, boolean accept) {
+        if (appointment == null || appointment.getAppointmentID() == null) {
+            System.out.println("Invalid appointment data.");
+            return;
+        }
+        if (accept) {
+            schedule.add(appointment); // Add to schedule if accepted
+        }
+        System.out.println("Appointment " + (accept ? "accepted" : "declined") + " for patient: "
+                + (appointment.getPatient() != null ? appointment.getPatient().getName() : "Unknown"));
+    }
+
+    // Check if the doctor is available at a specific time
+    public boolean isAvailable(LocalDateTime newDateTime) {
+        if (availability == null || availability.isEmpty()) {
+            return false; // No availability defined
+        }
+        for (TimeSlot slot : availability) {
+            if (slot.isAvailable() && slot.getStartTime().equals(newDateTime.toLocalTime())) {
+                return true; // Matching available slot found
+            }
+        }
+        return false; // No matching time slot
+    }
+
+    // Set custom slot availability
+    public void setCustomSlotAvailability(int index, boolean isAvailable) {
+        if (availability == null || index < 0 || index >= availability.size()) {
+            System.out.println("Invalid slot index.");
+            return;
+        }
+        availability.get(index).setAvailable(isAvailable);
+        System.out.println("Updated availability for slot: " + availability.get(index));
+        // Sync with centralized repository
+        if (availabilityRepository != null) {
+            availabilityRepository.setDoctorAvailability(getUserID(), availability);
         }
     }
 
-    // Update a patient's medical record
-    public void updateMedicalRecord(UpdateMedicalRecordRequest request) {
-        appointmentServiceFacade.updateMedicalRecord(request);
-        System.out.println("Medical record updated for patient: " + request.getPatient().getName());
-    }
-
-    // Generate default availability slots using a service
-    public void generateDefaultAvailability(DoctorAvailabilityService availabilityService) {
-        availability = availabilityService.generateDefaultAvailability(this);
-        System.out.println("Default availability generated for Doctor: " + this.getName());
-    }
-
-    // Set custom availability slots using a service
-    public void setCustomAvailability(DoctorAvailabilityService availabilityService, List<TimeSlot> customSlots) {
-        availabilityService.setAvailability(this, customSlots);
-        this.availability = customSlots;
-        System.out.println("Custom availability set for Doctor: " + this.getName());
-    }
-
-    // Override toString for debugging or logging
+    // Override toString for debugging
     @Override
     public String toString() {
         return "Doctor{" +

@@ -1,15 +1,14 @@
-import java.util.List;
 import java.util.Scanner;
+import java.util.List;
 
 public class DoctorMenu {
-
     private Doctor doctor;
-    private AppointmentServiceFacade appointmentServiceFacade;
+    private DoctorAvailabilityRepository availabilityRepository; // Centralized repository
 
-    // Constructor to initialize the menu with necessary services
-    public DoctorMenu(Doctor doctor, AppointmentServiceFacade appointmentServiceFacade) {
+    // Constructor
+    public DoctorMenu(Doctor doctor, DoctorAvailabilityRepository repository) {
         this.doctor = doctor;
-        this.appointmentServiceFacade = appointmentServiceFacade;
+        this.availabilityRepository = repository;
     }
 
     // Display menu and handle interactions
@@ -32,13 +31,13 @@ public class DoctorMenu {
 
             switch (choice) {
                 case 1:
-                    viewSchedule();
+                    doctor.viewSchedule();
                     break;
                 case 2:
                     setAvailability(scanner);
                     break;
                 case 3:
-                    viewAvailableSlots();
+                    doctor.viewAvailableSlots();
                     break;
                 case 4:
                     acceptAppointment(scanner);
@@ -63,101 +62,53 @@ public class DoctorMenu {
         scanner.close();
     }
 
-    // 1. View Schedule
-    private void viewSchedule() {
-        System.out.println("\n--- Doctor's Schedule ---");
-        doctor.viewSchedule();
-    }
-
-    // 2. Set Availability
+    // Set Availability
     private void setAvailability(Scanner scanner) {
         System.out.println("\n--- Set Availability ---");
-        List<TimeSlot> newSlots = AppointmentSlotUtil.generateDailySlots(); // Generate default slots
+        doctor.generateDefaultAvailability(); // Generate default slots
         System.out.println("Default slots generated. You can modify them manually if needed.");
 
-        // Optional: Modify slots based on user input
         System.out.println("Do you want to mark any slot as unavailable? (yes/no): ");
         String response = scanner.next();
         if (response.equalsIgnoreCase("yes")) {
             System.out.println("Enter the index of the slot to mark unavailable (0-based): ");
-            for (int i = 0; i < newSlots.size(); i++) {
-                System.out.println(i + ": " + newSlots.get(i));
+            for (int i = 0; i < doctor.getAvailability().size(); i++) {
+                System.out.println(i + ": " + doctor.getAvailability().get(i));
             }
             int index = scanner.nextInt();
-            if (index >= 0 && index < newSlots.size()) {
-                newSlots.get(index).setAvailable(false);
-                System.out.println("Slot marked as unavailable.");
-            } else {
-                System.out.println("Invalid index.");
-            }
+            doctor.setCustomSlotAvailability(index, false); // Mark slot as unavailable
+            System.out.println("Slot marked as unavailable.");
         }
 
-        doctor.setAvailability(newSlots);
-        System.out.println("Availability updated.");
+        // Sync the updated availability with the centralized repository
+        availabilityRepository.setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
     }
 
-    // 3. View Available Slots
-    private void viewAvailableSlots() {
-        System.out.println("\n--- Available Slots ---");
-        List<TimeSlot> availableSlots = doctor.getAvailability();
-        if (availableSlots == null || availableSlots.isEmpty()) {
-            System.out.println("No available slots.");
-        } else {
-            for (TimeSlot slot : availableSlots) {
-                System.out.println(slot);
-            }
-        }
-    }
-
-    // 4. Accept Appointment
+    // Other menu methods...
     private void acceptAppointment(Scanner scanner) {
         System.out.println("\n--- Accept Appointment ---");
-        List<Appointment> schedule = doctor.getSchedule();
-        if (schedule == null || schedule.isEmpty()) {
-            System.out.println("No pending appointments.");
-            return;
-        }
-
-        System.out.println("Select an appointment to accept:");
-        for (int i = 0; i < schedule.size(); i++) {
-            System.out.println(i + ": " + schedule.get(i));
-        }
-
+        doctor.viewSchedule(); // Display current appointments
+        System.out.println("Enter the index of the appointment to accept:");
         int index = scanner.nextInt();
-        if (index >= 0 && index < schedule.size()) {
-            Appointment appointment = schedule.get(index);
-            appointmentServiceFacade.processAppointment(appointment.getId(), true);
-            System.out.println("Appointment accepted for patient: " + appointment.getPatient().getName());
+        if (index >= 0 && index < doctor.getSchedule().size()) {
+            doctor.processAppointment(doctor.getSchedule().get(index), true);
         } else {
             System.out.println("Invalid selection.");
         }
     }
 
-    // 5. Decline Appointment
     private void declineAppointment(Scanner scanner) {
         System.out.println("\n--- Decline Appointment ---");
-        List<Appointment> schedule = doctor.getSchedule();
-        if (schedule == null || schedule.isEmpty()) {
-            System.out.println("No pending appointments.");
-            return;
-        }
-
-        System.out.println("Select an appointment to decline:");
-        for (int i = 0; i < schedule.size(); i++) {
-            System.out.println(i + ": " + schedule.get(i));
-        }
-
+        doctor.viewSchedule(); // Display current appointments
+        System.out.println("Enter the index of the appointment to decline:");
         int index = scanner.nextInt();
-        if (index >= 0 && index < schedule.size()) {
-            Appointment appointment = schedule.get(index);
-            appointmentServiceFacade.processAppointment(appointment.getId(), false);
-            System.out.println("Appointment declined for patient: " + appointment.getPatient().getName());
+        if (index >= 0 && index < doctor.getSchedule().size()) {
+            doctor.processAppointment(doctor.getSchedule().get(index), false);
         } else {
             System.out.println("Invalid selection.");
         }
     }
 
-    // 6. Add Consultation Notes
     private void addConsultationNotes(Scanner scanner) {
         System.out.println("\n--- Add Consultation Notes ---");
         System.out.print("Enter Appointment ID: ");
@@ -165,12 +116,9 @@ public class DoctorMenu {
         System.out.print("Enter Notes: ");
         scanner.nextLine(); // Consume newline
         String notes = scanner.nextLine();
-
-        appointmentServiceFacade.addConsultationNotes(appointmentId, notes);
-        System.out.println("Consultation notes added.");
+        doctor.recordAppointmentOutcome(appointmentId, notes, null, null);
     }
 
-    // 7. Add Prescription
     private void addPrescription(Scanner scanner) {
         System.out.println("\n--- Add Prescription ---");
         System.out.print("Enter Appointment ID: ");
@@ -178,9 +126,6 @@ public class DoctorMenu {
         System.out.print("Enter Prescription Details: ");
         scanner.nextLine(); // Consume newline
         String prescriptionDetails = scanner.nextLine();
-
-        Prescription prescription = new Prescription(prescriptionDetails);
-        appointmentServiceFacade.addPrescription(appointmentId, prescription);
-        System.out.println("Prescription added.");
+        doctor.recordAppointmentOutcome(appointmentId, null, null, new Prescription(prescriptionDetails));
     }
 }
