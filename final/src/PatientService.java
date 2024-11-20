@@ -29,7 +29,8 @@ public class PatientService {
                     String password = fields[7].trim();
 
                     // Create and add Patient object
-                    Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob, bloodType);
+                    //Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob, bloodType);
+                    Patient patient = new Patient(userID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber, dob,bloodType);
                     patientList.add(patient);
                 }
             }
