@@ -279,6 +279,7 @@ public class PatientMenu {
 
     //CASE 6: Cancel Appointment//////////////////////////////////////////////////////////////////////////
     private void cancelAppointment() {
+        viewScheduledAppointments();
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Appointment ID to Cancel:");
         String appointmentId = scanner.next();

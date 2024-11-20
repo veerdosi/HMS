@@ -1,66 +1,93 @@
-import java.util.HashMap;
-import java.util.Map;
+public class Pharmacist extends User {
+    private int age;
 
-public class Pharmacist {
-    private Map<String, AppointmentOutcomeRecord> appointmentRecords;
-    private Map<String, Medicine> inventory;
-
-    // Constructor
-    public Pharmacist() {
-        this.appointmentRecords = new HashMap<>();
-        this.inventory = new HashMap<>();
+    public Pharmacist(String userID, String name, String password, String gender, String contactEmail, String contactNumber, int age) {
+        super(userID, name, password, UserRole.PHARMACIST, gender, contactEmail, contactNumber);
+        this.age = age;
     }
 
-    // View Appointment Outcome Record
-    public void viewAppointmentOutcome(String appointmentID) {
-        if (appointmentRecords.containsKey(appointmentID)) {
-            AppointmentOutcomeRecord record = appointmentRecords.get(appointmentID);
-            System.out.println("Appointment ID: " + appointmentID);
-            System.out.println("Date: " + record.getDate());
-            System.out.println("Prescribed Medications: " + record.getPrescribedMedications());
-            System.out.println("Notes: " + record.getNotes());
-        } else {
-            System.out.println("Appointment record not found.");
-        }
+    public int getAge() {
+        return age;
     }
 
-    // Update Prescription Status
-    public void updatePrescriptionStatus(String prescriptionID, PrescriptionStatus status) {
-        for (AppointmentOutcomeRecord record : appointmentRecords.values()) {
-            if (record.updatePrescriptionStatus(prescriptionID, status)) {
-                System.out.println("Prescription updated successfully.");
-                return;
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    // Submit a replenishment request
+    public void submitReplenishmentRequest(String medicineName, int quantity) {
+        ReplenishmentRequest request = new ReplenishmentRequest(medicineName, quantity, this.userID);
+        RequestRecord.getInstance().addRequest(request); // Add to the Singleton RequestRecord
+        System.out.println("Replenishment request submitted: " + request);
+    }
+
+    // View all requests submitted by this pharmacist
+    public void viewMyRequests() {
+        System.out.println("Requests by Pharmacist ID: " + this.userID);
+        for (ReplenishmentRequest request : RequestRecord.getInstance().getAllRequests()) {
+            if (request.getPharmacistId().equals(this.userID)) {
+                System.out.println(request);
             }
         }
-        System.out.println("Prescription ID not found.");
     }
 
-    // View Medication Inventory
-    public void viewMedicationInventory() {
-        System.out.println("Medication Inventory:");
-        for (Medicine medicine : inventory.values()) {
-            System.out.println(medicine.getName() + ": " + medicine.getStock() + " units");
+    // Method to update prescription status
+    public void updatePrescriptionStatus(String appointmentId, String medicineName, PrescriptionStatus status) {
+        // Access the Singleton instance of AppointmentServiceFacade
+        AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
+
+        // Fetch the MedicineInventory singleton
+        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
+
+        // Get the medicine from the inventory
+        Medicine medicine = inventory.getMedicineByName(medicineName);
+        if (medicine == null) {
+            System.out.println("Medicine not found in inventory: " + medicineName);
+            return;
+        }
+
+        // Update the prescription status through the facade
+        facade.updatePrescriptionStatus(appointmentId, medicine, status);
+        System.out.println("Prescription for " + medicineName + " in Appointment ID " + appointmentId + " updated to status: " + status);
+
+        // If the prescription status is DISPENSED, decrease the stock of the medicine
+        if (status == PrescriptionStatus.DISPENSED) {
+            inventory.decreaseStock(medicineName);
         }
     }
 
-    // Submit Replenishment Request
-    public void submitReplenishmentRequest(String medicineName, int quantity) {
-        if (inventory.containsKey(medicineName)) {
-            Medicine medicine = inventory.get(medicineName);
-            medicine.replenishStock(quantity);
-            System.out.println("Replenishment request for " + quantity + " units of " + medicineName + " submitted.");
-        } else {
-            System.out.println("Medicine not found in inventory.");
-        }
+
+    // Method to view all medicines and their stock levels
+    public void viewMedicineInventory() {
+        //Checks for low stock levels
+        checkLowStock();
+        // Fetch the MedicineInventory singleton
+        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
+
+        // List all medicines
+        inventory.listAllMedicines();
     }
 
-    // Add sample data (for testing)
-    public void addSampleData() {
-        inventory.put("Paracetamol", new Medicine("Paracetamol", 100));
-        inventory.put("Amoxicillin", new Medicine("Amoxicillin", 50));
+    // Method to check for low stock medicines
+    public void checkLowStock() {
+        // Fetch the MedicineInventory singleton
+        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
 
-        AppointmentOutcomeRecord record = new AppointmentOutcomeRecord("A001", "2024-11-19");
-        record.addPrescription("P001", "Paracetamol", PrescriptionStatus.PENDING);
-        appointmentRecords.put("A001", record);
+        // Display low stock warnings
+        inventory.checkLowStock();
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + userID +
+                ", Name: " + name +
+                ", Role: " + role +
+                ", Gender: " + gender +
+                ", Age: " + age +
+                ", Email: " + contactEmail +
+                ", Contact: " + contactNumber;
+    }
+
 }
+
+

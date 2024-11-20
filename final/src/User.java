@@ -50,10 +50,21 @@ public class User {
         return contactNumber;
     }
 
-    // LMAO is this actually necessary
-  /*  public String getPassword() {
-        return password;
-    } */
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
 
     public boolean authenticate(String password) {
         return this.password.equals(password);
