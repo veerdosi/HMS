@@ -67,7 +67,7 @@ public class Doctor extends User {
 
     // Process appointment (accept or decline)
     public void processAppointment(Appointment appointment, boolean accept) {
-        if (appointment == null || appointment.getAppointmentID() == null) {
+        if (appointment == null || appointment.getId() == null) {
             System.out.println("Invalid appointment data.");
             return;
         }
