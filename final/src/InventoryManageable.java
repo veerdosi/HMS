@@ -8,5 +8,8 @@ public interface InventoryManageable {
     void submitReplenishmentRequest(String medicineName, int quantity);
 
     // Method to update stock for a given medicine
-    void updateMedicineStock(String medicineID, int quantity);
+    void updateStock(String medicineID, int quantity);
+
+    // Method to approve a replenishment request
+    void approveReplenishmentRequest(String requestID);
 }
