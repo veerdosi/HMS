@@ -6,15 +6,13 @@ public class Doctor extends User {
     private List<Appointment> schedule; // List of scheduled appointments
     private AppointmentServiceFacade appointmentServiceFacade;
 
-    // Standardized Constructor
     public Doctor(String userID, String name, String password, String gender,
-            String contactEmail, String contactNumber, int age,
-            String patientFilePath, String staffFilePath) {
+            String contactEmail, String contactNumber, int age) {
         super(userID, name, password, UserRole.DOCTOR, gender, contactEmail, contactNumber);
         this.age = age;
         this.availability = null; // Default to no availability
         this.schedule = null; // Default to no schedule
-        this.appointmentServiceFacade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
+        this.appointmentServiceFacade = AppointmentServiceFacade.getInstance(); // Singleton instance
     }
 
     // Getter methods
