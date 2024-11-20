@@ -37,7 +37,7 @@ public class AuthenticationService {
                 String contactNumber = fields[6].trim();
                 String password = fields[7].trim();
 
-                Patient patient = new Patient(patientID, name, password, gender, contactEmail, contactNumber, dateOfBirth, bloodType);
+                Patient patient = new Patient(patientID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber, dateOfBirth,bloodType);
                 users.put(patientID, patient);
             }
         } catch (IOException e) {

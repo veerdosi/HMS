@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //COMPLETE
-public class MedicalRecord implements PatientMedicalRecordAccess {
+public class MedicalRecord implements IPatientMedicalRecordAccess {
     private String patientId;
     private String bloodType;
     private List<String> pastDiagnoses;
