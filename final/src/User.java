@@ -153,10 +153,10 @@ public boolean authenticatePassword(String passString) {
             String newPass = InputHandler.getStringInput("New Password: ");
             changePassword(passString, newPass);
         }
-        return true; // Authentication successful
+        
     }
-    // Authentication failed
-    return false;
+    // Authentication outcome
+    return this.password.equals(password);
 }
 
     /**
