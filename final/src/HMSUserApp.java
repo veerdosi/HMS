@@ -5,28 +5,21 @@ public class HMSUserApp {
     private AuthenticationService authService;
     private AppointmentServiceFacade facade;
     private MedicineInventory medicineInventory;
+    private Scanner scanner;
     private boolean running;
 
-    // Private constructor prevents instantiation from other classes
     private HMSUserApp() {
         authService = new AuthenticationService();
         running = true;
 
-        // Define the file paths
         String patientFilePath = "Data/Patient_List(Sheet1).csv";
         String staffFilePath = "Data/Staff_List(Sheet1).csv";
         String medicineFilePath = "Data/Medicine_List(Sheet1).csv";
 
-        // Initialize services
         facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
         medicineInventory = MedicineInventory.getInstance(medicineFilePath);
     }
 
-    /**
-     * Returns the singleton instance of HMSUserApp
-     * 
-     * @return HMSUserApp instance
-     */
     public static HMSUserApp getInstance() {
         if (instance == null) {
             instance = new HMSUserApp();
@@ -53,8 +46,12 @@ public class HMSUserApp {
         int choice = InputHandler.getIntInput(1, 2);
 
         switch (choice) {
-            case 1 -> login();
-            case 2 -> running = false;
+            case 1:
+                login();
+                break;
+            case 2:
+                running = false;
+                break;
         }
     }
 
@@ -77,56 +74,38 @@ public class HMSUserApp {
     }
 
     private void handleUserSession(User user) {
-        boolean loggedIn = true;
+        boolean keepRunning = true;
 
-        while (loggedIn) {
-            try {
-                loggedIn = displayUserMenu(user);
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                System.out.println("Please try again.");
+        while (keepRunning) {
+            switch (user.getRole()) {
+                case DOCTOR:
+                    DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade, InputHandler.getScanner());
+                    keepRunning = doctorMenu.displayMenu();
+                    break;
+
+                case PATIENT:
+                    PatientMenu patientMenu = new PatientMenu((Patient) user, InputHandler.getScanner());
+                    keepRunning = patientMenu.displayMenu();
+                    break;
+
+                case ADMIN:
+                    AdminMenu adminMenu = new AdminMenu((Admin) user, InputHandler.getScanner());
+                    keepRunning = adminMenu.display();
+                    break;
+
+                case PHARMACIST:
+                    PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user, InputHandler.getScanner());
+                    keepRunning = pharmacistMenu.displayMenu();
+                    break;
+
+                default:
+                    System.out.println("Unsupported user role.");
+                    keepRunning = false;
+                    break;
             }
         }
     }
 
-    private boolean displayUserMenu(User user) {
-        boolean continueSession = true;
-
-        switch (user.getRole()) {
-            case DOCTOR -> {
-                DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade, InputHandler.getScanner());
-                continueSession = doctorMenu.displayMenu();
-            }
-            case PATIENT -> {
-                PatientMenu patientMenu = new PatientMenu((Patient) user, InputHandler.getScanner());
-                continueSession = patientMenu.displayMenu();
-            }
-            case ADMIN -> {
-                AdminMenu adminMenu = new AdminMenu((Admin) user, InputHandler.getScanner());
-                continueSession = adminMenu.display();
-            }
-            case PHARMACIST -> {
-                PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user, InputHandler.getScanner());
-                continueSession = pharmacistMenu.displayMenu();
-            }
-            default -> {
-                System.out.println("Unsupported user role.");
-                continueSession = false;
-            }
-        }
-
-        if (!continueSession) {
-            System.out.println("Logged out successfully.");
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Main method to start the application
-     * 
-     * @param args command line arguments
-     */
     public static void main(String[] args) {
         try {
             HMSUserApp app = HMSUserApp.getInstance();
@@ -135,7 +114,6 @@ public class HMSUserApp {
             System.out.println("Fatal error occurred: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            // Close the scanner when the application exits
             InputHandler.getScanner().close();
         }
     }
