@@ -21,7 +21,6 @@ public class DoctorService {
                 if (fields.length >= 7 && fields[2].trim().equalsIgnoreCase("Doctor")) { // Check role column
                     String userID = fields[0].trim();
                     String name = fields[1].trim();
-                    String role = fields[2].trim();
                     String gender = fields[3].trim();
                     int age = Integer.parseInt(fields[4].trim()); // Not sure if an error might pop up here
                     String contactEmail = fields[5].trim();
