@@ -3,16 +3,18 @@ import java.util.List;
 
 public class DoctorMenu {
     private Doctor doctor;
+    private AppointmentServiceFacade facade; // Use facade for appointment-related operations
 
     // Constructor
-    public DoctorMenu(Doctor doctor) {
+    public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
+        this.facade = facade;
     }
 
     // Display menu and handle interactions
     public boolean displayMenu() {
         Scanner scanner = new Scanner(System.in);
-    
+
         while (true) {
             try {
                 System.out.println("\n--- Doctor Menu ---");
@@ -25,16 +27,16 @@ public class DoctorMenu {
                 System.out.println("7. Add Prescription");
                 System.out.println("8. Log Out");
                 System.out.print("Enter your choice: ");
-    
+
                 // Validate input
                 if (!scanner.hasNextInt()) {
                     System.out.println("Invalid input. Please enter a number between 1 and 8.");
                     scanner.next(); // Consume invalid input
                     continue;
                 }
-    
+
                 int choice = scanner.nextInt();
-    
+
                 switch (choice) {
                     case 1:
                         doctor.viewSchedule();
@@ -43,7 +45,7 @@ public class DoctorMenu {
                         setAvailability(scanner);
                         break;
                     case 3:
-                        doctor.viewAvailableSlots();
+                        viewAvailableSlots();
                         break;
                     case 4:
                         acceptAppointment(scanner);
@@ -69,7 +71,6 @@ public class DoctorMenu {
             }
         }
     }
-    
 
     // Set Availability
     private void setAvailability(Scanner scanner) {
@@ -92,6 +93,19 @@ public class DoctorMenu {
         // Sync the updated availability with the centralized repository
         DoctorAvailabilityRepository.getInstance()
                 .setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
+    }
+
+    // View Available Slots
+    private void viewAvailableSlots() {
+        System.out.println("\n--- Available Slots ---");
+        List<TimeSlot> slots = doctor.getAvailability();
+        if (slots == null || slots.isEmpty()) {
+            System.out.println("No available slots.");
+        } else {
+            for (int i = 0; i < slots.size(); i++) {
+                System.out.println(i + ": " + slots.get(i));
+            }
+        }
     }
 
     // Accept Appointment
@@ -128,17 +142,30 @@ public class DoctorMenu {
         System.out.print("Enter Notes: ");
         scanner.nextLine(); // Consume newline
         String notes = scanner.nextLine();
-        doctor.recordAppointmentOutcome(appointmentId, notes, null, null);
+        facade.addConsultationNotes(appointmentId, notes);
+        System.out.println("Consultation notes added to appointment ID: " + appointmentId);
     }
 
+    // Add Prescription
     // Add Prescription
     private void addPrescription(Scanner scanner) {
         System.out.println("\n--- Add Prescription ---");
         System.out.print("Enter Appointment ID: ");
         String appointmentId = scanner.next();
-        System.out.print("Enter Prescription Details: ");
+
+        // Get Medicine name
+        System.out.print("Enter Medicine Name: ");
         scanner.nextLine(); // Consume newline
-        String prescriptionDetails = scanner.nextLine();
-        doctor.recordAppointmentOutcome(appointmentId, null, null, new Prescription(prescriptionDetails));
+        String medicineName = scanner.nextLine();
+
+        // Create a Medicine object with just the name
+        Medicine medicine = new Medicine(medicineName, 0, 0); // Stock and alert level can be set elsewhere
+
+        // Create Prescription object with the Medicine
+        Prescription prescription = new Prescription(medicine);
+
+        // Add Prescription using facade
+        facade.addPrescription(appointmentId, prescription);
+        System.out.println("Prescription added to appointment ID: " + appointmentId);
     }
 }
