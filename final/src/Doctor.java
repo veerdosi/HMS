@@ -23,6 +23,10 @@ public class Doctor extends User {
     public int getAge() {
         return age;
     }
+    
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public List<TimeSlot> getAvailability() {
         return availability;
@@ -75,7 +79,7 @@ public class Doctor extends User {
             schedule.add(appointment); // Add to schedule if accepted
         }
         System.out.println("Appointment " + (accept ? "accepted" : "declined") + " for patient: "
-                + (appointment.getPatient() != null ? appointment.getPatient().getName() : "Unknown"));
+                + (appointment.getPatientID() != null ? appointment.getPatientID() : "Unknown"));
     }
 
     // Check if the doctor is available at a specific time
@@ -111,7 +115,7 @@ public class Doctor extends User {
         return "Doctor{" +
                 "name='" + getName() + '\'' +
                 ", age=" + age +
-                ", contactEmail='" + getEmail() + '\'' +
+                ", contactEmail='" + getContactEmail() + '\'' +
                 ", contactNumber='" + getContactNumber() + '\'' +
                 '}';
     }
