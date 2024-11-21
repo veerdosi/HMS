@@ -98,7 +98,7 @@ public class PharmacistMenu {
 
     // View Medication Inventory
     private void viewMedicationInventory() {
-        pharmacist.viewMedicationInventory();
+        pharmacist.viewMedicineInventory();
     }
 
     // Submit Replenishment Request
@@ -136,19 +136,6 @@ public class PharmacistMenu {
             return true;
         } catch (IllegalArgumentException e) {
             return false;
-        }
-    }
-
-    private int readMenuChoice() {
-        while (true) {
-            if (scanner.hasNextInt()) {
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-                return choice;
-            } else {
-                System.out.println("Invalid input. Please enter a valid number.");
-                scanner.nextLine(); // Consume invalid input
-            }
         }
     }
 

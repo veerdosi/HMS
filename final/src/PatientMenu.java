@@ -221,6 +221,7 @@ public class PatientMenu {
     // Schedule the appointment
     facade.scheduleAppointment(patient, doctorId, dateTime);
     System.out.println("Appointment scheduled successfully.");
+    scanner.close();
 }
 
     
@@ -276,6 +277,7 @@ public class PatientMenu {
     } else {
         System.out.println("Failed to reschedule the appointment. Please check the Appointment ID and try again.");
     }
+    scanner.close();
     }
 
     //CASE 6: Cancel Appointment//////////////////////////////////////////////////////////////////////////
