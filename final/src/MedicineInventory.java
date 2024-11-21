@@ -91,19 +91,54 @@ public class MedicineInventory {
 
     // Check if any medicine is low on stock and display a warning
     public void checkLowStock() {
+        int lowStockCount = 0;
         for (Medicine medicine : medicines) {
             if (medicine.isLowStock()) {
+                lowStockCount++;
                 System.out.println("Warning: Low stock for " + medicine.getName() + " (Current stock: " + medicine.getCurrentStock() + ")");
+            }
+        }
+        if (lowStockCount == 0) {
+            System.out.println("All medicines are well-stocked.");
+        }
+    }
+
+    // Decrease stock for a specific medicine by 1 and update the CSV file
+    public void decreaseStock(String name) {
+        Medicine medicine = getMedicineByName(name);
+        if (medicine != null) {
+            if (medicine.getCurrentStock() > 0) {
+                medicine.updateStock(-1);
+                System.out.println("Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+                updateCsvFile(); // Reflect the change in the CSV file
+            } else {
+                System.out.println("Stock for " + medicine.getName() + " is already zero. Cannot decrease further.");
             }
         }
     }
 
-    // Update stock for a specific medicine by name
+    // Update stock for a specific medicine by name and reflect it in the CSV
     public void updateStock(String name, int quantity) {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             medicine.updateStock(quantity);
-            System.out.println("Stock updated for " + medicine.getName());
+            System.out.println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+            updateCsvFile(); // Reflect the change in the CSV file
+        }
+    }
+
+    // Update the entire CSV file with the current list of medicines
+    private void updateCsvFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            bw.write("Medicine Name,Initial Stock,Low Stock Alert");
+            bw.newLine();
+            for (Medicine medicine : medicines) {
+                bw.write(medicine.getName() + "," + medicine.getCurrentStock() + "," + medicine.getLowStockAlert());
+                bw.newLine();
+            }
+            System.out.println("CSV file updated successfully.");
+        } catch (IOException e) {
+            System.err.println("Error updating CSV file: " + e.getMessage());
         }
     }
 }
