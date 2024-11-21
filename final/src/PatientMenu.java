@@ -25,7 +25,6 @@ public class PatientMenu {
      */
     public boolean displayMenu() {
         while (true) {
-            try {
                 System.out.println("---- Patient Menu ----");
                 System.out.println("1. View Medical Record");
                 System.out.println("2. Update Personal Information");
@@ -40,7 +39,7 @@ public class PatientMenu {
 
                 if (!scanner.hasNextInt()) {
                     System.out.println("Invalid input. Please enter a number between 1 and 9.");
-                    scanner.next(); // Consume invalid input
+                    scanner.nextLine(); // Consume invalid input
                     continue;
                 }
 
@@ -66,10 +65,6 @@ public class PatientMenu {
                         return false; // Exit the menu
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear invalid input
-            }
         }
     }
 
