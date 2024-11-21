@@ -87,11 +87,17 @@ public class PharmacistMenu {
             return;
         }
 
+        // Prompt for Medicine Name
+        String medicineName = readStringInput("Enter Medicine Name: ");
+        if (!validateInput(medicineName)) {
+            System.out.println("Invalid Medicine Name. Please try again.");
+            return;
+        }
 
         String statusStr = readStringInput("Enter new status (PENDING, DISPENSED, CANCELLED): ");
         if (validateEnumInput(statusStr, PrescriptionStatus.class)) {
             PrescriptionStatus status = PrescriptionStatus.valueOf(statusStr.toUpperCase());
-            pharmacist.updatePrescriptionStatus(prescriptionID, status);
+            pharmacist.updatePrescriptionStatus(prescriptionID, medicineName, status);
             System.out.println("Prescription status updated successfully.");
         } else {
             System.out.println("Invalid status. Please enter a valid status.");
