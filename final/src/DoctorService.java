@@ -11,6 +11,10 @@ public class DoctorService {
         this.doctors = loadDoctorsFromCsv(staffFilePath);
     }
 
+    /**
+     * @param filePath
+     * @return List<Doctor>
+     */
     // Load doctors from the specified CSV file path
     private List<Doctor> loadDoctorsFromCsv(String filePath) {
         List<Doctor> doctorList = new ArrayList<>();

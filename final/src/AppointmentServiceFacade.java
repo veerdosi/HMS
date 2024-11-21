@@ -17,7 +17,13 @@ public class AppointmentServiceFacade {
         this.prescriptionService = new PrescriptionService(appointmentService);
     }
 
-  // Static method to get the single instance, initializing with file paths if not yet created
+    /**
+     * @param patientFilePath
+     * @param staffFilePath
+     * @return AppointmentServiceFacade
+     */
+    // Static method to get the single instance, initializing with file paths if not
+    // yet created
     public static AppointmentServiceFacade getInstance(String patientFilePath, String staffFilePath) {
         if (instance == null) {
             instance = new AppointmentServiceFacade(patientFilePath, staffFilePath);
@@ -25,7 +31,7 @@ public class AppointmentServiceFacade {
         return instance;
     }
 
-     // Retrieve availability for a specific doctor
+    // Retrieve availability for a specific doctor
     public DoctorAvailability getDoctorAvailability(String doctorId) {
         DoctorAvailabilityRepository availabilityRepository = DoctorAvailabilityRepository.getInstance();
         return availabilityRepository.getDoctorAvailability(doctorId);
@@ -47,7 +53,7 @@ public class AppointmentServiceFacade {
     public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
         appointmentService.scheduleAppointment(patient, doctorId, dateTime);
     }
-    //might be useless considering if cancelled
+    // might be useless considering if cancelled
 
     public void cancelAppointment(String appointmentId) {
         appointmentService.cancelAppointment(appointmentId);
@@ -73,7 +79,8 @@ public class AppointmentServiceFacade {
         return (prescriptionService.updatePrescriptionStatus(appointmentId, medicine, status));
     }
 
-    // Public methods to access doctors and patients from DoctorService and PatientService
+    // Public methods to access doctors and patients from DoctorService and
+    // PatientService
     public List<Doctor> getAvailableDoctors() {
         return doctorService.getAvailableDoctors();
     }

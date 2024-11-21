@@ -20,11 +20,14 @@ public class Doctor extends User {
         this.schedule = new ArrayList<>(); // Initialize schedule
     }
 
+    /**
+     * @return int
+     */
     // Getter methods
     public int getAge() {
         return age;
     }
-    
+
     public void setAge(int age) {
         this.age = age;
     }
@@ -118,7 +121,7 @@ public class Doctor extends User {
         }
         return false; // Slot not found
     }
-    
+
     public boolean bookSlot(LocalTime time) {
         int index = getSlotIndexForTime(time);
         if (index != -1 && availability.get(index).isAvailable()) {
@@ -127,7 +130,7 @@ public class Doctor extends User {
         }
         return false; // Slot not available or not found
     }
-    
+
     // Private method to get slot index for a specific time
     private int getSlotIndexForTime(LocalTime time) {
         for (int i = 0; i < availability.size(); i++) {
@@ -137,7 +140,6 @@ public class Doctor extends User {
         }
         return -1; // No matching slot
     }
-    
 
     // Override toString for debugging
     @Override

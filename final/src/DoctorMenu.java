@@ -10,10 +10,13 @@ public class DoctorMenu {
         this.doctor = doctor;
     }
 
+    /**
+     * @return boolean
+     */
     // Display menu and handle interactions
     public boolean displayMenu() {
         Scanner scanner = new Scanner(System.in);
-    
+
         while (true) {
             System.out.println("\n--- Doctor Menu ---");
             System.out.println("1. View Schedule");
@@ -25,22 +28,22 @@ public class DoctorMenu {
             System.out.println("7. Add Prescription");
             System.out.println("8. Log Out");
             System.out.print("Enter your choice: ");
-    
+
             // Validate input
             if (!scanner.hasNextInt()) {
                 System.out.println("Invalid input. Please enter a number between 1 and 8.");
                 scanner.next(); // Consume invalid input
                 continue; // Repeat the menu prompt
             }
-    
+
             int choice = scanner.nextInt();
-    
+
             // Process the valid input
             if (choice < 1 || choice > 8) {
                 System.out.println("Invalid choice. Please enter a number between 1 and 8.");
                 continue; // Repeat the menu prompt
             }
-    
+
             // Handle valid choices
             switch (choice) {
                 case 1:
@@ -70,7 +73,7 @@ public class DoctorMenu {
             }
         }
     }
-    
+
     // Set Availability
     private void setAvailability(Scanner scanner) {
         System.out.println("\n--- Set Availability ---");

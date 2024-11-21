@@ -10,6 +10,9 @@ public class Medicine {
         this.lowStockAlert = lowStockAlert;
     }
 
+    /**
+     * @param quantity
+     */
     // Update the stock of the medicine by a given quantity (positive to add,
     // negative to subtract)
     public void updateStock(int quantity) {

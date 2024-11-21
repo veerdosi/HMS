@@ -11,6 +11,10 @@ public class PatientService {
         this.patients = loadPatientsFromCsv(patientFilePath);
     }
 
+    /**
+     * @param filePath
+     * @return List<Patient>
+     */
     // Load patients from the specified CSV file path
     private List<Patient> loadPatientsFromCsv(String filePath) {
         List<Patient> patientList = new ArrayList<>();
@@ -29,7 +33,8 @@ public class PatientService {
                     String password = fields[7].trim();
 
                     // Create and add Patient object
-                    Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob, bloodType);
+                    Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob,
+                            bloodType);
                     patientList.add(patient);
                 }
             }

@@ -10,6 +10,9 @@ public class RequestRecord {
         this.requests = new ArrayList<>();
     }
 
+    /**
+     * @return RequestRecord
+     */
     // Method to get the single instance of RequestRecord
     public static RequestRecord getInstance() {
         if (instance == null) {

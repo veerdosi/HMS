@@ -1,11 +1,15 @@
 public class Pharmacist extends User {
     private int age;
 
-    public Pharmacist(String userID, String name, String password, String gender, String contactEmail, String contactNumber, int age) {
+    public Pharmacist(String userID, String name, String password, String gender, String contactEmail,
+            String contactNumber, int age) {
         super(userID, name, password, UserRole.PHARMACIST, gender, contactEmail, contactNumber);
         this.age = age;
     }
 
+    /**
+     * @return int
+     */
     public int getAge() {
         return age;
     }
@@ -37,7 +41,8 @@ public class Pharmacist extends User {
         AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
 
         // Fetch the MedicineInventory singleton
-        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
+        MedicineInventory inventory = MedicineInventory
+                .getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
 
         // Get the medicine from the inventory
         Medicine medicine = inventory.getMedicineByName(medicineName);
@@ -47,22 +52,23 @@ public class Pharmacist extends User {
         }
 
         // Update the prescription status through the facade
-        if(facade.updatePrescriptionStatus(appointmentId, medicine, status)){
-             System.out.println("Prescription for " + medicineName + " in Appointment ID " + appointmentId + " updated to status: " + status);
-             // If the prescription status is DISPENSED, decrease the stock of the medicine
+        if (facade.updatePrescriptionStatus(appointmentId, medicine, status)) {
+            System.out.println("Prescription for " + medicineName + " in Appointment ID " + appointmentId
+                    + " updated to status: " + status);
+            // If the prescription status is DISPENSED, decrease the stock of the medicine
             if (status == PrescriptionStatus.DISPENSED) {
-                    inventory.decreaseStock(medicineName);
-        }
+                inventory.decreaseStock(medicineName);
+            }
         }
     }
 
-
     // Method to view all medicines and their stock levels
     public void viewMedicineInventory() {
-        //Checks for low stock levels
+        // Checks for low stock levels
         checkLowStock();
         // Fetch the MedicineInventory singleton
-        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
+        MedicineInventory inventory = MedicineInventory
+                .getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
 
         // List all medicines
         inventory.listAllMedicines();
@@ -71,7 +77,8 @@ public class Pharmacist extends User {
     // Method to check for low stock medicines
     public void checkLowStock() {
         // Fetch the MedicineInventory singleton
-        MedicineInventory inventory = MedicineInventory.getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
+        MedicineInventory inventory = MedicineInventory
+                .getInstance("C:/Users/LENOVO/Desktop/HMS/Data/Medicine_List(Sheet1).csv");
 
         // Display low stock warnings
         inventory.checkLowStock();
@@ -89,5 +96,3 @@ public class Pharmacist extends User {
     }
 
 }
-
-

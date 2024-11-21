@@ -14,6 +14,9 @@ public class ReplenishmentRequest {
         this.status = RequestStatus.PENDING;
     }
 
+    /**
+     * @return int
+     */
     public int getRequestId() {
         return requestId;
     }

@@ -9,5 +9,4 @@ public interface IPersonalInfoUpdate {
         updateEmailAddress(newEmailAddress);
     }
 
-    
 }

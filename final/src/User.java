@@ -14,11 +14,11 @@ public class User implements IPasswordUpdate {
     protected String contactNumber;
     private static final String PATIENT_FILE_PATH = "Data/Patient_List(Sheet1).csv";
     private static final String STAFF_FILE_PATH = "Data/Staff_List(Sheet1).csv";
-    private static final String DEFAULT_PASSWORD = "password"; //every new user is assigned this bef 1st login
-
+    private static final String DEFAULT_PASSWORD = "password"; // every new user is assigned this bef 1st login
 
     // Constructor
-    public User(String userID, String name, String password, UserRole role, String gender, String contactEmail, String contactNumber) {
+    public User(String userID, String name, String password, UserRole role, String gender, String contactEmail,
+            String contactNumber) {
         this.userID = userID;
         this.name = name;
         this.password = DEFAULT_PASSWORD;
@@ -28,6 +28,9 @@ public class User implements IPasswordUpdate {
         this.contactNumber = contactNumber;
     }
 
+    /**
+     * @return UserRole
+     */
     public UserRole getRole() {
         return role;
     }
@@ -44,11 +47,11 @@ public class User implements IPasswordUpdate {
         return gender;
     }
 
-    public String getContactEmail(){
+    public String getContactEmail() {
         return contactEmail;
     }
 
-    public String getContactNumber(){
+    public String getContactNumber() {
         return contactNumber;
     }
 
@@ -69,7 +72,7 @@ public class User implements IPasswordUpdate {
     }
 
     public boolean authenticatePassword(String password) {
-        if (password.equals(DEFAULT_PASSWORD)){
+        if (password.equals(DEFAULT_PASSWORD)) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please reset your password (First Login).\n New Password: ");
             String newPass = scanner.nextLine();
@@ -96,14 +99,14 @@ public class User implements IPasswordUpdate {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine(); // Read header
-            lines.add(line);  // Add header to output list
+            lines.add(line); // Add header to output list
 
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
 
                 // Check if the current line matches this user's ID
                 if (fields[0].trim().equals(this.userID)) {
-                    fields[fields.length - 1] = this.password;  // Update the password
+                    fields[fields.length - 1] = this.password; // Update the password
                     passwordUpdated = true;
                 }
 

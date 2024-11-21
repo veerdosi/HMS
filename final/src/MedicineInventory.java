@@ -18,6 +18,10 @@ public class MedicineInventory {
         loadMedicinesFromCsv(filePath);
     }
 
+    /**
+     * @param filePath
+     * @return MedicineInventory
+     */
     // Singleton access method
     public static MedicineInventory getInstance(String filePath) {
         if (instance == null) {
@@ -95,7 +99,8 @@ public class MedicineInventory {
         for (Medicine medicine : medicines) {
             if (medicine.isLowStock()) {
                 lowStockCount++;
-                System.out.println("Warning: Low stock for " + medicine.getName() + " (Current stock: " + medicine.getCurrentStock() + ")");
+                System.out.println("Warning: Low stock for " + medicine.getName() + " (Current stock: "
+                        + medicine.getCurrentStock() + ")");
             }
         }
         if (lowStockCount == 0) {
@@ -109,7 +114,8 @@ public class MedicineInventory {
         if (medicine != null) {
             if (medicine.getCurrentStock() > 0) {
                 medicine.updateStock(-1);
-                System.out.println("Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+                System.out.println(
+                        "Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
                 updateCsvFile(); // Reflect the change in the CSV file
             } else {
                 System.out.println("Stock for " + medicine.getName() + " is already zero. Cannot decrease further.");
@@ -122,7 +128,8 @@ public class MedicineInventory {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             medicine.updateStock(quantity);
-            System.out.println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+            System.out
+                    .println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
             updateCsvFile(); // Reflect the change in the CSV file
         }
     }

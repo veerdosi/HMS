@@ -12,6 +12,9 @@ public class AppointmentOutcomeRecord {
         pastAppointments = new ArrayList<>();
     }
 
+    /**
+     * @return AppointmentOutcomeRecord
+     */
     // Singleton instance getter
     public static AppointmentOutcomeRecord getInstance() {
         if (instance == null) {
@@ -64,7 +67,8 @@ public class AppointmentOutcomeRecord {
 
         // Print the table header
         System.out.println(String.format("%-15s %-15s %-15s %-20s %-10s %-15s %-20s %-30s",
-                "Appointment ID", "Patient ID", "Doctor ID", "Date & Time", "Status", "Service Type", "Consultation Notes", "Prescriptions"));
+                "Appointment ID", "Patient ID", "Doctor ID", "Date & Time", "Status", "Service Type",
+                "Consultation Notes", "Prescriptions"));
 
         // Print each appointment as a row
         for (Appointment appointment : pastAppointments) {

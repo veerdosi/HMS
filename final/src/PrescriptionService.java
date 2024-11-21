@@ -6,6 +6,10 @@ public class PrescriptionService {
         this.appointmentService = appointmentService;
     }
 
+    /**
+     * @param appointmentId
+     * @param prescription
+     */
     // Add a prescription to an appointment
     public void addPrescription(String appointmentId, Prescription prescription) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
@@ -18,7 +22,7 @@ public class PrescriptionService {
     }
 
     // Update prescription status for a specific appointment
-    public boolean  updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
+    public boolean updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         if (appointment != null) {
             for (Prescription prescription : appointment.getPrescriptions()) {

@@ -11,6 +11,9 @@ public class PharmacistMenu {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * @return boolean
+     */
     // Display Pharmacist Menu
     public boolean displayMenu() {
         int choice = -1;
@@ -22,7 +25,7 @@ public class PharmacistMenu {
             System.out.println("4. Submit Replenishment Request");
             System.out.println("5. Logout");
             System.out.print("Please select an option: ");
-    
+
             choice = readMenuChoice();
             if (!processChoice(choice)) {
                 return false; // Exit if processChoice signals to stop
@@ -30,7 +33,7 @@ public class PharmacistMenu {
         }
         return true; // Return true to indicate successful execution
     }
-    
+
     // Process menu choices and return boolean
     private boolean processChoice(int choice) {
         switch (choice) {
@@ -54,7 +57,7 @@ public class PharmacistMenu {
         }
         return true; // Continue showing menu
     }
-    
+
     // Read menu choice (helper method for input validation)
     private int readMenuChoice() {
         scanner = new Scanner(System.in);
@@ -67,7 +70,6 @@ public class PharmacistMenu {
             }
         }
     }
-    
 
     // View Appointment Outcome Record
     private void viewAppointmentOutcome() {
@@ -138,16 +140,15 @@ public class PharmacistMenu {
         return input != null && !input.trim().isEmpty();
     }
 
-private <T extends Enum<T>> boolean validateEnumInput(String input, Class<T> enumClass) {
-    try {
-        // Try to convert the input to an enum constant
-        Enum.valueOf(enumClass, input.toUpperCase());
-        return true; // Input is valid
-    } catch (IllegalArgumentException | NullPointerException e) {
-        return false; // Input is not valid
+    private <T extends Enum<T>> boolean validateEnumInput(String input, Class<T> enumClass) {
+        try {
+            // Try to convert the input to an enum constant
+            Enum.valueOf(enumClass, input.toUpperCase());
+            return true; // Input is valid
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false; // Input is not valid
+        }
     }
-}
-
 
     private String readStringInput(String prompt) {
         System.out.print(prompt);

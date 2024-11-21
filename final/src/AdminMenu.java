@@ -8,6 +8,9 @@ public class AdminMenu {
         this.admin = admin;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean display() {
         while (true) {
             System.out.println("---- Admin Menu ----");

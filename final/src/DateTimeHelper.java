@@ -13,6 +13,10 @@ public class DateTimeHelper {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
+    /**
+     * @param dateString
+     * @return LocalDate
+     */
     // Method to parse a date from a string
     public static LocalDate parseDate(String dateString) {
         try {

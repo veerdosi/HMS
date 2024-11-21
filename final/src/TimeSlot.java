@@ -9,6 +9,9 @@ public class TimeSlot {
         this.isAvailable = true; // Default to available
     }
 
+    /**
+     * @return String
+     */
     public String getStartTime() {
         return startTime;
     }

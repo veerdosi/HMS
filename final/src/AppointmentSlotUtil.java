@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentSlotUtil {
+
+    /**
+     * @return List<TimeSlot>
+     */
     public static List<TimeSlot> generateDailySlots() {
         List<TimeSlot> slots = new ArrayList<>();
         String[] startTimes = { "09:00", "10:00", "11:00", "14:00", "15:00", "16:00" };

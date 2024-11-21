@@ -10,6 +10,9 @@ public class DoctorAvailability {
         this.slots = slots;
     }
 
+    /**
+     * @return String
+     */
     // Getter for doctorId
     public String getDoctorId() {
         return doctorId;

@@ -5,54 +5,75 @@
 //COMPLETE
 
 /**
- * The `Patient` class extends `User` and implements interfaces for accessing medical records and
+ * The `Patient` class extends `User` and implements interfaces for accessing
+ * medical records and
  * updating personal information.
  */
-public class Patient extends User implements IPatientMedicalRecordAccess,IPersonalInfoUpdate{
+public class Patient extends User implements IPatientMedicalRecordAccess, IPersonalInfoUpdate {
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
-    
-    // This constructor method `public Patient(String userID, String name, String password, String
-    // gender, String contactEmail, String contactNumber, String dateOfBirth, String bloodType)` is
-    // initializing a new `Patient` object with the provided parameters. It calls the constructor of
-    // the superclass `User` using `super(userID, name, password, UserRole.PATIENT, gender,
+
+    // This constructor method `public Patient(String userID, String name, String
+    // password, String
+    // gender, String contactEmail, String contactNumber, String dateOfBirth, String
+    // bloodType)` is
+    // initializing a new `Patient` object with the provided parameters. It calls
+    // the constructor of
+    // the superclass `User` using `super(userID, name, password, UserRole.PATIENT,
+    // gender,
     // contactEmail, contactNumber)` to set up the user-related information.
-    public Patient(String userID, String name, String password, String gender, String contactEmail, String contactNumber, 
-                   String dateOfBirth, String bloodType) {
+    public Patient(String userID, String name, String password, String gender, String contactEmail,
+            String contactNumber,
+            String dateOfBirth, String bloodType) {
         super(userID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber);
         this.dateOfBirth = dateOfBirth;
         this.medicalRecord = new MedicalRecord(this, bloodType);
     }
 
-   /**
-    * The function `getDateOfBirth` in Java returns the date of birth as a string.
-    * 
-    * @return The method `getDateOfBirth` is returning the date of birth as a String.
-    */
+    /**
+     * The function `getDateOfBirth` in Java returns the date of birth as a string.
+     * 
+     * @return The method `getDateOfBirth` is returning the date of birth as a
+     *         String.
+     */
     public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    // The code snippet you provided is implementing the `viewMedicalRecord` method from the
-    // `IPatientMedicalRecordAccess` interface in the `Patient` class. This method allows a user to
-    // view the medical record of a patient. It takes a `User` object as a parameter and returns the
-    // medical record associated with the patient. The actual implementation of how the medical record
-    // is viewed is delegated to the `MedicalRecord` class, where the `viewMedicalRecord` method is
+    /**
+     * @param user
+     * @return MedicalRecord
+     */
+    // The code snippet you provided is implementing the `viewMedicalRecord` method
+    // from the
+    // `IPatientMedicalRecordAccess` interface in the `Patient` class. This method
+    // allows a user to
+    // view the medical record of a patient. It takes a `User` object as a parameter
+    // and returns the
+    // medical record associated with the patient. The actual implementation of how
+    // the medical record
+    // is viewed is delegated to the `MedicalRecord` class, where the
+    // `viewMedicalRecord` method is
     // called with the user object passed as an argument.
-    // Implementing PatientMedicalRecordAccess method for view-only access to MedicalRecord
+    // Implementing PatientMedicalRecordAccess method for view-only access to
+    // MedicalRecord
     @Override
     public MedicalRecord viewMedicalRecord(User user) {
         return medicalRecord.viewMedicalRecord(user);
     }
-    
+
     /**
-     * The updateContactNumber method updates the contact number of an object and prints a success
+     * The updateContactNumber method updates the contact number of an object and
+     * prints a success
      * message.
      * 
-     * @param newContact The `newContact` parameter in the `updateContactNumber` method represents the
-     * new contact number that will be assigned to the `contactNumber` attribute of the object. When
-     * this method is called, the `contactNumber` attribute of the object will be updated with the
-     * value provided in the `new
+     * @param newContact The `newContact` parameter in the `updateContactNumber`
+     *                   method represents the
+     *                   new contact number that will be assigned to the
+     *                   `contactNumber` attribute of the object. When
+     *                   this method is called, the `contactNumber` attribute of the
+     *                   object will be updated with the
+     *                   value provided in the `new
      */
     @Override
     public void updateContactNumber(String newContact) {
@@ -61,12 +82,16 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
     }
 
     /**
-     * The updateEmailAddress method updates the contact's email address and prints a success message.
+     * The updateEmailAddress method updates the contact's email address and prints
+     * a success message.
      * 
-     * @param newEmail The `newEmail` parameter in the `updateEmailAddress` method represents the new
-     * email address that will be assigned to the `contactEmail` field of the object. When this method
-     * is called with a new email address as an argument, it updates the `contactEmail` field with the
-     * new email address
+     * @param newEmail The `newEmail` parameter in the `updateEmailAddress` method
+     *                 represents the new
+     *                 email address that will be assigned to the `contactEmail`
+     *                 field of the object. When this method
+     *                 is called with a new email address as an argument, it updates
+     *                 the `contactEmail` field with the
+     *                 new email address
      */
     @Override
     public void updateEmailAddress(String newEmail) {
@@ -75,19 +100,29 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
     }
 
     /**
-     * The updateContactInfo method updates the contact email and contact number fields of an object
+     * The updateContactInfo method updates the contact email and contact number
+     * fields of an object
      * and prints a success message.
      * 
-     * @param newEmail The `newEmail` parameter in the `updateContactInfo` method represents the new
-     * email address that will be assigned to the `contactEmail` field of the object.
-     * @param newContact The `newContact` parameter in the `updateContactInfo` method is a `String`
-     * type that represents the new contact number that will be updated in the contact information.
+     * @param newEmail   The `newEmail` parameter in the `updateContactInfo` method
+     *                   represents the new
+     *                   email address that will be assigned to the `contactEmail`
+     *                   field of the object.
+     * @param newContact The `newContact` parameter in the `updateContactInfo`
+     *                   method is a `String`
+     *                   type that represents the new contact number that will be
+     *                   updated in the contact information.
      */
-    // The `@Override` annotation in Java is used to indicate that a method is being overridden from a
-    // superclass or interface. In the provided code snippet, `@Override` is used before method
-    // declarations to explicitly indicate that these methods are overriding methods defined in the
-    // interfaces `IPatientMedicalRecordAccess` and `IPersonalInfoUpdate`. This annotation helps ensure
-    // that the method is actually overriding a method in a superclass or interface, providing a
+    // The `@Override` annotation in Java is used to indicate that a method is being
+    // overridden from a
+    // superclass or interface. In the provided code snippet, `@Override` is used
+    // before method
+    // declarations to explicitly indicate that these methods are overriding methods
+    // defined in the
+    // interfaces `IPatientMedicalRecordAccess` and `IPersonalInfoUpdate`. This
+    // annotation helps ensure
+    // that the method is actually overriding a method in a superclass or interface,
+    // providing a
     // compile-time check for correctness.
     @Override
     public void updateContactInfo(String newEmail, String newContact) {

@@ -22,7 +22,8 @@ public class AuthenticationService {
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 8) continue;
+                if (fields.length < 8)
+                    continue;
 
                 String patientID = fields[0].trim();
                 String name = fields[1].trim();
@@ -33,7 +34,8 @@ public class AuthenticationService {
                 String contactNumber = fields[6].trim();
                 String password = fields[7].trim();
 
-                Patient patient = new Patient(patientID, name, password, gender, contactEmail, contactNumber, dateOfBirth, bloodType);
+                Patient patient = new Patient(patientID, name, password, gender, contactEmail, contactNumber,
+                        dateOfBirth, bloodType);
                 users.put(patientID, patient);
             }
         } catch (IOException e) {
@@ -47,7 +49,8 @@ public class AuthenticationService {
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 8) continue;
+                if (fields.length < 8)
+                    continue;
 
                 String staffID = fields[0].trim();
                 String name = fields[1].trim();
@@ -67,7 +70,7 @@ public class AuthenticationService {
                         user = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber, age);
                         break;
                     case "administrator":
-                        user = new Admin(staffID, name,  password, gender, contactEmail, contactNumber, age);
+                        user = new Admin(staffID, name, password, gender, contactEmail, contactNumber, age);
                         break;
                     default:
                         System.out.println("Unrecognized role for staff ID " + staffID);
@@ -81,11 +84,16 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * @param userID
+     * @param password
+     * @return User
+     */
     public User authenticateUser(String userID, String password) {
         User user = users.get(userID);
         if (user != null && user.authenticatePassword(password)) {
             return user;
         }
-        return null;  // Authentication failed
+        return null; // Authentication failed
     }
 }

@@ -15,6 +15,10 @@ public class StaffList {
         loadStaffFromFile();
     }
 
+    /**
+     * @param filePath
+     * @return StaffList
+     */
     // Singleton access method
     public static StaffList getInstance(String filePath) {
         if (instance == null) {
@@ -87,7 +91,8 @@ public class StaffList {
                             staffMember = new Doctor(staffID, name, password, gender, contactEmail, contactNumber, age);
                             break;
                         case "pharmacist":
-                            staffMember = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber, age);
+                            staffMember = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber,
+                                    age);
                             break;
                         case "administrator":
                             staffMember = new Admin(staffID, name, password, gender, contactEmail, contactNumber, age);
@@ -104,7 +109,6 @@ public class StaffList {
             System.err.println("Error loading staff data: " + e.getMessage());
         }
     }
-
 
     // Write staff data to file
     public void writeStaffToFile() {

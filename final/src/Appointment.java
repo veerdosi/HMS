@@ -12,7 +12,6 @@ public class Appointment {
     private TypeOfService typeOfService;
     private List<Prescription> prescriptions;
 
-
     // Constructor
     public Appointment(String id, String patientID, String doctorID, LocalDateTime dateTime) {
         this.id = id;
@@ -23,6 +22,9 @@ public class Appointment {
         this.prescriptions = new ArrayList<>();
     }
 
+    /**
+     * @return String
+     */
     // Getters
     public String getId() {
         return id;
@@ -71,8 +73,10 @@ public class Appointment {
         this.typeOfService = typeOfService;
     }
 
-    //Setter for Date & Time
-    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
+    // Setter for Date & Time
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     // Method to add a prescription
     public void addPrescription(Prescription prescription) {

@@ -25,6 +25,9 @@ public class HMSUserApp {
         medicineInventory = MedicineInventory.getInstance(medicineFilePath);
     }
 
+    /**
+     * @return HMSUserApp
+     */
     // Public method to provide access to the single instance
     public static HMSUserApp getInstance() {
         if (instance == null) {

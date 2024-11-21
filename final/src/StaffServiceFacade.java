@@ -4,8 +4,12 @@ public class StaffServiceFacade {
     private static StaffServiceFacade instance;
 
     // Private constructor to enforce Singleton
-    private StaffServiceFacade() {}
+    private StaffServiceFacade() {
+    }
 
+    /**
+     * @return StaffServiceFacade
+     */
     // Singleton access method
     public static StaffServiceFacade getInstance() {
         if (instance == null) {
@@ -79,7 +83,6 @@ public class StaffServiceFacade {
                     staff.getContactNumber());
         }
     }
-
 
     public void displayAllStaff() {
         List<User> allStaff = StaffList.getInstance(null).getStaff();

@@ -12,6 +12,9 @@ public class UpdateMedicalRecordRequest {
         this.prescription = prescription;
     }
 
+    /**
+     * @return Patient
+     */
     public Patient getPatient() {
         return patient;
     }
