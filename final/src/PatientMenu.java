@@ -14,13 +14,13 @@ public class PatientMenu {
         this.patient = patient;
         this.scanner = sharedScanner;
         this.facade = AppointmentServiceFacade.getInstance("/Data/Patient_List(Sheet1).csv",
-                "/Data/Staff_List(Sheet1).csv");
+                                                            "/Data/Staff_List(Sheet1).csv");
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
     public boolean displayMenu() {
+        scanner = new Scanner(System.in);
         while (true) {
-            try {
                 System.out.println("---- Patient Menu ----");
                 System.out.println("1. View Medical Record");
                 System.out.println("2. Update Personal Information");
@@ -32,28 +32,39 @@ public class PatientMenu {
                 System.out.println("8. View Past Appointment Outcome Records");
                 System.out.println("9. Logout");
 
-                int choice = InputHandler.getIntInput(1, 9);
+                int choice = scanner.nextInt();
 
                 switch (choice) {
-                    case 1 -> viewMedicalRecord();
-                    case 2 -> updatePersonalInformation();
-                    case 3 -> viewAvailableAppointments();
-                    case 4 -> scheduleAppointment();
-                    case 5 -> rescheduleAppointment();
-                    case 6 -> cancelAppointment();
-                    case 7 -> viewScheduledAppointments();
-                    case 8 -> viewPastAppointmentOutcomes();
-                    case 9 -> {
+                    case 1: 
+                        viewMedicalRecord();
+                        break;
+                    case 2:
+                        updatePersonalInformation();
+                        break;
+                    case 3:
+                        viewAvailableAppointments();
+                        break;
+                    case 4:
+                        scheduleAppointment();
+                        break;
+                    case 5:
+                        rescheduleAppointment();
+                        break;
+                    case 6: 
+                        cancelAppointment();
+                        break;
+                    case 7:
+                        viewScheduledAppointments();
+                        break;
+                    case 8: 
+                        viewPastAppointmentOutcomes();
+                        break;
+                    case 9: 
                         System.out.println("Logging out...");
                         return false;
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear the buffer
-            }
         }
-    }
 
     private void updatePersonalInformation() {
         while (true) {
