@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +109,35 @@ public class Doctor extends User {
             availabilityRepository.setDoctorAvailability(getUserID(), availability);
         }
     }
+
+    public boolean freeSlot(LocalTime time) {
+        int index = getSlotIndexForTime(time);
+        if (index != -1) {
+            availability.get(index).setAvailable(true);
+            return true;
+        }
+        return false; // Slot not found
+    }
+    
+    public boolean bookSlot(LocalTime time) {
+        int index = getSlotIndexForTime(time);
+        if (index != -1 && availability.get(index).isAvailable()) {
+            availability.get(index).setAvailable(false);
+            return true;
+        }
+        return false; // Slot not available or not found
+    }
+    
+    // Private method to get slot index for a specific time
+    private int getSlotIndexForTime(LocalTime time) {
+        for (int i = 0; i < availability.size(); i++) {
+            if (availability.get(i).getStartTime().equals(time)) {
+                return i;
+            }
+        }
+        return -1; // No matching slot
+    }
+    
 
     // Override toString for debugging
     @Override

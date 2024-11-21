@@ -79,25 +79,40 @@ public void cancelAppointment(String appointmentId) {
     // Method to reschedule an existing appointment
     public boolean rescheduleAppointment(String appointmentID, LocalDateTime newDateTime) {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentID);
+    
         if (appointment != null) {
+            // Fetch the doctor for this appointment
             Doctor doctor = doctorService.getDoctorById(appointment.getDoctorID());
-            /*
-            //THIS PART NEEDS TO DIRECTLY EDIT THAT TIMESLOT TO MAKE IT AVALIABLE AND MAKE THE NEW ONE UNAVAILABLE
-            // Assuming we have a method in Doctor to check availability for a new date/time
-            if (doctor.isAvailable(newDateTime)) {
-                appointment.setDateTime(newDateTime);  // Update the date and time
+    
+            // Check if the doctor is available at the new time
+            if (doctor != null && doctor.isAvailable(newDateTime)) {
+                // Free the old time slot
+                LocalDateTime oldDateTime = appointment.getDateTime();
+                if (!doctor.freeSlot(oldDateTime.toLocalTime())) {
+                    System.out.println("Failed to free old time slot.");
+                    return false;
+                }
+    
+                // Book the new time slot
+                if (!doctor.bookSlot(newDateTime.toLocalTime())) {
+                    System.out.println("Failed to book the new time slot.");
+                    return false;
+                }
+    
+                // Update the appointment date and time
+                appointment.setDateTime(newDateTime);
                 System.out.println("Appointment rescheduled to " + newDateTime);
                 return true;
             } else {
                 System.out.println("The doctor is not available at the requested time.");
                 return false;
-            } */
-            return true; // returning for the sake of running program - delete after compiling
+            }
         } else {
             System.out.println("Appointment not found for ID: " + appointmentID);
             return false;
         }
     }
+    
 
     // New method to retrieve an appointment by its ID
     public Appointment getAppointmentById(String appointmentId) {
