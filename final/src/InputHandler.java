@@ -1,26 +1,47 @@
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class InputHandler {
     private static Scanner scanner = new Scanner(System.in);
 
     /**
-     * Gets integer input within a range
+     * Gets the shared Scanner instance.
      * 
-     * @param min minimum value allowed
-     * @param max maximum value allowed
-     * @return validated integer input
+     * @return the shared Scanner
+     */
+    public static Scanner getScanner() {
+        return scanner;
+    }
+
+    /**
+     * Closes the shared Scanner instance. This should only be called once, typically
+     * at the end of the program.
+     */
+    public static void closeScanner() {
+        if (scanner != null) {
+            scanner.close();
+        }
+    }
+
+    /**
+     * Gets an integer input from the user within a specified range.
+     * 
+     * @param min Minimum value allowed
+     * @param max Maximum value allowed
+     * @return A validated integer input
      */
     public static int getIntInput(int min, int max) {
         return getIntInput("Enter your choice: ", min, max);
     }
 
     /**
-     * Gets integer input within a range with a custom prompt
+     * Gets an integer input from the user within a specified range with a custom
+     * prompt.
      * 
-     * @param prompt message to display to user
-     * @param min    minimum value allowed
-     * @param max    maximum value allowed
-     * @return validated integer input
+     * @param prompt Message to display to the user
+     * @param min    Minimum value allowed
+     * @param max    Maximum value allowed
+     * @return A validated integer input
      */
     public static int getIntInput(String prompt, int min, int max) {
         while (true) {
@@ -44,10 +65,11 @@ public class InputHandler {
     }
 
     /**
-     * Gets string input with validation
+     * Gets a string input from the user with a prompt. Ensures the input is not
+     * empty.
      * 
-     * @param prompt message to display to user
-     * @return validated string input
+     * @param prompt Message to display to the user
+     * @return A non-empty string input
      */
     public static String getStringInput(String prompt) {
         while (true) {
@@ -61,15 +83,14 @@ public class InputHandler {
     }
 
     /**
-     * Gets string input with custom validation
+     * Gets a string input with a custom validator.
      * 
-     * @param prompt       message to display to user
-     * @param validator    function to validate input
-     * @param errorMessage message to display on validation failure
-     * @return validated string input
+     * @param prompt       Message to display to the user
+     * @param validator    A function to validate the input
+     * @param errorMessage Message to display when validation fails
+     * @return A validated string input
      */
-    public static String getStringInput(String prompt, java.util.function.Predicate<String> validator,
-            String errorMessage) {
+    public static String getStringInput(String prompt, Predicate<String> validator, String errorMessage) {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
@@ -81,9 +102,9 @@ public class InputHandler {
     }
 
     /**
-     * Gets yes/no input from user
+     * Gets a yes/no input from the user.
      * 
-     * @param prompt message to display to user
+     * @param prompt Message to display to the user
      * @return true for yes, false for no
      */
     public static boolean getYesNoInput(String prompt) {
@@ -94,23 +115,7 @@ public class InputHandler {
             } else if (input.equals("no") || input.equals("n")) {
                 return false;
             }
-            System.out.println("Please enter 'yes' or 'no'");
+            System.out.println("Please enter 'yes' or 'no'.");
         }
-    }
-
-    /**
-     * Gets the scanner instance
-     * 
-     * @return the scanner being used by InputHandler
-     */
-    public static Scanner getScanner() {
-        return scanner;
-    }
-
-    /**
-     * Closes the scanner
-     */
-    public static void closeScanner() {
-        scanner.close();
     }
 }

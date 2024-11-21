@@ -5,7 +5,6 @@ public class HMSUserApp {
     private AuthenticationService authService;
     private AppointmentServiceFacade facade;
     private MedicineInventory medicineInventory;
-    private Scanner scanner;
     private boolean running;
 
     private HMSUserApp() {
@@ -114,7 +113,7 @@ public class HMSUserApp {
             System.out.println("Fatal error occurred: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            InputHandler.getScanner().close();
+            InputHandler.closeScanner();
         }
     }
 }

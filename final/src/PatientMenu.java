@@ -9,86 +9,85 @@ public class PatientMenu {
 
     public PatientMenu(Patient patient) {
         this.patient = patient;
-        this.facade = AppointmentServiceFacade.getInstance(null,null);
+        this.facade = AppointmentServiceFacade.getInstance(null, null);
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
     public boolean displayMenu() {
         while (true) {
-                System.out.println("---- Patient Menu ----");
-                System.out.println("1. View Medical Record");
-                System.out.println("2. Update Personal Information");
-                System.out.println("3. View Available Appointment Slots");
-                System.out.println("4. Schedule Appointment");
-                System.out.println("5. Reschedule Appointment");
-                System.out.println("6. Cancel an Appointment");
-                System.out.println("7. View Scheduled Appointments");
-                System.out.println("8. View Past Appointment Outcome Records");
-                System.out.println("9. Logout");
+            System.out.println("---- Patient Menu ----");
+            System.out.println("1. View Medical Record");
+            System.out.println("2. Update Personal Information");
+            System.out.println("3. View Available Appointment Slots");
+            System.out.println("4. Schedule Appointment");
+            System.out.println("5. Reschedule Appointment");
+            System.out.println("6. Cancel an Appointment");
+            System.out.println("7. View Scheduled Appointments");
+            System.out.println("8. View Past Appointment Outcome Records");
+            System.out.println("9. Logout");
 
-                int choice = Helper.readInt("Enter menu option");
+            int choice = InputHandler.getIntInput(1, 9);
 
-                switch (choice) {
-                    case 1: 
-                        viewMedicalRecord();
-                        break;
-                    case 2:
-                        updatePersonalInformation();
-                        break;
-                    case 3:
-                        viewAvailableAppointments();
-                        break;
-                    case 4:
-                        scheduleAppointment();
-                        break;
-                    case 5:
-                        rescheduleAppointment();
-                        break;
-                    case 6: 
-                        cancelAppointment();
-                        break;
-                    case 7:
-                        viewScheduledAppointments();
-                        break;
-                    case 8: 
-                        viewPastAppointmentOutcomes();
-                        break;
-                    case 9: 
-                        System.out.println("Logging out...");
-                        return false;
-                    }
-                }
-        }
-
-        private void updatePersonalInformation() {
-   
-            while (true) {
-                System.out.println("---- Update Personal Information ----");
-                System.out.println("1. Update Contact Number");
-                System.out.println("2. Update Email Address");
-                System.out.println("3. Update Both");
-                System.out.println("4. Back to Main Menu");
-                System.out.print("Enter your choice: ");
-                int option = Helper.readInt("Enter sub-menu option:");
-    
-                switch (option) {
-                    case 1:
-                        updateContactNumber();
-                        break;
-                    case 2:
-                        updateEmailAddress();
-                        break;
-                    case 3:
-                        updateBothContactInfo();
-                        break;
-                    case 4:
-                        System.out.println("Returning to main menu...");
-                        return; // Exit the submenu
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
+            switch (choice) {
+                case 1:
+                    viewMedicalRecord();
+                    break;
+                case 2:
+                    updatePersonalInformation();
+                    break;
+                case 3:
+                    viewAvailableAppointments();
+                    break;
+                case 4:
+                    scheduleAppointment();
+                    break;
+                case 5:
+                    rescheduleAppointment();
+                    break;
+                case 6:
+                    cancelAppointment();
+                    break;
+                case 7:
+                    viewScheduledAppointments();
+                    break;
+                case 8:
+                    viewPastAppointmentOutcomes();
+                    break;
+                case 9:
+                    System.out.println("Logging out...");
+                    return false;
             }
         }
+    }
+
+    private void updatePersonalInformation() {
+        while (true) {
+            System.out.println("---- Update Personal Information ----");
+            System.out.println("1. Update Contact Number");
+            System.out.println("2. Update Email Address");
+            System.out.println("3. Update Both");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Enter your choice: ");
+            int option = InputHandler.getIntInput(1, 4);
+
+            switch (option) {
+                case 1:
+                    updateContactNumber();
+                    break;
+                case 2:
+                    updateEmailAddress();
+                    break;
+                case 3:
+                    updateBothContactInfo();
+                    break;
+                case 4:
+                    System.out.println("Returning to main menu...");
+                    return; // Exit the submenu
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
 
     private boolean validateContactNumber(String contactNumber) {
         String regex = "^[0-9]{8}$";
@@ -101,7 +100,7 @@ public class PatientMenu {
     }
 
     private void updateContactNumber() {
-        String newContact = Helper.readString("Enter new contact number (8 digits): ");
+        String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
         if (validateContactNumber(newContact)) {
             patient.updateContactNumber(newContact);
             System.out.println("Contact number updated successfully.");
@@ -111,7 +110,7 @@ public class PatientMenu {
     }
 
     private void updateEmailAddress() {
-        String newEmail = Helper.readString("Enter new email address: ");
+        String newEmail = InputHandler.getStringInput("Enter new email address: ");
         if (validateEmailAddress(newEmail)) {
             patient.updateEmailAddress(newEmail);
             System.out.println("Email address updated successfully.");
@@ -121,8 +120,8 @@ public class PatientMenu {
     }
 
     private void updateBothContactInfo() {
-        String newContact = Helper.readString("Enter new contact number (8 digits): ");
-        String newEmail = Helper.readString("Enter new email address: ");
+        String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
+        String newEmail = InputHandler.getStringInput("Enter new email address: ");
 
         boolean isContactValid = validateContactNumber(newContact);
         boolean isEmailValid = validateEmailAddress(newEmail);
@@ -138,7 +137,6 @@ public class PatientMenu {
         }
     }
 
-    // Rest of the methods remain unchanged from your original code
     private void viewMedicalRecord() {
         System.out.println("Fetching Medical Record...");
         MedicalRecord record = patient.viewMedicalRecord(patient);
@@ -155,10 +153,9 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
-        String doctorId = Helper.readString("Enter Doctor ID: ");
-
-        String dateStr = Helper.readString("Enter Appointment Date (dd-MM-yyyy): ");
-        int hour = Helper.readInt("Enter Appointment Hour (9-16): ");
+        String doctorId = InputHandler.getStringInput("Enter Doctor ID: ");
+        String dateStr = InputHandler.getStringInput("Enter Appointment Date (dd-MM-yyyy): ");
+        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
 
         LocalDateTime dateTime = Helper.parseDateAndHour(dateStr, hour);
         if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
@@ -171,10 +168,9 @@ public class PatientMenu {
     }
 
     private void rescheduleAppointment() {
-        String appointmentId = Helper.readString("Enter Appointment ID to Reschedule: ");
-
-        String dateStr = Helper.readString("Enter New Appointment Date (dd-MM-yyyy): ");
-        int hour = Helper.readInt("Enter Appointment Hour (9-16): ");
+        String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Reschedule: ");
+        String dateStr = InputHandler.getStringInput("Enter New Appointment Date (dd-MM-yyyy): ");
+        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
 
         LocalDateTime newDateTime = Helper.parseDateAndHour(dateStr, hour);
         if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
@@ -185,7 +181,7 @@ public class PatientMenu {
     }
 
     private void cancelAppointment() {
-       String appointmentId = Helper.readString("Enter Appointment ID to Cancel: ");
+        String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Cancel: ");
         facade.cancelAppointment(appointmentId);
         System.out.println("Appointment canceled successfully.");
     }
