@@ -18,10 +18,7 @@ public class AppointmentService {
     }
 
     public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
-        Doctor doctor = doctorService.getDoctorById(doctorId);
         Appointment appointment = new Appointment(generateAppointmentID(), patient.getUserID(), doctorId, dateTime);
-       //addappointment in doctor class is NOT being implemented because doctors can directly access their appointments through appointment outcome records
-        // doctor.addAppointment(appointment);
         outcomeRecord.addOutcome(appointment);
         System.out.println("Appointment scheduled.");
     }
