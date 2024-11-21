@@ -44,7 +44,7 @@ public class PatientMenu {
             System.out.println("0. Logout");
             System.out.println("");
 
-            int choice = InputHandler.getIntInput(1, 10);
+            int choice = InputHandler.getIntInput(0, 9);
 
             switch (choice) {
                 case 1:
