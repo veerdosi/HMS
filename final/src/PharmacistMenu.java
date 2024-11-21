@@ -3,6 +3,7 @@ import java.util.Scanner;
 public class PharmacistMenu {
     private Pharmacist pharmacist;
     private Scanner scanner;
+    AppointmentOutcomeRecord outcomeRecord = AppointmentOutcomeRecord.getInstance();
 
     // Constructor
     public PharmacistMenu(Pharmacist pharmacist) {
@@ -72,7 +73,7 @@ public class PharmacistMenu {
     private void viewAppointmentOutcome() {
         String appointmentID = readStringInput("Enter Appointment ID: ");
         if (validateInput(appointmentID)) {
-            pharmacist.viewAppointmentOutcome(appointmentID);
+            outcomeRecord.getAppointmentById(appointmentID);
         } else {
             System.out.println("Invalid Appointment ID. Please try again.");
         }
@@ -130,14 +131,16 @@ public class PharmacistMenu {
         return input != null && !input.trim().isEmpty();
     }
 
-    private boolean validateEnumInput(String input, Class<? extends Enum<?>> enumClass) {
-        try {
-            Enum.valueOf(enumClass, input.toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+private <T extends Enum<T>> boolean validateEnumInput(String input, Class<T> enumClass) {
+    try {
+        // Try to convert the input to an enum constant
+        Enum.valueOf(enumClass, input.toUpperCase());
+        return true; // Input is valid
+    } catch (IllegalArgumentException | NullPointerException e) {
+        return false; // Input is not valid
     }
+}
+
 
     private String readStringInput(String prompt) {
         System.out.print(prompt);
