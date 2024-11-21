@@ -9,11 +9,9 @@ public class PatientMenu {
     private AppointmentServiceFacade facade;
     private AppointmentOutcomeRecord outcomeRecord;
 
-    public PatientMenu(Patient patient, Scanner sharedScanner) {
+    public PatientMenu(Patient patient) {
         this.patient = patient;
-        this.scanner = sharedScanner;
-        this.facade = AppointmentServiceFacade.getInstance("/Data/Patient_List(Sheet1).csv",
-                                                            "/Data/Staff_List(Sheet1).csv");
+        this.facade = AppointmentServiceFacade.getInstance(null,null);
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 

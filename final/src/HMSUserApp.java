@@ -84,7 +84,7 @@ public class HMSUserApp {
                     break;
 
                 case PATIENT:
-                    PatientMenu patientMenu = new PatientMenu((Patient) user, InputHandler.getScanner());
+                    PatientMenu patientMenu = new PatientMenu((Patient) user);
                     keepRunning = patientMenu.displayMenu();
                     break;
 
