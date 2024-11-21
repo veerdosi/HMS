@@ -143,19 +143,15 @@ public class User implements IPasswordUpdate {
  * @param passString The password to authenticate.
  * @return `true` if authentication is successful, `false` otherwise.
  */
-public boolean authenticatePassword(String passString) {
-    // Check if the provided password matches the current password
-    if (this.password.equals(passString)) {
-        // If the current password is the default password, prompt for a password reset
-        if (this.password.equals(DEFAULT_PASSWORD)) {
-            System.out.println("");
-            System.out.println("First Login: Please reset your password!\n");
-            String newPass = InputHandler.getStringInput("New Password: ");
-            changePassword(passString, newPass);
+public boolean authenticatePassword(String password) {
+    if (this.password.equals(password)){
+        if(password.equals(DEFAULT_PASSWORD)){
+        System.out.println("");
+        System.out.println("First Login: Please reset your password!\n");
+        String newPass = InputHandler.getStringInput("New Password: ");
+        changePassword(password, newPass);
         }
-        
     }
-    // Authentication outcome
     return this.password.equals(password);
 }
 
