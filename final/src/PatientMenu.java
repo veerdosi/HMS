@@ -9,7 +9,6 @@ public class PatientMenu {
     private AppointmentServiceFacade facade;
     private AppointmentOutcomeRecord outcomeRecord;
 
-    // Constructor
     public PatientMenu(Patient patient, Scanner sharedScanner) {
         this.patient = patient;
         this.scanner = sharedScanner;
@@ -19,39 +18,55 @@ public class PatientMenu {
     }
 
     public boolean displayMenu() {
-        while (true) {
-            try {
-                System.out.println("---- Patient Menu ----");
-                System.out.println("1. View Medical Record");
-                System.out.println("2. Update Personal Information");
-                System.out.println("3. View Available Appointment Slots");
-                System.out.println("4. Schedule Appointment");
-                System.out.println("5. Reschedule Appointment");
-                System.out.println("6. Cancel an Appointment");
-                System.out.println("7. View Scheduled Appointments");
-                System.out.println("8. View Past Appointment Outcome Records");
-                System.out.println("9. Logout");
+        System.out.println("\n---- Patient Menu ----");
+        System.out.println("1. View Medical Record");
+        System.out.println("2. Update Personal Information");
+        System.out.println("3. View Available Appointment Slots");
+        System.out.println("4. Schedule Appointment");
+        System.out.println("5. Reschedule Appointment");
+        System.out.println("6. Cancel an Appointment");
+        System.out.println("7. View Scheduled Appointments");
+        System.out.println("8. View Past Appointment Outcome Records");
+        System.out.println("9. Logout");
 
-                int choice = InputHandler.getIntInput(1, 9);
+        try {
+            int choice = InputHandler.getIntInput(1, 9);
 
-                switch (choice) {
-                    case 1 -> viewMedicalRecord();
-                    case 2 -> updatePersonalInformation();
-                    case 3 -> viewAvailableAppointments();
-                    case 4 -> scheduleAppointment();
-                    case 5 -> rescheduleAppointment();
-                    case 6 -> cancelAppointment();
-                    case 7 -> viewScheduledAppointments();
-                    case 8 -> viewPastAppointmentOutcomes();
-                    case 9 -> {
-                        System.out.println("Logging out...");
-                        return false;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear the buffer
+            switch (choice) {
+                case 1:
+                    viewMedicalRecord();
+                    return true;
+                case 2:
+                    updatePersonalInformation();
+                    return true;
+                case 3:
+                    viewAvailableAppointments();
+                    return true;
+                case 4:
+                    scheduleAppointment();
+                    return true;
+                case 5:
+                    rescheduleAppointment();
+                    return true;
+                case 6:
+                    cancelAppointment();
+                    return true;
+                case 7:
+                    viewScheduledAppointments();
+                    return true;
+                case 8:
+                    viewPastAppointmentOutcomes();
+                    return true;
+                case 9:
+                    System.out.println("Logging out...");
+                    return false;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    return true;
             }
+        } catch (Exception e) {
+            System.out.println("An error occurred. Please try again.");
+            return true;
         }
     }
 
