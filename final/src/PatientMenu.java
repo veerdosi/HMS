@@ -14,68 +14,69 @@ public class PatientMenu {
     }
 
     public boolean displayMenu() {
-        scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
+    
         while (true) {
-            try {
-                System.out.println("---- Patient Menu ----");
-                System.out.println("1. View Medical Record");
-                System.out.println("2. Update Personal Information");
-                System.out.println("3. View Available Appointment Slots");
-                System.out.println("4. Schedule Appointment");
-                System.out.println("5. Reschedule Appointment");
-                System.out.println("6. Cancel an Appointment");
-                System.out.println("7. View Scheduled Appointments");
-                System.out.println("8. View Past Appointment Outcome Records");
-                System.out.println("9. Logout");
-                System.out.print("Enter your choice: ");
+            System.out.println("---- Patient Menu ----");
+            System.out.println("1. View Medical Record");
+            System.out.println("2. Update Personal Information");
+            System.out.println("3. View Available Appointment Slots");
+            System.out.println("4. Schedule Appointment");
+            System.out.println("5. Reschedule Appointment");
+            System.out.println("6. Cancel an Appointment");
+            System.out.println("7. View Scheduled Appointments");
+            System.out.println("8. View Past Appointment Outcome Records");
+            System.out.println("9. Logout");
+            System.out.print("Enter your choice: ");
     
-                // Validate input
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number between 1 and 9.");
-                    scanner.next(); // Consume the invalid input
-                    continue;
-                }
-    
-                int choice = scanner.nextInt();
-    
-                switch (choice) {
-                    case 1:
-                        viewMedicalRecord();
-                        break;
-                    case 2:
-                        updatePersonalInformation();
-                        break;
-                    case 3:
-                        viewAvailableAppointments();
-                        break;
-                    case 4:
-                        scheduleAppointment();
-                        break;
-                    case 5:
-                        rescheduleAppointment();
-                        break;
-                    case 6:
-                        cancelAppointment();
-                        break;
-                    case 7:
-                        viewScheduledAppointments();
-                        break;
-                    case 8:
-                        viewPastAppointmentOutcomes();
-                        break;
-                    case 9:
-                        System.out.println("Logging out...");
-                        return false; // Ends the loop and method
-                    default:
-                        System.out.println("Invalid choice. Please enter a number between 1 and 9.");
-                }
-                
-            } catch (Exception e) {
-                System.out.println("An error occurred. Please try again.");
+            // Validate input
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number between 1 and 9.");
                 scanner.next(); // Consume the invalid input
+                continue; // Repeat the menu prompt
+            }
+    
+            int choice = scanner.nextInt();
+    
+            // Validate the range of the choice
+            if (choice < 1 || choice > 9) {
+                System.out.println("Invalid choice. Please enter a number between 1 and 9.");
+                continue; // Repeat the menu prompt
+            }
+    
+            // Handle valid choices
+            switch (choice) {
+                case 1:
+                    viewMedicalRecord();
+                    break;
+                case 2:
+                    updatePersonalInformation();
+                    break;
+                case 3:
+                    viewAvailableAppointments();
+                    break;
+                case 4:
+                    scheduleAppointment();
+                    break;
+                case 5:
+                    rescheduleAppointment();
+                    break;
+                case 6:
+                    cancelAppointment();
+                    break;
+                case 7:
+                    viewScheduledAppointments();
+                    break;
+                case 8:
+                    viewPastAppointmentOutcomes();
+                    break;
+                case 9:
+                    System.out.println("Logging out...");
+                    return false; // Exit the menu
             }
         }
     }
+    
     
     //CASE 1: View Medical Record////////////////////////////////////////////////////////////////////////
     private void viewMedicalRecord() {

@@ -13,64 +13,64 @@ public class DoctorMenu {
     // Display menu and handle interactions
     public boolean displayMenu() {
         Scanner scanner = new Scanner(System.in);
-
+    
         while (true) {
-            try {
-                System.out.println("\n--- Doctor Menu ---");
-                System.out.println("1. View Schedule");
-                System.out.println("2. Set Availability");
-                System.out.println("3. View Available Slots");
-                System.out.println("4. Accept Appointment");
-                System.out.println("5. Decline Appointment");
-                System.out.println("6. Add Consultation Notes");
-                System.out.println("7. Add Prescription");
-                System.out.println("8. Log Out");
-                System.out.print("Enter your choice: ");
-
-                // Validate input
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number between 1 and 8.");
-                    scanner.next(); // Consume invalid input
-                    continue;
-                }
-
-                int choice = scanner.nextInt();
-
-                switch (choice) {
-                    case 1:
-                        doctor.viewSchedule();
-                        break;
-                    case 2:
-                        setAvailability(scanner);
-                        break;
-                    case 3:
-                        viewAvailableSlots();
-                        break;
-                    case 4:
-                        acceptAppointment(scanner);
-                        break;
-                    case 5:
-                        declineAppointment(scanner);
-                        break;
-                    case 6:
-                        addConsultationNotes(scanner);
-                        break;
-                    case 7:
-                        addPrescription(scanner);
-                        break;
-                    case 8:
-                        System.out.println("Logging Out...");
-                        return false; // Exit the menu
-                    default:
-                        System.out.println("Invalid choice. Please enter a number between 1 and 8.");
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred. Please try again.");
-                scanner.next(); // Consume invalid input to avoid infinite loops
+            System.out.println("\n--- Doctor Menu ---");
+            System.out.println("1. View Schedule");
+            System.out.println("2. Set Availability");
+            System.out.println("3. View Available Slots");
+            System.out.println("4. Accept Appointment");
+            System.out.println("5. Decline Appointment");
+            System.out.println("6. Add Consultation Notes");
+            System.out.println("7. Add Prescription");
+            System.out.println("8. Log Out");
+            System.out.print("Enter your choice: ");
+    
+            // Validate input
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number between 1 and 8.");
+                scanner.next(); // Consume invalid input
+                continue; // Repeat the menu prompt
+            }
+    
+            int choice = scanner.nextInt();
+    
+            // Process the valid input
+            if (choice < 1 || choice > 8) {
+                System.out.println("Invalid choice. Please enter a number between 1 and 8.");
+                continue; // Repeat the menu prompt
+            }
+    
+            // Handle valid choices
+            switch (choice) {
+                case 1:
+                    doctor.viewSchedule();
+                    break;
+                case 2:
+                    setAvailability(scanner);
+                    break;
+                case 3:
+                    viewAvailableSlots();
+                    break;
+                case 4:
+                    acceptAppointment(scanner);
+                    break;
+                case 5:
+                    declineAppointment(scanner);
+                    break;
+                case 6:
+                    addConsultationNotes(scanner);
+                    break;
+                case 7:
+                    addPrescription(scanner);
+                    break;
+                case 8:
+                    System.out.println("Logging Out...");
+                    return false; // Exit the menu
             }
         }
     }
-
+    
     // Set Availability
     private void setAvailability(Scanner scanner) {
         System.out.println("\n--- Set Availability ---");
