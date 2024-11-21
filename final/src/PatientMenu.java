@@ -8,69 +8,74 @@ public class PatientMenu {
     AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance("/Data/Patient_List(Sheet1).csv", "/Data/Staff_List(Sheet1).csv");   
     AppointmentOutcomeRecord outcomeRecord = AppointmentOutcomeRecord.getInstance();
 
-    public PatientMenu(Patient patient, AppointmentServiceFacade facade) {
+    public PatientMenu(Patient patient) {
         this.patient = patient;
-        //this.facade = facade;
     }
 
-    public boolean display() {
+    public boolean displayMenu() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("---- Patient Menu ----");
-            System.out.println("1. View Medical Record");
-            System.out.println("2. Update Personal Information");
-            System.out.println("3. View Available Appointment Slots");
-            System.out.println("4. Schedule Appointment");
-            System.out.println("5. Reschedule Appointment");
-            System.out.println("6. Cancel an Appointment");
-            System.out.println("7. View Scheduled Appointments");
-            System.out.println("8. View Past Appointment Outcome Records");
-            System.out.println("9. Logout");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    viewMedicalRecord();
-
-                    break;
-                case 2:
-                    updatePersonalInformation();
-
-                    break;
-                case 3:
-                    viewAvailableAppointments();
-                    
-                    break;
-                case 4:
-                    scheduleAppointment();
-                    
-                    break;
-                case 5:
-                    rescheduleAppointment();
-
-                    break;
-                case 6:
-                    cancelAppointment();
-                    //Set appointment status to cancelled
-                    //
-                    break;
-                case 7:
-                    viewScheduledAppointments();
-
-                    break;
-                case 8:
-                    viewPastAppointmentOutcomes();
-
-                    break;
-                case 9:
-                    System.out.println("Logging out...");
-                    return false; // Return false to signal logout
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+            try {
+                System.out.println("---- Patient Menu ----");
+                System.out.println("1. View Medical Record");
+                System.out.println("2. Update Personal Information");
+                System.out.println("3. View Available Appointment Slots");
+                System.out.println("4. Schedule Appointment");
+                System.out.println("5. Reschedule Appointment");
+                System.out.println("6. Cancel an Appointment");
+                System.out.println("7. View Scheduled Appointments");
+                System.out.println("8. View Past Appointment Outcome Records");
+                System.out.println("9. Logout");
+                System.out.print("Enter your choice: ");
+    
+                // Validate input
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 9.");
+                    scanner.next(); // Consume the invalid input
+                    continue;
+                }
+    
+                int choice = scanner.nextInt();
+    
+                switch (choice) {
+                    case 1:
+                        viewMedicalRecord();
+                        break;
+                    case 2:
+                        updatePersonalInformation();
+                        break;
+                    case 3:
+                        viewAvailableAppointments();
+                        break;
+                    case 4:
+                        scheduleAppointment();
+                        break;
+                    case 5:
+                        rescheduleAppointment();
+                        break;
+                    case 6:
+                        cancelAppointment();
+                        break;
+                    case 7:
+                        viewScheduledAppointments();
+                        break;
+                    case 8:
+                        viewPastAppointmentOutcomes();
+                        break;
+                    case 9:
+                        System.out.println("Logging out...");
+                        return false; // Ends the loop and method
+                    default:
+                        System.out.println("Invalid choice. Please enter a number between 1 and 9.");
+                }
+                
+            } catch (Exception e) {
+                System.out.println("An error occurred. Please try again.");
+                scanner.next(); // Consume the invalid input
             }
         }
     }
+    
     //CASE 1: View Medical Record////////////////////////////////////////////////////////////////////////
     private void viewMedicalRecord() {
         // Implement view medical record

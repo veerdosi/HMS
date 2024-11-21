@@ -16,10 +16,6 @@ public class AuthenticationService {
         loadStaff();
     }
 
-    /**
-     * Load patient data from Patient_List CSV file and populate users map.
-     */
-
     private void loadPatients() {
         try (BufferedReader br = new BufferedReader(new FileReader(PATIENT_FILE_PATH))) {
             String line;

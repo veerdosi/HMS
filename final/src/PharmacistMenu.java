@@ -11,7 +11,7 @@ public class PharmacistMenu {
     }
 
     // Display Pharmacist Menu
-    public void displayMenu() {
+    public boolean displayMenu() {
         int choice = -1;
         while (choice != 5) {
             System.out.println("\nPharmacist Menu:");
@@ -21,14 +21,17 @@ public class PharmacistMenu {
             System.out.println("4. Submit Replenishment Request");
             System.out.println("5. Logout");
             System.out.print("Please select an option: ");
-
+    
             choice = readMenuChoice();
-            processChoice(choice);
+            if (!processChoice(choice)) {
+                return false; // Exit if processChoice signals to stop
+            }
         }
+        return true; // Return true to indicate successful execution
     }
-
-    // Process menu choices
-    private void processChoice(int choice) {
+    
+    // Process menu choices and return boolean
+    private boolean processChoice(int choice) {
         switch (choice) {
             case 1:
                 viewAppointmentOutcome();
@@ -44,11 +47,26 @@ public class PharmacistMenu {
                 break;
             case 5:
                 System.out.println("Logging out...");
-                break;
+                return false; // Signal to exit menu
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
+        return true; // Continue showing menu
     }
+    
+    // Read menu choice (helper method for input validation)
+    private int readMenuChoice() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            if (scanner.hasNextInt()) {
+                return scanner.nextInt();
+            } else {
+                System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                scanner.next(); // Consume invalid input
+            }
+        }
+    }
+    
 
     // View Appointment Outcome Record
     private void viewAppointmentOutcome() {

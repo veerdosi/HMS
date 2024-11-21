@@ -77,11 +77,11 @@ public class HMSUserApp {
             switch (user.getRole()) {
                 case DOCTOR:
                     DoctorMenu doctorMenu = new DoctorMenu((Doctor) user);
-                    loggedIn = doctorMenu.display(); // display() returns false if logout is chosen
+                    loggedIn = doctorMenu.displayMenu(); // display() returns false if logout is chosen
                     break;
                 case PATIENT:
                     PatientMenu patientMenu = new PatientMenu((Patient) user);
-                    loggedIn = patientMenu.display();
+                    loggedIn = patientMenu.displayMenu();
                     break;
                 case ADMIN:
                     AdminMenu adminMenu = new AdminMenu((Admin) user);
@@ -89,7 +89,7 @@ public class HMSUserApp {
                     break;
                 case PHARMACIST:
                     PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user);
-                    loggedIn = pharmacistMenu.display();
+                    loggedIn = pharmacistMenu.displayMenu();
                     break;
                 default:
                     System.out.println("Unknown role.");
