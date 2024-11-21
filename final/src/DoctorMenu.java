@@ -6,9 +6,8 @@ public class DoctorMenu {
     private AppointmentServiceFacade facade; // Use facade for appointment-related operations
 
     // Constructor
-    public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
+    public DoctorMenu(Doctor doctor) {
         this.doctor = doctor;
-        this.facade = facade;
     }
 
     // Display menu and handle interactions
