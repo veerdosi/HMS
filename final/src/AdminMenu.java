@@ -13,31 +13,39 @@ public class AdminMenu {
     }
 
     public boolean display() {
-        while (true) {
-            try {
-                System.out.println("\n---- Admin Menu ----");
-                System.out.println("1. View and Manage Hospital Staff");
-                System.out.println("2. View Appointment Details");
-                System.out.println("3. View and Manage Medication Inventory");
-                System.out.println("4. Approve or Reject Replenishment Requests");
-                System.out.println("5. Logout");
+        System.out.println("\n---- Admin Menu ----");
+        System.out.println("1. View and Manage Hospital Staff");
+        System.out.println("2. View Appointment Details");
+        System.out.println("3. View and Manage Medication Inventory");
+        System.out.println("4. Approve or Reject Replenishment Requests");
+        System.out.println("5. Logout");
 
-                int choice = InputHandler.getIntInput(1, 5);
+        try {
+            int choice = InputHandler.getIntInput(1, 5);
 
-                switch (choice) {
-                    case 1 -> manageHospitalStaff();
-                    case 2 -> viewAppointmentDetails();
-                    case 3 -> manageMedicationInventory();
-                    case 4 -> handleReplenishmentRequests();
-                    case 5 -> {
-                        System.out.println("Logging out from admin menu...");
-                        return false;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                System.out.println("Please try again.");
+            switch (choice) {
+                case 1:
+                    manageHospitalStaff();
+                    return true;
+                case 2:
+                    viewAppointmentDetails();
+                    return true;
+                case 3:
+                    manageMedicationInventory();
+                    return true;
+                case 4:
+                    handleReplenishmentRequests();
+                    return true;
+                case 5:
+                    System.out.println("Logging out...");
+                    return false;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    return true;
             }
+        } catch (Exception e) {
+            System.out.println("An error occurred. Please try again.");
+            return true;
         }
     }
 

@@ -9,7 +9,6 @@ public class PatientMenu {
     private AppointmentServiceFacade facade;
     private AppointmentOutcomeRecord outcomeRecord;
 
-    // Constructor
     public PatientMenu(Patient patient, Scanner sharedScanner) {
         this.patient = patient;
         this.scanner = sharedScanner;

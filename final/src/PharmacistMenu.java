@@ -5,7 +5,6 @@ public class PharmacistMenu {
     private AppointmentOutcomeRecord outcomeRecord;
     private Scanner scanner;
 
-    // Constructor
     public PharmacistMenu(Pharmacist pharmacist, Scanner scanner) {
         this.pharmacist = pharmacist;
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
@@ -13,31 +12,39 @@ public class PharmacistMenu {
     }
 
     public boolean displayMenu() {
-        while (true) {
-            try {
-                System.out.println("\nPharmacist Menu:");
-                System.out.println("1. View Appointment Outcome Record");
-                System.out.println("2. Update Prescription Status");
-                System.out.println("3. View Medication Inventory");
-                System.out.println("4. Submit Replenishment Request");
-                System.out.println("5. Logout");
+        System.out.println("\nPharmacist Menu:");
+        System.out.println("1. View Appointment Outcome Record");
+        System.out.println("2. Update Prescription Status");
+        System.out.println("3. View Medication Inventory");
+        System.out.println("4. Submit Replenishment Request");
+        System.out.println("5. Logout");
 
-                int choice = InputHandler.getIntInput(1, 5);
+        try {
+            int choice = InputHandler.getIntInput(1, 5);
 
-                switch (choice) {
-                    case 1 -> viewAppointmentOutcome();
-                    case 2 -> updatePrescriptionStatus();
-                    case 3 -> viewMedicationInventory();
-                    case 4 -> submitReplenishmentRequest();
-                    case 5 -> {
-                        System.out.println("Logging out...");
-                        return false;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear the buffer
+            switch (choice) {
+                case 1:
+                    viewAppointmentOutcome();
+                    return true;
+                case 2:
+                    updatePrescriptionStatus();
+                    return true;
+                case 3:
+                    viewMedicationInventory();
+                    return true;
+                case 4:
+                    submitReplenishmentRequest();
+                    return true;
+                case 5:
+                    System.out.println("Logging out...");
+                    return false;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    return true;
             }
+        } catch (Exception e) {
+            System.out.println("An error occurred. Please try again.");
+            return true;
         }
     }
 
@@ -87,12 +94,21 @@ public class PharmacistMenu {
             System.out.println("3. CANCELLED");
 
             int statusChoice = InputHandler.getIntInput(1, 3);
-            PrescriptionStatus status = switch (statusChoice) {
-                case 1 -> PrescriptionStatus.PENDING;
-                case 2 -> PrescriptionStatus.DISPENSED;
-                case 3 -> PrescriptionStatus.CANCELLED;
-                default -> throw new IllegalStateException("Unexpected value: " + statusChoice);
-            };
+            PrescriptionStatus status;
+            switch (statusChoice) {
+                case 1:
+                    status = PrescriptionStatus.PENDING;
+                    break;
+                case 2:
+                    status = PrescriptionStatus.DISPENSED;
+                    break;
+                case 3:
+                    status = PrescriptionStatus.CANCELLED;
+                    break;
+                default:
+                    System.out.println("Invalid status choice.");
+                    return;
+            }
 
             pharmacist.updatePrescriptionStatus(prescriptionID, medicineName, status);
             System.out.println("Prescription status updated successfully.");
@@ -130,7 +146,6 @@ public class PharmacistMenu {
         }
     }
 
-    // Helper method to validate input
     private boolean validateInput(String input) {
         return input != null && !input.trim().isEmpty();
     }

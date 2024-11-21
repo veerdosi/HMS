@@ -14,23 +14,23 @@ public class DoctorMenu {
 
     public boolean displayMenu() {
         while (true) {
-            try {
-                System.out.println("\n--- Doctor Menu ---");
-                System.out.println("1. View Schedule");
-                System.out.println("2. Set Availability");
-                System.out.println("3. View Available Slots");
-                System.out.println("4. Accept Appointment");
-                System.out.println("5. Decline Appointment");
-                System.out.println("6. Add Consultation Notes");
-                System.out.println("7. Add Prescription");
-                System.out.println("8. Log Out");
+            System.out.println("\n--- Doctor Menu ---");
+            System.out.println("1. View Schedule");
+            System.out.println("2. Set Availability");
+            System.out.println("3. View Available Slots");
+            System.out.println("4. Accept Appointment");
+            System.out.println("5. Decline Appointment");
+            System.out.println("6. Add Consultation Notes");
+            System.out.println("7. Add Prescription");
+            System.out.println("8. Log Out");
 
+            try {
                 int choice = InputHandler.getIntInput(1, 8);
 
                 switch (choice) {
                     case 1:
                         doctor.viewSchedule();
-                        break;
+                        break; // Don't return true, just break
                     case 2:
                         setAvailability();
                         break;
@@ -52,14 +52,16 @@ public class DoctorMenu {
                     case 8:
                         System.out.println("Logging Out...");
                         return false;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
                 }
             } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear the buffer
+                System.out.println("An error occurred. Please try again.");
             }
         }
     }
 
+    // Rest of the methods remain the same...
     private void setAvailability() {
         System.out.println("\n--- Set Availability ---");
         doctor.generateDefaultAvailability(); // Generate default slots
