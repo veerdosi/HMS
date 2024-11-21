@@ -4,25 +4,36 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The `PatientService` class provides methods to manage and retrieve patient information.
+ * It allows loading patient data from a CSV file and accessing patient details.
+ */
 public class PatientService {
-    private List<Patient> patients;
+    private List<Patient> patients; // List of all patients
 
+    /**
+     * Constructs a `PatientService` object and initializes the patient list by loading data
+     * from the specified CSV file.
+     *
+     * @param patientFilePath the file path to the CSV file containing patient data.
+     */
     public PatientService(String patientFilePath) {
         this.patients = loadPatientsFromCsv(patientFilePath);
     }
 
     /**
-     * @param filePath
-     * @return List<Patient>
+     * Loads patients from the specified CSV file.
+     *
+     * @param filePath the file path to the CSV file containing patient data.
+     * @return a list of `Patient` objects loaded from the file.
      */
-    // Load patients from the specified CSV file path
     private List<Patient> loadPatientsFromCsv(String filePath) {
         List<Patient> patientList = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line = br.readLine(); // Read header line (skip it)
+            String line = br.readLine(); // Read and skip the header line
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length >= 7) { // Ensure there are enough fields for a valid record
+                if (fields.length >= 7) {
                     String userID = fields[0].trim();
                     String name = fields[1].trim();
                     String dob = fields[2].trim();
@@ -32,9 +43,7 @@ public class PatientService {
                     String contactNumber = fields[6].trim();
                     String password = fields[7].trim();
 
-                    // Create and add Patient object
-                    Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob,
-                            bloodType);
+                    Patient patient = new Patient(userID, name, password, gender, contactEmail, contactNumber, dob, bloodType);
                     patientList.add(patient);
                 }
             }
@@ -44,11 +53,21 @@ public class PatientService {
         return patientList;
     }
 
+    /**
+     * Retrieves the list of all patients.
+     *
+     * @return a list of `Patient` objects.
+     */
     public List<Patient> getAllPatients() {
         return patients;
     }
 
-    // Get a patient by ID
+    /**
+     * Retrieves a patient by their ID.
+     *
+     * @param patientId the ID of the patient to retrieve.
+     * @return the `Patient` object if found, or `null` if no match is found.
+     */
     public Patient getPatientById(String patientId) {
         return patients.stream().filter(p -> p.getUserID().equals(patientId)).findFirst().orElse(null);
     }

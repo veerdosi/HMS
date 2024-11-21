@@ -3,12 +3,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The `StaffList` class manages a centralized list of staff members for a hospital management system.
+ * It provides functionality to add, remove, update, and retrieve staff details. Data is loaded
+ * from and written to a file to ensure persistence. This class follows the Singleton design pattern.
+ */
 public class StaffList {
     private static StaffList instance;
     private List<User> staff;
     private String filePath;
 
-    // Private constructor to enforce Singleton
+    /**
+     * Private constructor to enforce the Singleton design pattern.
+     *
+     * @param filePath the path to the file where staff data is stored.
+     */
     private StaffList(String filePath) {
         this.filePath = filePath;
         this.staff = new ArrayList<>();
@@ -16,10 +25,12 @@ public class StaffList {
     }
 
     /**
-     * @param filePath
-     * @return StaffList
+     * Provides the Singleton instance of the `StaffList`.
+     * Initializes the instance with the specified file path if it does not already exist.
+     *
+     * @param filePath the path to the file where staff data is stored.
+     * @return the Singleton instance of the `StaffList`.
      */
-    // Singleton access method
     public static StaffList getInstance(String filePath) {
         if (instance == null) {
             instance = new StaffList(filePath);
@@ -27,7 +38,14 @@ public class StaffList {
         return instance;
     }
 
-    // Update Staff by Field
+    /**
+     * Updates the specified field of a staff member identified by their ID.
+     *
+     * @param staffID       the ID of the staff member to update.
+     * @param fieldToUpdate the field to update (e.g., "name", "email", "age").
+     * @param newValue      the new value to set for the specified field.
+     * @return `true` if the update was successful, otherwise `false`.
+     */
     public boolean updateStaff(String staffID, String fieldToUpdate, String newValue) {
         User staffMember = getStaffById(staffID);
         if (staffMember == null) {
@@ -62,18 +80,21 @@ public class StaffList {
                 return false;
         }
 
-        writeStaffToFile(); // Persist changes to file
+        writeStaffToFile();
         System.out.println("Staff member updated successfully: " + staffMember);
         return true;
     }
 
-    // Load staff data from file
+    /**
+     * Loads staff data from the file into memory.
+     * Each staff record in the file is parsed and added to the in-memory list.
+     */
     private void loadStaffFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine(); // Read and skip header line
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length >= 8) { // Ensure there are enough fields for a valid record
+                if (fields.length >= 8) { // Ensure valid record
                     String staffID = fields[0].trim();
                     String name = fields[1].trim();
                     String role = fields[2].trim();
@@ -81,18 +102,15 @@ public class StaffList {
                     int age = Integer.parseInt(fields[4].trim());
                     String contactEmail = fields[5].trim();
                     String contactNumber = fields[6].trim();
-                    // Password is read but not stored (admins cannot modify it)
                     String password = fields[7].trim();
 
-                    // Create User object based on the role
                     User staffMember;
                     switch (role.toLowerCase()) {
                         case "doctor":
                             staffMember = new Doctor(staffID, name, password, gender, contactEmail, contactNumber, age);
                             break;
                         case "pharmacist":
-                            staffMember = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber,
-                                    age);
+                            staffMember = new Pharmacist(staffID, name, password, gender, contactEmail, contactNumber, age);
                             break;
                         case "administrator":
                             staffMember = new Admin(staffID, name, password, gender, contactEmail, contactNumber, age);
@@ -101,7 +119,6 @@ public class StaffList {
                             System.err.println("Unknown role for staff ID: " + staffID);
                             continue;
                     }
-                    // Add staff member to the in-memory list
                     staff.add(staffMember);
                 }
             }
@@ -110,24 +127,25 @@ public class StaffList {
         }
     }
 
-    // Write staff data to file
+    /**
+     * Writes the current staff data to the file for persistence.
+     * Each staff member's details are written in CSV format.
+     */
     public void writeStaffToFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
-            // Write header line
             bw.write("Staff ID,Name,Role,Gender,Age,Contact Email,Contact Number,Password");
             bw.newLine();
 
-            // Write each staff member in the correct format
             for (User staffMember : staff) {
                 String line = String.format("%s,%s,%s,%s,%d,%s,%s,%s",
                         staffMember.getUserID(),
                         staffMember.getName(),
                         staffMember.getRole(),
                         staffMember.getGender(),
-                        getAgeIfApplicable(staffMember), // Retrieves age for applicable roles
+                        getAgeIfApplicable(staffMember),
                         staffMember.getContactEmail(),
                         staffMember.getContactNumber(),
-                        "password"); // Default password, as passwords cannot be changed by admins
+                        "password"); // Default password placeholder
                 bw.write(line);
                 bw.newLine();
             }
@@ -136,7 +154,12 @@ public class StaffList {
         }
     }
 
-    // Helper to get age for roles that have it
+    /**
+     * Retrieves the age of a staff member if applicable.
+     *
+     * @param staffMember the staff member whose age is to be retrieved.
+     * @return the age if applicable, otherwise 0.
+     */
     private int getAgeIfApplicable(User staffMember) {
         if (staffMember instanceof Doctor) {
             return ((Doctor) staffMember).getAge();
@@ -145,10 +168,15 @@ public class StaffList {
         } else if (staffMember instanceof Admin) {
             return ((Admin) staffMember).getAge();
         }
-        return 0; // Default for roles without age
+        return 0;
     }
 
-    // Retrieve a staff member by ID
+    /**
+     * Retrieves a staff member by their ID.
+     *
+     * @param staffID the ID of the staff member to retrieve.
+     * @return the `User` object representing the staff member, or `null` if not found.
+     */
     public User getStaffById(String staffID) {
         return staff.stream()
                 .filter(staffMember -> staffMember.getUserID().equals(staffID))
@@ -156,7 +184,13 @@ public class StaffList {
                 .orElse(null);
     }
 
-    // Filter Staff based on criteria
+    /**
+     * Filters staff based on the specified criteria.
+     *
+     * @param filterType  the type of filter to apply (e.g., "role", "gender", "age").
+     * @param filterValue the value to filter by.
+     * @return a list of staff members matching the filter criteria.
+     */
     public List<User> filterStaff(String filterType, String filterValue) {
         return staff.stream()
                 .filter(staffMember -> {
@@ -166,15 +200,7 @@ public class StaffList {
                         case "gender":
                             return staffMember.getGender().equalsIgnoreCase(filterValue);
                         case "age":
-                            if (staffMember instanceof Doctor) {
-                                return Integer.toString(((Doctor) staffMember).getAge()).equals(filterValue);
-                            } else if (staffMember instanceof Pharmacist) {
-                                return Integer.toString(((Pharmacist) staffMember).getAge()).equals(filterValue);
-                            } else if (staffMember instanceof Admin) {
-                                return Integer.toString(((Admin) staffMember).getAge()).equals(filterValue);
-                            } else {
-                                return false;
-                            }
+                            return Integer.toString(getAgeIfApplicable(staffMember)).equals(filterValue);
                         default:
                             return false;
                     }
@@ -182,18 +208,31 @@ public class StaffList {
                 .collect(Collectors.toList());
     }
 
-    // Retrieve staff list
+    /**
+     * Retrieves a list of all staff members.
+     *
+     * @return a list of `User` objects representing all staff members.
+     */
     public List<User> getStaff() {
-        return new ArrayList<>(staff); // Return a copy to prevent external modification
+        return new ArrayList<>(staff);
     }
 
-    // Add staff (internal use only)
+    /**
+     * Adds a new staff member to the system.
+     *
+     * @param staffMember the staff member to add.
+     */
     public void addStaff(User staffMember) {
         staff.add(staffMember);
         writeStaffToFile();
     }
 
-    // Remove staff by ID (internal use only)
+    /**
+     * Removes a staff member by their ID.
+     *
+     * @param staffID the ID of the staff member to remove.
+     * @return `true` if the staff member was successfully removed, otherwise `false`.
+     */
     public boolean removeStaff(String staffID) {
         boolean removed = staff.removeIf(staffMember -> staffMember.getUserID().equals(staffID));
         if (removed) {

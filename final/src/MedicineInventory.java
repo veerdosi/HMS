@@ -6,12 +6,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The `MedicineInventory` class manages the inventory of medicines in the system. It provides
+ * functionalities for adding, updating, and tracking medicines, as well as monitoring low-stock
+ * levels and maintaining a persistent record of inventory in a CSV file.
+ * <p>
+ * This class follows the Singleton design pattern to ensure a single, centralized instance of
+ * the inventory is used throughout the application.
+ */
 public class MedicineInventory {
-    private static MedicineInventory instance;
-    private List<Medicine> medicines;
-    private String filePath;
+    private static MedicineInventory instance; // Singleton instance
+    private List<Medicine> medicines; // List of medicines in the inventory
+    private String filePath; // Path to the CSV file for persistent storage
 
-    // Private constructor for Singleton pattern
+    /**
+     * Private constructor for the `MedicineInventory` class.
+     * Initializes the inventory by loading medicine data from the specified CSV file.
+     *
+     * @param filePath the path to the CSV file containing medicine data.
+     */
     private MedicineInventory(String filePath) {
         this.filePath = filePath;
         this.medicines = new ArrayList<>();
@@ -19,10 +32,12 @@ public class MedicineInventory {
     }
 
     /**
-     * @param filePath
-     * @return MedicineInventory
+     * Retrieves the singleton instance of `MedicineInventory`.
+     * If no instance exists, a new one is created using the specified file path.
+     *
+     * @param filePath the file path to initialize the instance if it is not already created.
+     * @return the singleton instance of `MedicineInventory`.
      */
-    // Singleton access method
     public static MedicineInventory getInstance(String filePath) {
         if (instance == null) {
             instance = new MedicineInventory(filePath);
@@ -30,18 +45,22 @@ public class MedicineInventory {
         return instance;
     }
 
-    // Load medicines from the specified CSV file path
+    /**
+     * Loads medicines from the specified CSV file into the inventory.
+     *
+     * @param filePath the path to the CSV file containing medicine data.
+     */
     private void loadMedicinesFromCsv(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line = br.readLine(); // Read header line (skip it)
+            String line = br.readLine(); // Skip the header line
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length >= 3) { // Ensure there are enough fields for a valid record
+                if (fields.length >= 3) { // Ensure the record has enough fields
                     String name = fields[0].trim();
                     int initialStock = Integer.parseInt(fields[1].trim());
                     int lowStockAlert = Integer.parseInt(fields[2].trim());
 
-                    // Create and add Medicine object
+                    // Create and add a new Medicine object to the inventory
                     Medicine medicine = new Medicine(name, initialStock, lowStockAlert);
                     medicines.add(medicine);
                 }
@@ -51,21 +70,22 @@ public class MedicineInventory {
         }
     }
 
-    // Add a new medicine to the list and write it to the CSV file
+    /**
+     * Adds a new medicine to the inventory and appends it to the CSV file.
+     *
+     * @param name          the name of the medicine.
+     * @param initialStock  the initial stock level of the medicine.
+     * @param lowStockAlert the low-stock alert threshold for the medicine.
+     */
     public void addMedicine(String name, int initialStock, int lowStockAlert) {
-        // Check if medicine already exists to avoid duplicates
         if (getMedicineByName(name) != null) {
             System.out.println("Medicine " + name + " already exists in the inventory.");
             return;
         }
 
-        // Create a new Medicine object
         Medicine newMedicine = new Medicine(name, initialStock, lowStockAlert);
-
-        // Add the medicine to the list
         medicines.add(newMedicine);
 
-        // Append the new medicine to the CSV file
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
             bw.write(name + "," + initialStock + "," + lowStockAlert);
             bw.newLine();
@@ -75,7 +95,12 @@ public class MedicineInventory {
         }
     }
 
-    // Get a medicine by its name
+    /**
+     * Retrieves a medicine from the inventory by its name.
+     *
+     * @param name the name of the medicine to retrieve.
+     * @return the `Medicine` object if found, or `null` if the medicine does not exist.
+     */
     public Medicine getMedicineByName(String name) {
         for (Medicine medicine : medicines) {
             if (medicine.getName().equalsIgnoreCase(name)) {
@@ -86,14 +111,18 @@ public class MedicineInventory {
         return null;
     }
 
-    // List all medicines with their stock levels
+    /**
+     * Lists all medicines in the inventory along with their stock levels.
+     */
     public void listAllMedicines() {
         for (Medicine medicine : medicines) {
             System.out.println("Medicine: " + medicine.getName() + ", Stock: " + medicine.getCurrentStock());
         }
     }
 
-    // Check if any medicine is low on stock and display a warning
+    /**
+     * Checks for medicines that are low on stock and displays warnings for each.
+     */
     public void checkLowStock() {
         int lowStockCount = 0;
         for (Medicine medicine : medicines) {
@@ -108,33 +137,42 @@ public class MedicineInventory {
         }
     }
 
-    // Decrease stock for a specific medicine by 1 and update the CSV file
+    /**
+     * Decreases the stock of a specific medicine by 1 and updates the CSV file.
+     *
+     * @param name the name of the medicine whose stock will be decreased.
+     */
     public void decreaseStock(String name) {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             if (medicine.getCurrentStock() > 0) {
                 medicine.updateStock(-1);
-                System.out.println(
-                        "Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
-                updateCsvFile(); // Reflect the change in the CSV file
+                System.out.println("Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+                updateCsvFile();
             } else {
                 System.out.println("Stock for " + medicine.getName() + " is already zero. Cannot decrease further.");
             }
         }
     }
 
-    // Update stock for a specific medicine by name and reflect it in the CSV
+    /**
+     * Updates the stock level of a specific medicine and reflects the change in the CSV file.
+     *
+     * @param name     the name of the medicine.
+     * @param quantity the quantity to add (positive) or subtract (negative).
+     */
     public void updateStock(String name, int quantity) {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             medicine.updateStock(quantity);
-            System.out
-                    .println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
-            updateCsvFile(); // Reflect the change in the CSV file
+            System.out.println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+            updateCsvFile();
         }
     }
 
-    // Update the entire CSV file with the current list of medicines
+    /**
+     * Updates the CSV file with the current inventory data.
+     */
     private void updateCsvFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             bw.write("Medicine Name,Initial Stock,Low Stock Alert");

@@ -1,16 +1,25 @@
-
+/**
+ * The `PrescriptionService` class provides functionality for managing prescriptions associated with appointments.
+ * This includes adding new prescriptions and updating the status of existing prescriptions.
+ */
 public class PrescriptionService {
     private AppointmentService appointmentService;
 
+    /**
+     * Constructs a `PrescriptionService` with the specified `AppointmentService`.
+     *
+     * @param appointmentService the `AppointmentService` to manage prescriptions within appointments.
+     */
     public PrescriptionService(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
     /**
-     * @param appointmentId
-     * @param prescription
+     * Adds a prescription to a specific appointment.
+     *
+     * @param appointmentId the ID of the appointment to which the prescription will be added.
+     * @param prescription  the `Prescription` object to be added.
      */
-    // Add a prescription to an appointment
     public void addPrescription(String appointmentId, Prescription prescription) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         if (appointment != null) {
@@ -21,7 +30,14 @@ public class PrescriptionService {
         }
     }
 
-    // Update prescription status for a specific appointment
+    /**
+     * Updates the status of a prescription for a specific medicine in a given appointment.
+     *
+     * @param appointmentId the ID of the appointment containing the prescription.
+     * @param medicine      the `Medicine` object for which the prescription status will be updated.
+     * @param status        the new `PrescriptionStatus` to set.
+     * @return `true` if the prescription status was successfully updated, `false` otherwise.
+     */
     public boolean updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         if (appointment != null) {

@@ -1,12 +1,32 @@
+/**
+ * The `PharmacistMenu` class provides an interactive command-line interface (CLI) menu for pharmacists.
+ * It allows pharmacists to view appointment outcomes, update prescription statuses, manage the medication inventory, 
+ * submit replenishment requests, and reset their passwords.
+ * This class integrates with other services and entities such as `Pharmacist`, `AppointmentOutcomeRecord`,
+ * `MedicineInventory`, and `RequestRecord`.
+ */
 public class PharmacistMenu {
-    private Pharmacist pharmacist;
-    private AppointmentOutcomeRecord outcomeRecord;
+    private Pharmacist pharmacist; // The pharmacist using the menu
+    private AppointmentOutcomeRecord outcomeRecord; // The record of appointment outcomes
 
+    /**
+     * Constructs a `PharmacistMenu` object for the specified pharmacist.
+     *
+     * @param pharmacist the `Pharmacist` object interacting with the menu.
+     */
     public PharmacistMenu(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
+    /**
+     * Displays the pharmacist menu and handles user interactions.
+     * 
+     * Provides options for viewing appointment outcomes, updating prescription statuses, managing
+     * medication inventory, submitting replenishment requests, and resetting passwords.
+     *
+     * @return `false` when the pharmacist chooses to log out, allowing the program to terminate or return to a parent menu.
+     */
     public boolean displayMenu() {
         while (true) {
             System.out.println("\n--- Pharmacist Menu ---");
@@ -47,11 +67,24 @@ public class PharmacistMenu {
             }
         }
     }
-    private void resetPassword(){
+
+    /**
+     * Resets the pharmacist's password.
+     * 
+     * Prompts the pharmacist to enter a new password and updates it.
+     */
+    private void resetPassword() {
         String newPass = InputHandler.getStringInput("New Password: ");
         Pharmacist p = this.pharmacist;
         p.changePassword(newPass);
     }
+
+    /**
+     * Displays the outcome of a specific appointment.
+     * 
+     * Prompts the user to enter an appointment ID, validates the input, and displays
+     * the corresponding appointment outcome if found.
+     */
     private void viewAppointmentOutcome() {
         try {
             String appointmentID = InputHandler.getStringInput("Enter Appointment ID: ");
@@ -73,6 +106,12 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Updates the status of a prescription.
+     * 
+     * Prompts the user to provide prescription ID, medicine name, and the new status.
+     * Validates the input and updates the prescription status if valid.
+     */
     private void updatePrescriptionStatus() {
         try {
             String prescriptionID = InputHandler.getStringInput("Enter Prescription ID: ");
@@ -118,6 +157,12 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Displays the medication inventory.
+     * 
+     * Fetches and displays all medicines along with their stock levels.
+     * Also provides warnings for medicines low on stock.
+     */
     private void viewMedicationInventory() {
         try {
             System.out.println("\n--- Medication Inventory ---");
@@ -127,6 +172,12 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Submits a replenishment request for a medicine.
+     * 
+     * Prompts the user to provide the medicine name and quantity, validates the input,
+     * and submits a replenishment request.
+     */
     private void submitReplenishmentRequest() {
         try {
             String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
@@ -145,6 +196,12 @@ public class PharmacistMenu {
         }
     }
 
+    /**
+     * Validates user input to ensure it is not null or empty.
+     * 
+     * @param input the input string to validate.
+     * @return `true` if the input is valid, otherwise `false`.
+     */
     private boolean validateInput(String input) {
         return input != null && !input.trim().isEmpty();
     }
