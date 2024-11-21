@@ -3,13 +3,13 @@ import java.util.List;
 
 //COMPLETE
 public class MedicalRecord implements IPatientMedicalRecordAccess {
-    private String patientId;
+    private Patient patient;
     private String bloodType;
     private List<String> pastDiagnoses;
     private List<String> pastTreatments;
 
-    public MedicalRecord(String patientId, String bloodType) {
-        this.patientId = patientId;
+    public MedicalRecord(Patient patient, String bloodType) {
+        this.patient= patient;
         this.bloodType = bloodType;
         this.pastDiagnoses = new ArrayList<>();
         this.pastTreatments = new ArrayList<>();
@@ -20,8 +20,8 @@ public String getBloodType() {
     return bloodType;
 }
 
-public String getPatientId() {
-    return patientId;
+public Patient getPatient() {
+    return patient;
 }
 
 public List<String> getPastDiagnoses() {
@@ -43,6 +43,11 @@ public void addTreatment(String treatment) {
 
 // Method to display the record (for viewing by patients)
 public void displayRecord() {
+    System.out.println("Patient ID: "+ patient.getUserID());
+    System.out.println("Name: "+ patient.getName());
+    System.out.println("Date of Birth: "+ patient.getDateOfBirth());
+    System.out.println("Gender: "+ patient.getGender());
+    System.out.println("Contact Info: "+ patient.getContactNumber()+" | "+patient.getContactEmail());
     System.out.println("Blood Type: " + bloodType);
     System.out.println("Past Diagnoses: " + pastDiagnoses);
     System.out.println("Past Treatments: " + pastTreatments);
@@ -52,7 +57,7 @@ public void displayRecord() {
 @Override
 public MedicalRecord viewMedicalRecord(User user) {
     // Assuming a user role check or similar mechanism is implemented elsewhere
-    if (this.patientId.equals(user.userID) || user.getRole()== UserRole.DOCTOR) {
+    if (user.getUserID().equals(patient.getUserID()) || user.getRole() == UserRole.DOCTOR) {
         displayRecord(); // Show the record for patients or doctors
         return this;
     } else {

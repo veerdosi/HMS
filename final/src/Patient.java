@@ -8,16 +8,9 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
                    String dateOfBirth, String bloodType) {
         super(userID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber);
         this.dateOfBirth = dateOfBirth;
-        this.medicalRecord = new MedicalRecord(userID, bloodType);
+        this.medicalRecord = new MedicalRecord(this, bloodType);
         //AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
     }
-/*
-    public void requestAppointment(String doctorId, Date dateTime) {
-        AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
-        facade.scheduleAppointment(this, doctorId, dateTime);
-        System.out.println("Appointment requested with Doctor ID: " + doctorId + " at " + dateTime);
-    }
-*/
 
     public String getDateOfBirth() {
         return dateOfBirth;
@@ -26,13 +19,7 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
     // Implementing PatientMedicalRecordAccess method for view-only access to MedicalRecord
     @Override
     public MedicalRecord viewMedicalRecord(User user) {
-        if (this.userID.equals(user.userID)) {
-            medicalRecord.displayRecord();
-            return medicalRecord;
-        } else {
-            System.out.println("Access denied: Cannot view records of other patients.");
-            return null;
-        }
+        return medicalRecord.viewMedicalRecord(user);
     }
     
     @Override
@@ -69,4 +56,5 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
     public MedicalRecord getMedicalRecord() {
         return medicalRecord;
     }
+
 }

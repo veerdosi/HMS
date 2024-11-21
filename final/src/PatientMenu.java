@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 public class PatientMenu {
@@ -127,7 +126,6 @@ public class PatientMenu {
         String newContact = scanner.next();
         if (validateContactNumber(newContact)) {
             patient.updateContactNumber(newContact);
-            System.out.println("Contact number updated successfully.");
         } else {
             System.out.println("Invalid contact number. It must be exactly 8 digits.");
         }
@@ -138,7 +136,6 @@ public class PatientMenu {
         String newEmail = scanner.next();
         if (validateEmailAddress(newEmail)) {
             patient.updateEmailAddress(newEmail);
-            System.out.println("Email address updated successfully.");
         } else {
             System.out.println("Invalid email address. It must contain '@'.");
         }
@@ -155,7 +152,6 @@ public class PatientMenu {
 
         if (isContactValid && isEmailValid) {
             patient.updateContactInfo(newEmail, newContact);
-            System.out.println("Contact information updated successfully.");
         } else {
             if (!isContactValid) {
                 System.out.println("Invalid contact number. It must be exactly 8 digits.");
