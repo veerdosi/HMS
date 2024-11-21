@@ -41,18 +41,6 @@ public class Patient extends User implements IPatientMedicalRecordAccess,IPerson
         System.out.println("Contact information updated successfully.");
     }
 
-    @Override
-    public boolean changePassword(String oldPass, String newPass) {
-        if (this.password.equals(oldPass)) {
-            this.password = newPass;
-            System.out.println("Password changed successfully.");
-            return true;
-        } else {
-            System.out.println("Incorrect password entered. Please try again.");
-            return false;
-        }
-    }
-
     public MedicalRecord getMedicalRecord() {
         return medicalRecord;
     }
