@@ -85,7 +85,7 @@ public class PatientMenu {
     }
     //CASE 2: Update Personal Information///////////////////////////////////////////////////////////////
     private void updatePersonalInformation() {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("---- Update Personal Information ----");
@@ -175,7 +175,7 @@ public class PatientMenu {
     }
     //CASE 4: Schedule Appointment/////////////////////////////////////////////////////////////////////
     private void scheduleAppointment() {
-    Scanner scanner = new Scanner(System.in);
+    scanner = new Scanner(System.in);
     String doctorId;
     LocalDateTime dateTime = null;
 
@@ -228,7 +228,7 @@ public class PatientMenu {
     
     //CASE 5: Reschedule Appointment/////////////////////////////////////////////////////////////////////////////////////
     private void rescheduleAppointment() {
-    Scanner scanner = new Scanner(System.in);
+    scanner = new Scanner(System.in);
     String appointmentId;
     LocalDateTime newDateTime = null;
 
@@ -284,7 +284,7 @@ public class PatientMenu {
     //CASE 6: Cancel Appointment//////////////////////////////////////////////////////////////////////////
     private void cancelAppointment() {
         viewScheduledAppointments();
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         System.out.println("Enter Appointment ID to Cancel:");
         String appointmentId = scanner.next();
         facade.processAppointment(appointmentId, false); // Assuming 'false' means cancellation
