@@ -1,10 +1,4 @@
 /**
- * The `Patient` class extends `User` and implements interfaces for medical record access and personal
- * information update.
- */
-//COMPLETE
-
-/**
  * The `Patient` class extends `User` and implements interfaces for accessing
  * medical records and
  * updating personal information.
@@ -113,17 +107,7 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
      *                   type that represents the new contact number that will be
      *                   updated in the contact information.
      */
-    // The `@Override` annotation in Java is used to indicate that a method is being
-    // overridden from a
-    // superclass or interface. In the provided code snippet, `@Override` is used
-    // before method
-    // declarations to explicitly indicate that these methods are overriding methods
-    // defined in the
-    // interfaces `IPatientMedicalRecordAccess` and `IPersonalInfoUpdate`. This
-    // annotation helps ensure
-    // that the method is actually overriding a method in a superclass or interface,
-    // providing a
-    // compile-time check for correctness.
+  
     @Override
     public void updateContactInfo(String newEmail, String newContact) {
         this.contactEmail = newEmail;

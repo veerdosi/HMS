@@ -2,17 +2,32 @@ import java.util.regex.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * The `PatientMenu` class provides an interactive menu for patients to access
+ * various medical appointment-related functionalities, such as viewing and managing
+ * appointments, updating personal information, and accessing medical records.
+ */
 public class PatientMenu {
     private Patient patient;
     private AppointmentServiceFacade facade;
     private AppointmentOutcomeRecord outcomeRecord;
 
+    /**
+     * Constructs a new `PatientMenu` instance.
+     *
+     * @param patient The patient associated with this menu.
+     */
     public PatientMenu(Patient patient) {
         this.patient = patient;
         this.facade = AppointmentServiceFacade.getInstance(null, null);
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
+    /**
+     * Displays the main menu for the patient and processes the selected options.
+     *
+     * @return `false` when the user chooses to log out, ending the menu loop.
+     */
     public boolean displayMenu() {
         while (true) {
             System.out.println("");
@@ -62,6 +77,10 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Displays a submenu for updating the patient's personal information,
+     * including contact number and email address.
+     */
     private void updatePersonalInformation() {
         while (true) {
             System.out.println("");
@@ -93,16 +112,31 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Validates if a contact number is valid (must be exactly 8 digits).
+     *
+     * @param contactNumber The contact number to validate.
+     * @return `true` if valid, `false` otherwise.
+     */
     private boolean validateContactNumber(String contactNumber) {
         String regex = "^[0-9]{8}$";
         return Pattern.matches(regex, contactNumber);
     }
 
+    /**
+     * Validates if an email address is in a valid format.
+     *
+     * @param email The email address to validate.
+     * @return `true` if valid, `false` otherwise.
+     */
     private boolean validateEmailAddress(String email) {
         String regex = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
         return Pattern.matches(regex, email);
     }
 
+    /**
+     * Updates the patient's contact number.
+     */
     private void updateContactNumber() {
         String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
         if (validateContactNumber(newContact)) {
@@ -113,6 +147,9 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Updates the patient's email address.
+     */
     private void updateEmailAddress() {
         String newEmail = InputHandler.getStringInput("Enter new email address: ");
         if (validateEmailAddress(newEmail)) {
@@ -123,6 +160,9 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Updates both the patient's contact number and email address.
+     */
     private void updateBothContactInfo() {
         String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
         String newEmail = InputHandler.getStringInput("Enter new email address: ");
@@ -141,6 +181,9 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Fetches and displays the patient's medical record.
+     */
     private void viewMedicalRecord() {
         System.out.println("Fetching Medical Record...");
         MedicalRecord record = patient.viewMedicalRecord(patient);
@@ -151,12 +194,18 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Displays available appointment slots for booking.
+     */
     private void viewAvailableAppointments() {
         System.out.println("Available Appointments:");
         facade.getAvailableDoctors().forEach(System.out::println);
         System.out.println("");
     }
 
+    /**
+     * Schedules a new appointment for the patient.
+     */
     private void scheduleAppointment() {
         String doctorId = InputHandler.getStringInput("Enter Doctor ID: ");
         String dateStr = InputHandler.getStringInput("Enter Appointment Date (dd-MM-yyyy): ");
@@ -172,6 +221,9 @@ public class PatientMenu {
         System.out.println("Appointment scheduled successfully.");
     }
 
+    /**
+     * Reschedules an existing appointment.
+     */
     private void rescheduleAppointment() {
         String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Reschedule: ");
         String dateStr = InputHandler.getStringInput("Enter New Appointment Date (dd-MM-yyyy): ");
@@ -185,12 +237,18 @@ public class PatientMenu {
         }
     }
 
+    /**
+     * Cancels an existing appointment.
+     */
     private void cancelAppointment() {
         String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Cancel: ");
         facade.cancelAppointment(appointmentId);
         System.out.println("Appointment canceled successfully.");
     }
 
+    /**
+     * Displays all scheduled appointments for the patient.
+     */
     private void viewScheduledAppointments() {
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
         appointments.stream()
@@ -198,6 +256,9 @@ public class PatientMenu {
                 .forEach(System.out::println);
     }
 
+    /**
+     * Displays all past appointments and their outcomes.
+     */
     private void viewPastAppointmentOutcomes() {
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
         appointments.stream()
