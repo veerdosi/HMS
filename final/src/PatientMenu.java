@@ -65,26 +65,36 @@ public class PatientMenu {
                 }
         }
 
-    private void updatePersonalInformation() {
-        while (true) {
-            System.out.println("---- Update Personal Information ----");
-            System.out.println("1. Update Contact Number");
-            System.out.println("2. Update Email Address");
-            System.out.println("3. Update Both");
-            System.out.println("4. Back to Main Menu");
-
-            int option = InputHandler.getIntInput(1, 4);
-
-            switch (option) {
-                case 1 -> updateContactNumber();
-                case 2 -> updateEmailAddress();
-                case 3 -> updateBothContactInfo();
-                case 4 -> {
-                    return;
+        private void updatePersonalInformation() {
+            scanner = new Scanner(System.in);
+    
+            while (true) {
+                System.out.println("---- Update Personal Information ----");
+                System.out.println("1. Update Contact Number");
+                System.out.println("2. Update Email Address");
+                System.out.println("3. Update Both");
+                System.out.println("4. Back to Main Menu");
+                System.out.print("Enter your choice: ");
+                int option = scanner.nextInt();
+    
+                switch (option) {
+                    case 1:
+                        updateContactNumber();
+                        break;
+                    case 2:
+                        updateEmailAddress();
+                        break;
+                    case 3:
+                        updateBothContactInfo();
+                        break;
+                    case 4:
+                        System.out.println("Returning to main menu...");
+                        return; // Exit the submenu
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
                 }
             }
         }
-    }
 
     private boolean validateContactNumber(String contactNumber) {
         String regex = "^[0-9]{8}$";
