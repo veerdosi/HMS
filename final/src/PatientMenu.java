@@ -15,6 +15,7 @@ public class PatientMenu {
 
     public boolean displayMenu() {
         while (true) {
+            System.out.println("");
             System.out.println("---- Patient Menu ----");
             System.out.println("1. View Medical Record");
             System.out.println("2. Update Personal Information");
@@ -25,6 +26,7 @@ public class PatientMenu {
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Records");
             System.out.println("9. Logout");
+            System.out.println("");
 
             int choice = InputHandler.getIntInput(1, 9);
 
@@ -62,11 +64,13 @@ public class PatientMenu {
 
     private void updatePersonalInformation() {
         while (true) {
+            System.out.println("");
             System.out.println("---- Update Personal Information ----");
             System.out.println("1. Update Contact Number");
             System.out.println("2. Update Email Address");
             System.out.println("3. Update Both");
             System.out.println("4. Back to Main Menu");
+            System.out.println("");
             System.out.print("Enter your choice: ");
             int option = InputHandler.getIntInput(1, 4);
 
@@ -150,6 +154,7 @@ public class PatientMenu {
     private void viewAvailableAppointments() {
         System.out.println("Available Appointments:");
         facade.getAvailableDoctors().forEach(System.out::println);
+        System.out.println("");
     }
 
     private void scheduleAppointment() {

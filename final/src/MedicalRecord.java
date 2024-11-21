@@ -46,14 +46,18 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
 
     // Method to display the record (for viewing by patients)
     public void displayRecord() {
-        System.out.println("Patient ID: " + patient.getUserID());
+        System.out.println("");
+        System.out.println("------Medical Record------------");
+        
         System.out.println("Name: " + patient.getName());
+        System.out.println("Patient ID: " + patient.getUserID());
         System.out.println("Date of Birth: " + patient.getDateOfBirth());
         System.out.println("Gender: " + patient.getGender());
         System.out.println("Contact Info: " + patient.getContactNumber() + " | " + patient.getContactEmail());
         System.out.println("Blood Type: " + bloodType);
         System.out.println("Past Diagnoses: " + pastDiagnoses);
         System.out.println("Past Treatments: " + pastTreatments);
+        System.out.println("");
     }
 
     // Implementing the viewMedicalRecord method for authorized users (patients or

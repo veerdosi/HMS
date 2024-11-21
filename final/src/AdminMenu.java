@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class AdminMenu {
     private Admin admin;
     private MedicineInventory medicineInventory;
