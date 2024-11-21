@@ -40,10 +40,11 @@ public class PatientMenu {
             System.out.println("6. Cancel an Appointment");
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Records");
-            System.out.println("9. Logout");
+            System.out.println("9. Reset Password");
+            System.out.println("0. Logout");
             System.out.println("");
 
-            int choice = InputHandler.getIntInput(1, 9);
+            int choice = InputHandler.getIntInput(1, 10);
 
             switch (choice) {
                 case 1:
@@ -71,12 +72,19 @@ public class PatientMenu {
                     viewPastAppointmentOutcomes();
                     break;
                 case 9:
+                    resetPassword();
+                    break;
+                case 0:
                     System.out.println("Logging out...");
                     return false;
             }
         }
     }
-
+    private void resetPassword(){
+        String newPass = InputHandler.getStringInput("New Password: ");
+        Patient patient = this.patient;
+        patient.changePassword(newPass);
+    }
     /**
      * Displays a submenu for updating the patient's personal information,
      * including contact number and email address.

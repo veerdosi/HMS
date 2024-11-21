@@ -149,7 +149,7 @@ public boolean authenticatePassword(String password) {
         System.out.println("");
         System.out.println("First Login: Please reset your password!\n");
         String newPass = InputHandler.getStringInput("New Password: ");
-        changePassword(password, newPass);
+        changePassword(newPass);
         }
     }
     return this.password.equals(password);
@@ -162,7 +162,7 @@ public boolean authenticatePassword(String password) {
      * @param oldPass     The current password (not used in this implementation).
      * @param newPassword The new password to set.
      */
-    public void changePassword(String oldPass, String newPassword) {
+    public void changePassword(String newPassword) {
         this.password = newPassword;
         updatePasswordInExcel();
     }
