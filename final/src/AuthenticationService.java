@@ -83,7 +83,7 @@ public class AuthenticationService {
 
     public User authenticateUser(String userID, String password) {
         User user = users.get(userID);
-        if (user != null && user.authenticate(password)) {
+        if (user != null && user.authenticatePassword(password)) {
             return user;
         }
         return null;  // Authentication failed

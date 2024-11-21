@@ -9,5 +9,5 @@ public interface IPersonalInfoUpdate {
         updateEmailAddress(newEmailAddress);
     }
 
-    public boolean changePassword(String oldPass, String newPass);
+    
 }

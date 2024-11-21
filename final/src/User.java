@@ -2,8 +2,9 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-public class User {
+public class User implements IPasswordUpdate {
     protected String userID;
     protected String name;
     protected String password;
@@ -13,13 +14,14 @@ public class User {
     protected String contactNumber;
     private static final String PATIENT_FILE_PATH = "C:/Users/YourUsername/Desktop/HMS/Data/Patient_List(Sheet1).csv";
     private static final String STAFF_FILE_PATH = "C:/Users/YourUsername/Desktop/HMS/Data/Staff_List(Sheet1).csv";
+    private static final String DEFAULT_PASSWORD = "password"; //every new user is assigned this bef 1st login
 
 
     // Constructor
     public User(String userID, String name, String password, UserRole role, String gender, String contactEmail, String contactNumber) {
         this.userID = userID;
         this.name = name;
-        this.password = password;
+        this.password = DEFAULT_PASSWORD;
         this.role = role;
         this.gender = gender;
         this.contactEmail = contactEmail;
@@ -66,11 +68,18 @@ public class User {
         this.role = role;
     }
 
-    public boolean authenticate(String password) {
+    public boolean authenticatePassword(String password) {
+        if (password.equals(DEFAULT_PASSWORD)){
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please reset your password (First Login).\n New Password: ");
+            String newPass = scanner.nextLine();
+            changePassword(password, newPass);
+            scanner.close();
+        }
         return this.password.equals(password);
     }
 
-    public void changePassword(String newPassword) {
+    public void changePassword(String oldPass, String newPassword) {
         this.password = newPassword;
         updatePasswordInExcel();
     }
