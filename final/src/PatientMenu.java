@@ -1,4 +1,3 @@
-import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,7 +14,6 @@ public class PatientMenu {
     }
 
     public boolean displayMenu() {
-        Scanner scanner = new Scanner(System.in);
         while (true) {
                 System.out.println("---- Patient Menu ----");
                 System.out.println("1. View Medical Record");
@@ -28,8 +26,7 @@ public class PatientMenu {
                 System.out.println("8. View Past Appointment Outcome Records");
                 System.out.println("9. Logout");
 
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                int choice = Helper.readInt("Enter menu option");
 
                 switch (choice) {
                     case 1: 
@@ -64,8 +61,7 @@ public class PatientMenu {
         }
 
         private void updatePersonalInformation() {
-            Scanner scanner = new Scanner(System.in);
-    
+   
             while (true) {
                 System.out.println("---- Update Personal Information ----");
                 System.out.println("1. Update Contact Number");
@@ -73,8 +69,7 @@ public class PatientMenu {
                 System.out.println("3. Update Both");
                 System.out.println("4. Back to Main Menu");
                 System.out.print("Enter your choice: ");
-                int option = scanner.nextInt();
-                scanner.nextLine();
+                int option = Helper.readInt("Enter sub-menu option:");
     
                 switch (option) {
                     case 1:
@@ -106,9 +101,7 @@ public class PatientMenu {
     }
 
     private void updateContactNumber() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter new contact number (8 digits): ");
-        String newContact = scanner.nextLine();
+        String newContact = Helper.readString("Enter new contact number (8 digits): ");
         if (validateContactNumber(newContact)) {
             patient.updateContactNumber(newContact);
             System.out.println("Contact number updated successfully.");
@@ -118,9 +111,7 @@ public class PatientMenu {
     }
 
     private void updateEmailAddress() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter new email address: ");
-        String newEmail = scanner.nextLine();
+        String newEmail = Helper.readString("Enter new email address: ");
         if (validateEmailAddress(newEmail)) {
             patient.updateEmailAddress(newEmail);
             System.out.println("Email address updated successfully.");
@@ -130,11 +121,8 @@ public class PatientMenu {
     }
 
     private void updateBothContactInfo() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter new contact number (8 digits): ");
-        String newContact = scanner.nextLine();
-        System.out.print("Enter new email address: ");
-        String newEmail = scanner.nextLine();
+        String newContact = Helper.readString("Enter new contact number (8 digits): ");
+        String newEmail = Helper.readString("Enter new email address: ");
 
         boolean isContactValid = validateContactNumber(newContact);
         boolean isEmailValid = validateEmailAddress(newEmail);
@@ -167,16 +155,12 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Doctor ID: ");
-        String doctorId = scanner.nextLine();
+        String doctorId = Helper.readString("Enter Doctor ID: ");
 
-        System.out.print("Enter Appointment Date (dd-MM-yyyy): ");
-        String dateStr = scanner.nextLine();
-        System.out.print("Enter Appointment Hour (9-16): ");
-        int hour = InputHandler.getIntInput(9, 16);
+        String dateStr = Helper.readString("Enter Appointment Date (dd-MM-yyyy): ");
+        int hour = Helper.readInt("Enter Appointment Hour (9-16): ");
 
-        LocalDateTime dateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
+        LocalDateTime dateTime = Helper.parseDateAndHour(dateStr, hour);
         if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
             System.out.println("Invalid appointment date or time.");
             return;
@@ -187,16 +171,12 @@ public class PatientMenu {
     }
 
     private void rescheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Appointment ID to Reschedule: ");
-        String appointmentId = scanner.nextLine();
+        String appointmentId = Helper.readString("Enter Appointment ID to Reschedule: ");
 
-        System.out.print("Enter New Appointment Date (dd-MM-yyyy): ");
-        String dateStr = scanner.nextLine();
-        System.out.print("Enter Appointment Hour (9-16): ");
-        int hour = InputHandler.getIntInput(9, 16);
+        String dateStr = Helper.readString("Enter New Appointment Date (dd-MM-yyyy): ");
+        int hour = Helper.readInt("Enter Appointment Hour (9-16): ");
 
-        LocalDateTime newDateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
+        LocalDateTime newDateTime = Helper.parseDateAndHour(dateStr, hour);
         if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
             System.out.println("Appointment rescheduled successfully.");
         } else {
@@ -205,9 +185,7 @@ public class PatientMenu {
     }
 
     private void cancelAppointment() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter Appointment ID to Cancel: ");
-        String appointmentId = scanner.nextLine();
+       String appointmentId = Helper.readString("Enter Appointment ID to Cancel: ");
         facade.cancelAppointment(appointmentId);
         System.out.println("Appointment canceled successfully.");
     }
