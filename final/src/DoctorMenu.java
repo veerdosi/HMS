@@ -13,52 +13,51 @@ public class DoctorMenu {
     }
 
     public boolean displayMenu() {
-        System.out.println("\n--- Doctor Menu ---");
-        System.out.println("1. View Schedule");
-        System.out.println("2. Set Availability");
-        System.out.println("3. View Available Slots");
-        System.out.println("4. Accept Appointment");
-        System.out.println("5. Decline Appointment");
-        System.out.println("6. Add Consultation Notes");
-        System.out.println("7. Add Prescription");
-        System.out.println("8. Log Out");
-        System.out.print("Enter your choice: ");
+        while (true) {
+            System.out.println("\n--- Doctor Menu ---");
+            System.out.println("1. View Schedule");
+            System.out.println("2. Set Availability");
+            System.out.println("3. View Available Slots");
+            System.out.println("4. Accept Appointment");
+            System.out.println("5. Decline Appointment");
+            System.out.println("6. Add Consultation Notes");
+            System.out.println("7. Add Prescription");
+            System.out.println("8. Log Out");
 
-        try {
-            int choice = InputHandler.getIntInput(1, 8);
+            try {
+                int choice = InputHandler.getIntInput(1, 8);
 
-            switch (choice) {
-                case 1:
-                    doctor.viewSchedule();
-                    return true;
-                case 2:
-                    setAvailability();
-                    return true;
-                case 3:
-                    viewAvailableSlots();
-                    return true;
-                case 4:
-                    acceptAppointment();
-                    return true;
-                case 5:
-                    declineAppointment();
-                    return true;
-                case 6:
-                    addConsultationNotes();
-                    return true;
-                case 7:
-                    addPrescription();
-                    return true;
-                case 8:
-                    System.out.println("Logging Out...");
-                    return false;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    return true;
+                switch (choice) {
+                    case 1:
+                        doctor.viewSchedule();
+                        break; // Don't return true, just break
+                    case 2:
+                        setAvailability();
+                        break;
+                    case 3:
+                        viewAvailableSlots();
+                        break;
+                    case 4:
+                        acceptAppointment();
+                        break;
+                    case 5:
+                        declineAppointment();
+                        break;
+                    case 6:
+                        addConsultationNotes();
+                        break;
+                    case 7:
+                        addPrescription();
+                        break;
+                    case 8:
+                        System.out.println("Logging Out...");
+                        return false;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred. Please try again.");
             }
-        } catch (Exception e) {
-            System.out.println("An error occurred. Please try again.");
-            return true;
         }
     }
 
