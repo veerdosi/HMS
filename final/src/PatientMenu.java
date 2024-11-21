@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PatientMenu {
     private Patient patient;
+    private Scanner scanner;
     AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance("/Data/Patient_List(Sheet1).csv", "/Data/Staff_List(Sheet1).csv");   
     AppointmentOutcomeRecord outcomeRecord = AppointmentOutcomeRecord.getInstance();
 
@@ -13,7 +14,7 @@ public class PatientMenu {
     }
 
     public boolean displayMenu() {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         while (true) {
             try {
                 System.out.println("---- Patient Menu ----");
