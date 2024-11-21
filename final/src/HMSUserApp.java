@@ -79,19 +79,20 @@ public class HMSUserApp {
         while (loggedIn) {
             switch (user.getRole()) {
                 case DOCTOR:
-                    DoctorMenu doctorMenu = new DoctorMenu((Doctor) user);
-                    loggedIn = doctorMenu.displayMenu(); // display() returns false if logout is chosen
+                    DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade, scanner); // Pass shared scanner
+                    loggedIn = doctorMenu.displayMenu(); // displayMenu() returns false if logout is chosen
                     break;
                 case PATIENT:
-                    PatientMenu patientMenu = new PatientMenu((Patient) user);
+                    PatientMenu patientMenu = new PatientMenu((Patient) user, scanner); // Pass shared scanner
                     loggedIn = patientMenu.displayMenu();
                     break;
                 case ADMIN:
-                    AdminMenu adminMenu = new AdminMenu((Admin) user);
+                    AdminMenu adminMenu = new AdminMenu((Admin) user, scanner); // Pass shared scanner
                     loggedIn = adminMenu.display();
                     break;
                 case PHARMACIST:
-                    PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user);
+                    PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user, scanner); // Pass shared
+                                                                                                    // scanner
                     loggedIn = pharmacistMenu.displayMenu();
                     break;
                 default:

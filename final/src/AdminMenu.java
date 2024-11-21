@@ -2,45 +2,53 @@ import java.util.Scanner;
 
 public class AdminMenu {
     private Admin admin;
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
 
-    public AdminMenu(Admin admin) {
+    // Updated Constructor
+    public AdminMenu(Admin admin, Scanner scanner) {
         this.admin = admin;
+        this.scanner = scanner; // Use shared scanner instance
     }
 
     /**
-     * @return boolean
+     * Displays the Admin Menu.
+     * 
+     * @return boolean indicating whether to continue or exit.
      */
     public boolean display() {
         while (true) {
-            System.out.println("---- Admin Menu ----");
-            System.out.println("1. View and Manage Hospital Staff");
-            System.out.println("2. View Appointment Details");
-            System.out.println("3. View and Manage Medication Inventory");
-            System.out.println("4. Approve or Reject Replenishment Requests");
-            System.out.println("5. Logout");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline
+            try {
+                System.out.println("---- Admin Menu ----");
+                System.out.println("1. View and Manage Hospital Staff");
+                System.out.println("2. View Appointment Details");
+                System.out.println("3. View and Manage Medication Inventory");
+                System.out.println("4. Approve or Reject Replenishment Requests");
+                System.out.println("5. Logout");
+                System.out.print("Enter your choice: ");
 
-            switch (choice) {
-                case 1:
-                    manageHospitalStaff();
-                    break;
-                case 2:
-                    viewAppointmentDetails();
-                    break;
-                case 3:
-                    manageMedicationInventory();
-                    break;
-                case 4:
-                    handleReplenishmentRequests();
-                    break;
-                case 5:
-                    System.out.println("Logging out...");
-                    return false; // Return false to signal logout
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                    scanner.next(); // Consume invalid input
+                    continue;
+                }
+
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline
+
+                switch (choice) {
+                    case 1 -> manageHospitalStaff();
+                    case 2 -> viewAppointmentDetails();
+                    case 3 -> manageMedicationInventory();
+                    case 4 -> handleReplenishmentRequests();
+                    case 5 -> {
+                        System.out.println("Logging out...");
+                        return false; // Exit the menu
+                    }
+                    default -> System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+                scanner.nextLine(); // Clear invalid input
             }
         }
     }
@@ -56,29 +64,19 @@ public class AdminMenu {
             System.out.println("5. Filter Staff by Criteria");
             System.out.println("6. Back to Main Menu");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+
+            int choice = readValidatedInt();
 
             switch (choice) {
-                case 1:
-                    admin.displayAllStaff();
-                    break;
-                case 2:
-                    addNewStaff();
-                    break;
-                case 3:
-                    updateStaff();
-                    break;
-                case 4:
-                    removeStaff();
-                    break;
-                case 5:
-                    filterStaff();
-                    break;
-                case 6:
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> admin.displayAllStaff();
+                case 2 -> addNewStaff();
+                case 3 -> updateStaff();
+                case 4 -> removeStaff();
+                case 5 -> filterStaff();
+                case 6 -> {
+                    return; // Back to Main Menu
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -93,8 +91,7 @@ public class AdminMenu {
         System.out.print("Enter Gender: ");
         String gender = scanner.nextLine();
         System.out.print("Enter Age: ");
-        int age = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        int age = readValidatedInt();
         System.out.print("Enter Contact Email: ");
         String email = scanner.nextLine();
         System.out.print("Enter Contact Number: ");
@@ -102,20 +99,17 @@ public class AdminMenu {
 
         User newStaff;
         switch (role.toLowerCase()) {
-            case "doctor":
-                newStaff = new Doctor(staffID, name, "password", gender, email, contactNumber, age);
-                break;
-            case "pharmacist":
+            case "doctor" -> newStaff = new Doctor(staffID, name, "password", gender, email, contactNumber, age);
+            case "pharmacist" ->
                 newStaff = new Pharmacist(staffID, name, "password", gender, email, contactNumber, age);
-                break;
-            case "administrator":
-                newStaff = new Admin(staffID, name, "password", gender, email, contactNumber, age);
-                break;
-            default:
+            case "administrator" -> newStaff = new Admin(staffID, name, "password", gender, email, contactNumber, age);
+            default -> {
                 System.out.println("Invalid role. Staff not added.");
                 return;
+            }
         }
         admin.addStaff(newStaff);
+        System.out.println("Staff member added successfully.");
     }
 
     private void updateStaff() {
@@ -126,12 +120,14 @@ public class AdminMenu {
         System.out.print("Enter new value: ");
         String newValue = scanner.nextLine();
         admin.updateStaff(staffID, field, newValue);
+        System.out.println("Staff details updated successfully.");
     }
 
     private void removeStaff() {
         System.out.print("Enter Staff ID to remove: ");
         String staffID = scanner.nextLine();
         admin.removeStaff(staffID);
+        System.out.println("Staff member removed successfully.");
     }
 
     private void filterStaff() {
@@ -157,23 +153,17 @@ public class AdminMenu {
             System.out.println("3. Update Medicine Stock Level");
             System.out.println("4. Back to Main Menu");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+
+            int choice = readValidatedInt();
 
             switch (choice) {
-                case 1:
-                    MedicineInventory.getInstance(null).listAllMedicines();
-                    break;
-                case 2:
-                    admin.viewLowStockMedicines();
-                    break;
-                case 3:
-                    updateMedicineStock();
-                    break;
-                case 4:
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> MedicineInventory.getInstance(null).listAllMedicines();
+                case 2 -> admin.viewLowStockMedicines();
+                case 3 -> updateMedicineStock();
+                case 4 -> {
+                    return; // Back to Main Menu
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -182,9 +172,9 @@ public class AdminMenu {
         System.out.print("Enter Medicine Name: ");
         String medicineName = scanner.nextLine();
         System.out.print("Enter new stock quantity: ");
-        int quantity = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        int quantity = readValidatedInt();
         MedicineInventory.getInstance(null).updateStock(medicineName, quantity);
+        System.out.println("Medicine stock updated successfully.");
     }
 
     // Option 4: Handle Replenishment Requests
@@ -197,35 +187,42 @@ public class AdminMenu {
             System.out.println("4. Reject Request");
             System.out.println("5. Back to Main Menu");
             System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+
+            int choice = readValidatedInt();
 
             switch (choice) {
-                case 1:
-                    admin.viewAllRequests();
-                    break;
-                case 2:
+                case 1 -> admin.viewAllRequests();
+                case 2 -> {
                     System.out.print("Enter Status (PENDING, APPROVED, REJECTED): ");
                     String status = scanner.nextLine().toUpperCase();
                     admin.viewRequestsByStatus(RequestStatus.valueOf(status));
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     System.out.print("Enter Request ID to approve: ");
-                    int approveId = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    int approveId = readValidatedInt();
                     admin.approveRequest(approveId);
-                    break;
-                case 4:
+                }
+                case 4 -> {
                     System.out.print("Enter Request ID to reject: ");
-                    int rejectId = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
+                    int rejectId = readValidatedInt();
                     admin.rejectRequest(rejectId);
-                    break;
-                case 5:
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                }
+                case 5 -> {
+                    return; // Back to Main Menu
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
+    }
+
+    // Utility method to validate integer inputs
+    private int readValidatedInt() {
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.next(); // Consume invalid input
+        }
+        int value = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        return value;
     }
 }

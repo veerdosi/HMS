@@ -2,39 +2,53 @@ import java.util.Scanner;
 
 public class PharmacistMenu {
     private Pharmacist pharmacist;
-    private Scanner scanner;
-    AppointmentOutcomeRecord outcomeRecord = AppointmentOutcomeRecord.getInstance();
+    private AppointmentOutcomeRecord outcomeRecord; // Singleton for appointment outcomes
+    private Scanner scanner; // Shared scanner instance
 
     // Constructor
-    public PharmacistMenu(Pharmacist pharmacist) {
+    public PharmacistMenu(Pharmacist pharmacist, Scanner scanner) {
         this.pharmacist = pharmacist;
-        this.scanner = new Scanner(System.in);
+        this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
+        this.scanner = scanner; // Shared scanner passed in
     }
 
     /**
-     * @return boolean
+     * Displays the Pharmacist Menu and handles interactions.
+     * 
+     * @return boolean indicating successful execution or logout.
      */
-    // Display Pharmacist Menu
     public boolean displayMenu() {
-        int choice = -1;
-        while (choice != 5) {
-            System.out.println("\nPharmacist Menu:");
-            System.out.println("1. View Appointment Outcome Record");
-            System.out.println("2. Update Prescription Status");
-            System.out.println("3. View Medication Inventory");
-            System.out.println("4. Submit Replenishment Request");
-            System.out.println("5. Logout");
-            System.out.print("Please select an option: ");
+        while (true) {
+            try {
+                System.out.println("\nPharmacist Menu:");
+                System.out.println("1. View Appointment Outcome Record");
+                System.out.println("2. Update Prescription Status");
+                System.out.println("3. View Medication Inventory");
+                System.out.println("4. Submit Replenishment Request");
+                System.out.println("5. Logout");
+                System.out.print("Please select an option: ");
 
-            choice = readMenuChoice();
-            if (!processChoice(choice)) {
-                return false; // Exit if processChoice signals to stop
+                // Read and validate menu choice
+                if (!scanner.hasNextInt()) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                    scanner.next(); // Consume invalid input
+                    continue;
+                }
+
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+
+                if (!processChoice(choice)) {
+                    return false; // Exit menu if the user selects "Logout"
+                }
+            } catch (Exception e) {
+                System.out.println("An error occurred: " + e.getMessage());
+                scanner.nextLine(); // Clear invalid input to avoid infinite loops
             }
         }
-        return true; // Return true to indicate successful execution
     }
 
-    // Process menu choices and return boolean
+    // Process menu choices
     private boolean processChoice(int choice) {
         switch (choice) {
             case 1:
@@ -51,31 +65,24 @@ public class PharmacistMenu {
                 break;
             case 5:
                 System.out.println("Logging out...");
-                return false; // Signal to exit menu
+                return false; // Exit menu
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
-        return true; // Continue showing menu
-    }
-
-    // Read menu choice (helper method for input validation)
-    private int readMenuChoice() {
-        scanner = new Scanner(System.in);
-        while (true) {
-            if (scanner.hasNextInt()) {
-                return scanner.nextInt();
-            } else {
-                System.out.println("Invalid input. Please enter a number between 1 and 5.");
-                scanner.next(); // Consume invalid input
-            }
-        }
+        return true; // Continue showing the menu
     }
 
     // View Appointment Outcome Record
     private void viewAppointmentOutcome() {
         String appointmentID = readStringInput("Enter Appointment ID: ");
         if (validateInput(appointmentID)) {
-            outcomeRecord.getAppointmentById(appointmentID);
+            Appointment appointment = outcomeRecord.getAppointmentById(appointmentID);
+            if (appointment != null) {
+                System.out.println("Appointment Outcome Record:");
+                System.out.println(appointment);
+            } else {
+                System.out.println("No outcome record found for the provided Appointment ID.");
+            }
         } else {
             System.out.println("Invalid Appointment ID. Please try again.");
         }
@@ -89,7 +96,6 @@ public class PharmacistMenu {
             return;
         }
 
-        // Prompt for Medicine Name
         String medicineName = readStringInput("Enter Medicine Name: ");
         if (!validateInput(medicineName)) {
             System.out.println("Invalid Medicine Name. Please try again.");
@@ -108,6 +114,7 @@ public class PharmacistMenu {
 
     // View Medication Inventory
     private void viewMedicationInventory() {
+        System.out.println("\n--- Medication Inventory ---");
         pharmacist.viewMedicineInventory();
     }
 
@@ -135,21 +142,22 @@ public class PharmacistMenu {
         }
     }
 
-    // Input validation methods
+    // Helper method: Validate general input
     private boolean validateInput(String input) {
         return input != null && !input.trim().isEmpty();
     }
 
+    // Helper method: Validate input against an enum
     private <T extends Enum<T>> boolean validateEnumInput(String input, Class<T> enumClass) {
         try {
-            // Try to convert the input to an enum constant
             Enum.valueOf(enumClass, input.toUpperCase());
-            return true; // Input is valid
+            return true;
         } catch (IllegalArgumentException | NullPointerException e) {
-            return false; // Input is not valid
+            return false;
         }
     }
 
+    // Helper method: Read string input with a prompt
     private String readStringInput(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
