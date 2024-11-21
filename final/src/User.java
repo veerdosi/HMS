@@ -12,8 +12,8 @@ public class User implements IPasswordUpdate {
     protected String gender;
     protected String contactEmail;
     protected String contactNumber;
-    private static final String PATIENT_FILE_PATH = "C:/Users/YourUsername/Desktop/HMS/Data/Patient_List(Sheet1).csv";
-    private static final String STAFF_FILE_PATH = "C:/Users/YourUsername/Desktop/HMS/Data/Staff_List(Sheet1).csv";
+    private static final String PATIENT_FILE_PATH = "Data/Patient_List(Sheet1).csv";
+    private static final String STAFF_FILE_PATH = "Data/Staff_List(Sheet1).csv";
     private static final String DEFAULT_PASSWORD = "password"; //every new user is assigned this bef 1st login
 
 

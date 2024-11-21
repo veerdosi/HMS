@@ -8,8 +8,8 @@ public class AuthenticationService {
     private Map<String, User> users = new HashMap<>();
 
     // Paths to the CSV files
-    private static final String PATIENT_FILE_PATH = "C:/Users/LENOVO/Desktop/HMS/Data/Patient_List(Sheet1).csv";
-    private static final String STAFF_FILE_PATH = "C:/Users/LENOVO/Desktop/HMS/Data/Staff_List(Sheet1).csv";
+    private static final String PATIENT_FILE_PATH = "Data/Patient_List(Sheet1).csv";
+    private static final String STAFF_FILE_PATH = "Data/Staff_List(Sheet1).csv";
 
     public AuthenticationService() {
         loadPatients();

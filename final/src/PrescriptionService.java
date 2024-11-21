@@ -18,19 +18,21 @@ public class PrescriptionService {
     }
 
     // Update prescription status for a specific appointment
-    public void updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
+    public boolean  updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
         Appointment appointment = appointmentService.getAppointmentById(appointmentId);
         if (appointment != null) {
             for (Prescription prescription : appointment.getPrescriptions()) {
                 if (prescription.getMedicine().getName().equals(medicine.getName())) {
                     prescription.setStatus(status);
                     System.out.println("Prescription status updated to " + status + " for " + medicine.getName());
-                    return;
+                    return true;
                 }
             }
             System.out.println("Prescription not found for medicine: " + medicine.getName());
+            return false;
         } else {
             System.out.println("Appointment not found for ID: " + appointmentId);
+            return false;
         }
     }
 }

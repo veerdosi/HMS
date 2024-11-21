@@ -47,12 +47,12 @@ public class Pharmacist extends User {
         }
 
         // Update the prescription status through the facade
-        facade.updatePrescriptionStatus(appointmentId, medicine, status);
-        System.out.println("Prescription for " + medicineName + " in Appointment ID " + appointmentId + " updated to status: " + status);
-
-        // If the prescription status is DISPENSED, decrease the stock of the medicine
-        if (status == PrescriptionStatus.DISPENSED) {
-            inventory.decreaseStock(medicineName);
+        if(facade.updatePrescriptionStatus(appointmentId, medicine, status)){
+             System.out.println("Prescription for " + medicineName + " in Appointment ID " + appointmentId + " updated to status: " + status);
+             // If the prescription status is DISPENSED, decrease the stock of the medicine
+            if (status == PrescriptionStatus.DISPENSED) {
+                    inventory.decreaseStock(medicineName);
+        }
         }
     }
 
