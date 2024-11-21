@@ -19,10 +19,11 @@ public class DoctorMenu {
             System.out.println("5. Decline Appointment");
             System.out.println("6. Add Consultation Notes");
             System.out.println("7. Add Prescription");
-            System.out.println("8. Log Out");
+            System.out.println("8. Reset Password");
+            System.out.println("9. Log Out");
 
             try {
-                int choice = InputHandler.getIntInput(1, 8);
+                int choice = InputHandler.getIntInput(1, 9);
 
                 switch (choice) {
                     case 1:
@@ -47,6 +48,9 @@ public class DoctorMenu {
                         addPrescription();
                         break;
                     case 8:
+                        resetPassword();
+                        break;
+                    case 9:
                         System.out.println("Logging Out...");
                         return false;
                     default:
@@ -57,7 +61,11 @@ public class DoctorMenu {
             }
         }
     }
-
+    private void resetPassword(){
+        String newPass = InputHandler.getStringInput("New Password: ");
+        Doctor doc = this.doctor;
+        doc.changePassword(newPass);
+    }
     private void setAvailability() {
         System.out.println("\n--- Set Availability ---");
         doctor.generateDefaultAvailability(); // Generate default slots

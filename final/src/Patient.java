@@ -72,7 +72,6 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
     @Override
     public void updateContactNumber(String newContact) {
         this.contactNumber = newContact;
-        System.out.println("Contact number updated successfully.");
     }
 
     /**
@@ -90,7 +89,6 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
     @Override
     public void updateEmailAddress(String newEmail) {
         this.contactEmail = newEmail;
-        System.out.println("Email address updated successfully.");
     }
 
     /**
@@ -112,7 +110,6 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
     public void updateContactInfo(String newEmail, String newContact) {
         this.contactEmail = newEmail;
         this.contactNumber = newContact;
-        System.out.println("Contact information updated successfully.");
     }
 
     /**

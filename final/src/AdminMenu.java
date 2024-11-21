@@ -14,10 +14,11 @@ public class AdminMenu {
             System.out.println("2. View Appointment Details");
             System.out.println("3. View and Manage Medication Inventory");
             System.out.println("4. Approve or Reject Replenishment Requests");
-            System.out.println("5. Logout");
+            System.out.println("5. Reset Password");
+            System.out.println("6. Logout");
 
             try {
-                int choice = InputHandler.getIntInput(1, 5);
+                int choice = InputHandler.getIntInput(1, 6);
 
                 switch (choice) {
                     case 1:
@@ -33,6 +34,9 @@ public class AdminMenu {
                         handleReplenishmentRequests();
                         break;
                     case 5:
+                        resetPassword();
+                        break;
+                    case 6:
                         System.out.println("Logging out...");
                         return false; // Only logout returns false
                     default:
@@ -43,7 +47,11 @@ public class AdminMenu {
             }
         }
     }
-
+    private void resetPassword(){
+        String newPass = InputHandler.getStringInput("New Password: ");
+        Admin admin = this.admin;
+        admin.changePassword(newPass);
+    }
     private void manageHospitalStaff() {
         while (true) {
             try {

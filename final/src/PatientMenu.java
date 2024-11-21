@@ -82,8 +82,8 @@ public class PatientMenu {
     }
     private void resetPassword(){
         String newPass = InputHandler.getStringInput("New Password: ");
-        Patient patient = this.patient;
-        patient.changePassword(newPass);
+        Patient p = this.patient;
+        p.changePassword(newPass);
     }
     /**
      * Displays a submenu for updating the patient's personal information,
@@ -207,7 +207,8 @@ public class PatientMenu {
      */
     private void viewAvailableAppointments() {
         System.out.println("Available Appointments:");
-        facade.getAvailableDoctors().forEach(System.out::println);
+        facade.getAllDoctorAvailabilities();
+        //facade.getAvailableDoctors().forEach(System.out::println);
         System.out.println("");
     }
 

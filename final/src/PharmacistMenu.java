@@ -14,10 +14,11 @@ public class PharmacistMenu {
             System.out.println("2. Update Prescription Status");
             System.out.println("3. View Medication Inventory");
             System.out.println("4. Submit Replenishment Request");
-            System.out.println("5. Logout");
+            System.out.println("5. Reset Password");
+            System.out.println("6. Logout");
 
             try {
-                int choice = InputHandler.getIntInput(1, 5);
+                int choice = InputHandler.getIntInput(1, 6);
 
                 switch (choice) {
                     case 1:
@@ -33,6 +34,9 @@ public class PharmacistMenu {
                         submitReplenishmentRequest();
                         break;
                     case 5:
+                        resetPassword();
+                        break;
+                    case 6:
                         System.out.println("Logging out...");
                         return false; // Logout and exit the menu
                     default:
@@ -43,7 +47,11 @@ public class PharmacistMenu {
             }
         }
     }
-
+    private void resetPassword(){
+        String newPass = InputHandler.getStringInput("New Password: ");
+        Pharmacist p = this.pharmacist;
+        p.changePassword(newPass);
+    }
     private void viewAppointmentOutcome() {
         try {
             String appointmentID = InputHandler.getStringInput("Enter Appointment ID: ");
