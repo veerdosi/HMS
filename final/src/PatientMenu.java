@@ -12,17 +12,12 @@ public class PatientMenu {
     // Constructor
     public PatientMenu(Patient patient, Scanner sharedScanner) {
         this.patient = patient;
-        this.scanner = sharedScanner; // Shared scanner instance
+        this.scanner = sharedScanner;
         this.facade = AppointmentServiceFacade.getInstance("/Data/Patient_List(Sheet1).csv",
                 "/Data/Staff_List(Sheet1).csv");
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
-    /**
-     * Displays the Patient Menu.
-     * 
-     * @return boolean indicating whether to continue or exit.
-     */
     public boolean displayMenu() {
         while (true) {
             try {
@@ -36,21 +31,8 @@ public class PatientMenu {
                 System.out.println("7. View Scheduled Appointments");
                 System.out.println("8. View Past Appointment Outcome Records");
                 System.out.println("9. Logout");
-                System.out.print("Enter your choice: ");
 
-                if (!scanner.hasNextInt()) {
-                    System.out.println("Invalid input. Please enter a number between 1 and 9.");
-                    scanner.next(); // Consume invalid input
-                    continue;
-                }
-
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
-
-                if (choice < 1 || choice > 9) {
-                    System.out.println("Invalid choice. Please enter a number between 1 and 9.");
-                    continue;
-                }
+                int choice = InputHandler.getIntInput(1, 9);
 
                 switch (choice) {
                     case 1 -> viewMedicalRecord();
@@ -63,28 +45,16 @@ public class PatientMenu {
                     case 8 -> viewPastAppointmentOutcomes();
                     case 9 -> {
                         System.out.println("Logging out...");
-                        return false; // Exit the menu
+                        return false;
                     }
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred: " + e.getMessage());
-                scanner.nextLine(); // Clear invalid input
+                scanner.nextLine(); // Clear the buffer
             }
         }
     }
 
-    // Case 1: View Medical Record
-    private void viewMedicalRecord() {
-        System.out.println("Fetching Medical Record...");
-        MedicalRecord record = patient.viewMedicalRecord(patient); // Pass the patient object
-        if (record != null) {
-            System.out.println(record);
-        } else {
-            System.out.println("No medical records found for this patient.");
-        }
-    }
-
-    // Case 2: Update Personal Information
     private void updatePersonalInformation() {
         while (true) {
             System.out.println("---- Update Personal Information ----");
@@ -92,20 +62,16 @@ public class PatientMenu {
             System.out.println("2. Update Email Address");
             System.out.println("3. Update Both");
             System.out.println("4. Back to Main Menu");
-            System.out.print("Enter your choice: ");
 
-            int option = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            int option = InputHandler.getIntInput(1, 4);
 
             switch (option) {
                 case 1 -> updateContactNumber();
                 case 2 -> updateEmailAddress();
                 case 3 -> updateBothContactInfo();
                 case 4 -> {
-                    System.out.println("Returning to main menu...");
                     return;
                 }
-                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
     }
@@ -138,7 +104,7 @@ public class PatientMenu {
             patient.updateEmailAddress(newEmail);
             System.out.println("Email address updated successfully.");
         } else {
-            System.out.println("Invalid email address. It must contain '@'.");
+            System.out.println("Invalid email address format.");
         }
     }
 
@@ -162,13 +128,22 @@ public class PatientMenu {
         }
     }
 
-    // Case 3: View Available Appointments
+    // Rest of the methods remain unchanged from your original code
+    private void viewMedicalRecord() {
+        System.out.println("Fetching Medical Record...");
+        MedicalRecord record = patient.viewMedicalRecord(patient);
+        if (record != null) {
+            System.out.println(record);
+        } else {
+            System.out.println("No medical records found for this patient.");
+        }
+    }
+
     private void viewAvailableAppointments() {
         System.out.println("Available Appointments:");
         facade.getAvailableDoctors().forEach(System.out::println);
     }
 
-    // Case 4: Schedule Appointment
     private void scheduleAppointment() {
         System.out.print("Enter Doctor ID: ");
         String doctorId = scanner.nextLine();
@@ -176,7 +151,7 @@ public class PatientMenu {
         System.out.print("Enter Appointment Date (dd-MM-yyyy): ");
         String dateStr = scanner.nextLine();
         System.out.print("Enter Appointment Hour (9-16): ");
-        int hour = scanner.nextInt();
+        int hour = InputHandler.getIntInput(9, 16);
 
         LocalDateTime dateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
         if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
@@ -188,7 +163,6 @@ public class PatientMenu {
         System.out.println("Appointment scheduled successfully.");
     }
 
-    // Case 5: Reschedule Appointment
     private void rescheduleAppointment() {
         System.out.print("Enter Appointment ID to Reschedule: ");
         String appointmentId = scanner.nextLine();
@@ -196,7 +170,7 @@ public class PatientMenu {
         System.out.print("Enter New Appointment Date (dd-MM-yyyy): ");
         String dateStr = scanner.nextLine();
         System.out.print("Enter Appointment Hour (9-16): ");
-        int hour = scanner.nextInt();
+        int hour = InputHandler.getIntInput(9, 16);
 
         LocalDateTime newDateTime = DateTimeHelper.parseDateAndHour(dateStr, hour);
         if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
@@ -206,7 +180,6 @@ public class PatientMenu {
         }
     }
 
-    // Case 6: Cancel Appointment
     private void cancelAppointment() {
         System.out.print("Enter Appointment ID to Cancel: ");
         String appointmentId = scanner.nextLine();
@@ -214,7 +187,6 @@ public class PatientMenu {
         System.out.println("Appointment canceled successfully.");
     }
 
-    // Case 7: View Scheduled Appointments
     private void viewScheduledAppointments() {
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
         appointments.stream()
@@ -222,7 +194,6 @@ public class PatientMenu {
                 .forEach(System.out::println);
     }
 
-    // Case 8: View Past Appointments
     private void viewPastAppointmentOutcomes() {
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
         appointments.stream()
