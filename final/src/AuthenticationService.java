@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The `AuthenticationService` class is responsible for loading user data from CSV files
+ * and authenticating users. It supports both patients and staff and uses a `Map` to store
+ * user data for quick lookup.
+ */
 public class AuthenticationService {
     private Map<String, User> users = new HashMap<>();
 
@@ -11,19 +16,28 @@ public class AuthenticationService {
     private static final String PATIENT_FILE_PATH = "Data/Patient_List(Sheet1).csv";
     private static final String STAFF_FILE_PATH = "Data/Staff_List(Sheet1).csv";
 
+    /**
+     * Constructs an `AuthenticationService` object and loads user data from the specified
+     * CSV files for patients and staff.
+     */
     public AuthenticationService() {
         loadPatients();
         loadStaff();
     }
 
+    /**
+     * Loads patient data from the patient CSV file and populates the `users` map with
+     * `Patient` objects.
+     */
     private void loadPatients() {
         try (BufferedReader br = new BufferedReader(new FileReader(PATIENT_FILE_PATH))) {
             String line;
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 8)
-                    continue;
+                if (fields.length < 8) {
+                    continue; // Skip rows with insufficient data
+                }
 
                 String patientID = fields[0].trim();
                 String name = fields[1].trim();
@@ -43,14 +57,19 @@ public class AuthenticationService {
         }
     }
 
+    /**
+     * Loads staff data from the staff CSV file and populates the `users` map with appropriate
+     * `User` objects based on their roles (e.g., Doctor, Pharmacist, Administrator).
+     */
     private void loadStaff() {
         try (BufferedReader br = new BufferedReader(new FileReader(STAFF_FILE_PATH))) {
             String line;
             br.readLine(); // Skip header row
             while ((line = br.readLine()) != null) {
                 String[] fields = line.split(",");
-                if (fields.length < 8)
-                    continue;
+                if (fields.length < 8) {
+                    continue; // Skip rows with insufficient data
+                }
 
                 String staffID = fields[0].trim();
                 String name = fields[1].trim();
@@ -85,9 +104,11 @@ public class AuthenticationService {
     }
 
     /**
-     * @param userID
-     * @param password
-     * @return User
+     * Authenticates a user by their user ID and password.
+     *
+     * @param userID The unique identifier of the user.
+     * @param pass   The password provided by the user.
+     * @return The `User` object if authentication is successful, or `null` if authentication fails.
      */
     public User authenticateUser(String userID, String pass) {
         User user = users.get(userID);

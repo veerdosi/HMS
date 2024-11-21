@@ -4,6 +4,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * The `Helper` class provides utility methods for parsing and formatting dates, times,
+ * and user inputs. It also includes methods for reading and validating various types of input.
+ */
 public class Helper {
     private static final String DATE_FORMAT = "dd-MM-yyyy";
     private static final String TIME_FORMAT = "HH:mm";
@@ -14,10 +18,11 @@ public class Helper {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
     /**
-     * @param dateString
-     * @return LocalDate
+     * Parses a string representing a date into a `LocalDate` object.
+     *
+     * @param dateString The date string in the format "dd-MM-yyyy".
+     * @return The `LocalDate` object or `null` if parsing fails.
      */
-    // Method to parse a date from a string
     public static LocalDate parseDate(String dateString) {
         try {
             return LocalDate.parse(dateString, DATE_FORMATTER);
@@ -27,7 +32,12 @@ public class Helper {
         }
     }
 
-    // Method to parse time from a string (date will default to the current date)
+    /**
+     * Parses a string representing a time into a `LocalTime` object.
+     *
+     * @param timeString The time string in the format "HH:mm".
+     * @return The `LocalTime` object or `null` if parsing fails.
+     */
     public static LocalTime parseTime(String timeString) {
         try {
             return LocalTime.parse(timeString, TIME_FORMATTER);
@@ -37,7 +47,12 @@ public class Helper {
         }
     }
 
-    // Method to parse both date and time from a string
+    /**
+     * Parses a string representing a date and time into a `LocalDateTime` object.
+     *
+     * @param dateTimeString The date-time string in the format "dd-MM-yyyy HH:mm".
+     * @return The `LocalDateTime` object or `null` if parsing fails.
+     */
     public static LocalDateTime parseDateTime(String dateTimeString) {
         try {
             return LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
@@ -47,122 +62,49 @@ public class Helper {
         }
     }
 
-    // Method to format a LocalDate object as a date string
+    /**
+     * Formats a `LocalDate` object into a string.
+     *
+     * @param date The `LocalDate` to format.
+     * @return The formatted date string in the format "dd-MM-yyyy".
+     */
     public static String formatDate(LocalDate date) {
         return date.format(DATE_FORMATTER);
     }
 
-    // Method to format a LocalTime object as a time string
+    /**
+     * Formats a `LocalTime` object into a string.
+     *
+     * @param time The `LocalTime` to format.
+     * @return The formatted time string in the format "HH:mm".
+     */
     public static String formatTime(LocalTime time) {
         return time.format(TIME_FORMATTER);
     }
 
-    // Method to format a LocalDateTime object as a date-time string
+    /**
+     * Formats a `LocalDateTime` object into a string.
+     *
+     * @param dateTime The `LocalDateTime` to format.
+     * @return The formatted date-time string in the format "dd-MM-yyyy HH:mm".
+     */
     public static String formatDateTime(LocalDateTime dateTime) {
         return dateTime.format(DATE_TIME_FORMATTER);
     }
 
-    // Method to parse a date string and an hour into a LocalDateTime object
+    /**
+     * Parses a date string and an hour into a `LocalDateTime` object.
+     *
+     * @param dateString The date string in the format "dd-MM-yyyy".
+     * @param hour       The hour of the day (0-23).
+     * @return The `LocalDateTime` object or `null` if parsing fails.
+     */
     public static LocalDateTime parseDateAndHour(String dateString, int hour) {
         LocalDate date = parseDate(dateString);
         if (date == null) {
-            return null; // Return null if the date is invalid
+            return null;
         }
-        return date.atTime(hour, 0); // Combine date with the given hour, setting minutes/seconds to 0
+        return date.atTime(hour, 0);
     }
 
-    @SuppressWarnings("resource")
-  public static String readString(String prompt) {
-    System.out.print(prompt);
-    return new java.util.Scanner(System.in).nextLine();
-  }
-
-  public static int readInt(String prompt) {
-    int input = 0;
-    boolean valid = false;
-    while (!valid) {
-      try {
-        input = Integer.parseInt(readString(prompt));
-        valid = true;
-      } catch (NumberFormatException e) {
-        System.out.println("*** Please enter an integer ***");
-      }
-    }
-    return input;
-  }
-
-  public static double readDouble(String prompt) {
-    double input = 0;
-    boolean valid = false;
-    while (!valid) {
-      try {
-        input = Double.parseDouble(readString(prompt));
-        valid = true;
-      } catch (NumberFormatException e) {
-        System.out.println("*** Please enter a double ***");
-      }
-    }
-    return input;
-  }
-
-  public static float readFloat(String prompt) {
-    float input = 0;
-    boolean valid = false;
-    while (!valid) {
-      try {
-        input = Float.parseFloat(readString(prompt));
-        valid = true;
-      } catch (NumberFormatException e) {
-        System.out.println("*** Please enter a float ***");
-      }
-    }
-    return input;
-  }
-
-  public static long readLong(String prompt) {
-    long input = 0;
-    boolean valid = false;
-    while (!valid) {
-      try {
-        input = Long.parseLong(readString(prompt));
-        valid = true;
-      } catch (NumberFormatException e) {
-        e.printStackTrace();
-        System.out.println("*** Please enter a long ***");
-      }
-    }
-    return input;
-  }
-
-  public static char readChar(String prompt) {
-    char input = 0;
-    boolean valid = false;
-    while (!valid) {
-      String temp = readString(prompt);
-      if (temp.length() != 1) {
-        System.out.println("*** Please enter a character ***");
-      } else {
-        input = temp.charAt(0);
-        valid = true;
-      }
-    }
-    return input;
-  }
-
-  public static boolean readBoolean(String prompt) {
-    boolean valid = false;
-    while (!valid) {
-      String input = readString(prompt);
-      if (input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("y")
-          || input.equalsIgnoreCase("true") || input.equalsIgnoreCase("t")) {
-        return true;
-      } else if (input.equalsIgnoreCase("no") || input.equalsIgnoreCase("n")
-          || input.equalsIgnoreCase("false") || input.equalsIgnoreCase("f")) {
-        return false;
-      } else {
-        System.out.println("*** Please enter Yes/No or True/False ***");
-      }
-    }
-    return false;
-  }
 }

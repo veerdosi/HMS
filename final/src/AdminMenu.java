@@ -1,12 +1,27 @@
+/**
+ * The `AdminMenu` class provides an interactive menu for administrators to
+ * perform various administrative tasks, including managing hospital staff,
+ * viewing appointments, handling replenishment requests, and managing medication inventory.
+ */
 public class AdminMenu {
     private Admin admin;
     private MedicineInventory medicineInventory;
 
+    /**
+     * Constructs an `AdminMenu` instance for the specified administrator.
+     *
+     * @param admin The admin object associated with this menu.
+     */
     public AdminMenu(Admin admin) {
         this.admin = admin;
         this.medicineInventory = MedicineInventory.getInstance(null);
     }
 
+    /**
+     * Displays the main admin menu and processes user input.
+     *
+     * @return `false` when the user chooses to log out, ending the menu loop.
+     */
     public boolean display() {
         while (true) {
             System.out.println("\n---- Admin Menu ----");
@@ -23,7 +38,7 @@ public class AdminMenu {
                 switch (choice) {
                     case 1:
                         manageHospitalStaff();
-                        break; // Use break instead of return true
+                        break;
                     case 2:
                         viewAppointmentDetails();
                         break;
@@ -38,20 +53,26 @@ public class AdminMenu {
                         break;
                     case 6:
                         System.out.println("Logging out...");
-                        return false; // Only logout returns false
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                        return false;
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred. Please try again.");
             }
         }
     }
-    private void resetPassword(){
+
+    /**
+     * Resets the admin's password.
+     */
+    private void resetPassword() {
         String newPass = InputHandler.getStringInput("New Password: ");
-        Admin admin = this.admin;
         admin.changePassword(newPass);
+        System.out.println("Password reset successfully.");
     }
+
+    /**
+     * Manages hospital staff, including adding, updating, removing, and filtering staff members.
+     */
     private void manageHospitalStaff() {
         while (true) {
             try {
@@ -81,6 +102,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Displays all hospital staff members.
+     */
     private void displayAllStaff() {
         try {
             System.out.println("\n--- All Hospital Staff ---");
@@ -90,6 +114,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Adds a new staff member to the hospital.
+     */
     private void addNewStaff() {
         try {
             System.out.println("\n--- Add New Staff Member ---");
@@ -123,6 +150,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Updates the details of an existing staff member.
+     */
     private void updateStaff() {
         try {
             System.out.println("\n--- Update Staff Member ---");
@@ -154,16 +184,16 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Removes a staff member from the hospital.
+     */
     private void removeStaff() {
         try {
             System.out.println("\n--- Remove Staff Member ---");
             displayAllStaff();
 
             String staffID = InputHandler.getStringInput("Enter Staff ID to remove: ");
-
-            // Confirm deletion
-            String confirm = InputHandler
-                    .getStringInput("Are you sure you want to remove this staff member? (yes/no): ");
+            String confirm = InputHandler.getStringInput("Are you sure you want to remove this staff member? (yes/no): ");
             if (confirm.equalsIgnoreCase("yes")) {
                 admin.removeStaff(staffID);
                 System.out.println("Staff member removed successfully.");
@@ -175,6 +205,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Filters and displays hospital staff based on the specified criteria.
+     */
     private void filterStaff() {
         try {
             System.out.println("\n--- Filter Staff ---");
@@ -199,6 +232,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Views appointment details for the hospital.
+     */
     private void viewAppointmentDetails() {
         try {
             System.out.println("\n--- Appointment Details ---");
@@ -208,6 +244,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Manages the medication inventory, including viewing and updating stock levels.
+     */
     private void manageMedicationInventory() {
         while (true) {
             try {
@@ -233,6 +272,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Views all medicines in the inventory.
+     */
     private void viewAllMedicines() {
         try {
             System.out.println("\n--- All Medicines in Inventory ---");
@@ -242,6 +284,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Views medicines that are low on stock.
+     */
     private void viewLowStockMedicines() {
         try {
             System.out.println("\n--- Low Stock Medicines ---");
@@ -251,6 +296,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Updates the stock level of a specific medicine.
+     */
     private void updateMedicineStock() {
         try {
             System.out.println("\n--- Update Medicine Stock ---");
@@ -266,6 +314,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Handles replenishment requests, including viewing, approving, and rejecting them.
+     */
     private void handleReplenishmentRequests() {
         while (true) {
             try {
@@ -293,6 +344,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Views all replenishment requests in the system.
+     */
     private void viewAllRequests() {
         try {
             System.out.println("\n--- All Replenishment Requests ---");
@@ -302,6 +356,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Views replenishment requests filtered by their status.
+     */
     private void viewRequestsByStatus() {
         try {
             System.out.println("\n--- View Requests by Status ---");
@@ -324,6 +381,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Approves a replenishment request by its ID.
+     */
     private void approveRequest() {
         try {
             System.out.println("\n--- Approve Replenishment Request ---");
@@ -337,6 +397,9 @@ public class AdminMenu {
         }
     }
 
+    /**
+     * Rejects a replenishment request by its ID.
+     */
     private void rejectRequest() {
         try {
             System.out.println("\n--- Reject Replenishment Request ---");

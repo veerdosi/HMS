@@ -1,14 +1,30 @@
 import java.util.List;
-
+/**
+ * The `DoctorMenu` class represents the menu system that allows a doctor to manage
+ * their appointments, availability, and prescriptions. It provides interaction
+ * options for the doctor to perform various tasks related to their role.
+ */
 public class DoctorMenu {
     private Doctor doctor;
     private AppointmentServiceFacade facade;
-
+/**
+     * Constructs a `DoctorMenu` with the specified doctor and appointment service facade.
+     *
+     * @param doctor The doctor associated with this menu. All actions performed in this menu
+     *               are specific to this doctor.
+     * @param facade The `AppointmentServiceFacade` instance that provides operations for
+     *               managing appointments, prescriptions, and related activities.
+     */
     public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
         this.facade = facade;
     }
-
+/**
+     * Displays the doctor's menu and processes the doctor's input to execute actions.
+     * The menu runs in a loop until the doctor chooses to log out.
+     *
+     * @return `false` when the doctor logs out, terminating the menu loop.
+     */
     public boolean displayMenu() {
         while (true) {
             System.out.println("\n--- Doctor Menu ---");
@@ -61,11 +77,18 @@ public class DoctorMenu {
             }
         }
     }
-    private void resetPassword(){
+    /**
+     * Resets the doctor's password. Prompts the doctor for a new password and updates it.
+     */
+    private void resetPassword() {
         String newPass = InputHandler.getStringInput("New Password: ");
-        Doctor doc = this.doctor;
-        doc.changePassword(newPass);
+        doctor.changePassword(newPass);
     }
+
+    /**
+     * Allows the doctor to set their availability. Generates default availability slots
+     * and provides an option to mark specific slots as unavailable.
+     */
     private void setAvailability() {
         System.out.println("\n--- Set Availability ---");
         doctor.generateDefaultAvailability(); // Generate default slots
@@ -89,10 +112,13 @@ public class DoctorMenu {
             }
         }
 
-        DoctorAvailabilityRepository.getInstance()
-                .setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
+        DoctorAvailabilityRepository.getInstance().setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
     }
 
+    /**
+     * Displays the doctor's current availability slots.
+     * If no availability is defined, a message is displayed to the doctor.
+     */
     private void viewAvailableSlots() {
         System.out.println("\n--- Available Slots ---");
         List<TimeSlot> slots = doctor.getAvailability();
@@ -105,6 +131,10 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Allows the doctor to accept an appointment from their schedule.
+     * The appointment is marked as accepted and added to the doctor's schedule.
+     */
     private void acceptAppointment() {
         System.out.println("\n--- Accept Appointment ---");
         doctor.viewSchedule();
@@ -119,6 +149,10 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Allows the doctor to decline an appointment from their schedule.
+     * The appointment is marked as declined and not added to the schedule.
+     */
     private void declineAppointment() {
         System.out.println("\n--- Decline Appointment ---");
         doctor.viewSchedule();
@@ -133,6 +167,10 @@ public class DoctorMenu {
         }
     }
 
+    /**
+     * Adds consultation notes for a specific appointment.
+     * The doctor is prompted to enter the appointment ID and the consultation notes.
+     */
     private void addConsultationNotes() {
         System.out.println("\n--- Add Consultation Notes ---");
         String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
@@ -141,6 +179,10 @@ public class DoctorMenu {
         System.out.println("Consultation notes added to appointment ID: " + appointmentId);
     }
 
+    /**
+     * Adds a prescription for a specific appointment.
+     * The doctor is prompted to enter the appointment ID and the details of the prescription.
+     */
     private void addPrescription() {
         System.out.println("\n--- Add Prescription ---");
         String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
