@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 public class HMSUserApp {
     private static HMSUserApp instance = null;
     private AuthenticationService authService;
@@ -78,7 +76,7 @@ public class HMSUserApp {
         while (keepRunning) {
             switch (user.getRole()) {
                 case DOCTOR:
-                    DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade, InputHandler.getScanner());
+                    DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade);
                     keepRunning = doctorMenu.displayMenu();
                     break;
 
@@ -88,12 +86,12 @@ public class HMSUserApp {
                     break;
 
                 case ADMIN:
-                    AdminMenu adminMenu = new AdminMenu((Admin) user, InputHandler.getScanner());
+                    AdminMenu adminMenu = new AdminMenu((Admin) user);
                     keepRunning = adminMenu.display();
                     break;
 
                 case PHARMACIST:
-                    PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user, InputHandler.getScanner());
+                    PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user);
                     keepRunning = pharmacistMenu.displayMenu();
                     break;
 

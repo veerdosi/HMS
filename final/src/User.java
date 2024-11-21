@@ -2,7 +2,6 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class User implements IPasswordUpdate {
     protected String userID;
@@ -14,7 +13,7 @@ public class User implements IPasswordUpdate {
     protected String contactNumber;
     private static final String PATIENT_FILE_PATH = "Data/Patient_List(Sheet1).csv";
     private static final String STAFF_FILE_PATH = "Data/Staff_List(Sheet1).csv";
-    private static final String DEFAULT_PASSWORD = "password"; // every new user is assigned this bef 1st login
+    private static final String DEFAULT_PASSWORD = "password"; // every new user is assigned this before first login
 
     // Constructor
     public User(String userID, String name, String password, UserRole role, String gender, String contactEmail,
@@ -73,11 +72,9 @@ public class User implements IPasswordUpdate {
 
     public boolean authenticatePassword(String password) {
         if (password.equals(DEFAULT_PASSWORD)) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Please reset your password (First Login).\n New Password: ");
-            String newPass = scanner.nextLine();
+            System.out.println("Please reset your password (First Login).");
+            String newPass = InputHandler.getStringInput("New Password: ");
             changePassword(password, newPass);
-            scanner.close();
         }
         return this.password.equals(password);
     }

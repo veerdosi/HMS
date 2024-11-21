@@ -1,15 +1,12 @@
-import java.util.Scanner;
 import java.util.List;
 
 public class DoctorMenu {
     private Doctor doctor;
     private AppointmentServiceFacade facade;
-    private Scanner scanner;
 
-    public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade, Scanner scanner) {
+    public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
         this.facade = facade;
-        this.scanner = scanner;
     }
 
     public boolean displayMenu() {
@@ -30,7 +27,7 @@ public class DoctorMenu {
                 switch (choice) {
                     case 1:
                         doctor.viewSchedule();
-                        break; // Don't return true, just break
+                        break;
                     case 2:
                         setAvailability();
                         break;
@@ -61,23 +58,20 @@ public class DoctorMenu {
         }
     }
 
-    // Rest of the methods remain the same...
     private void setAvailability() {
         System.out.println("\n--- Set Availability ---");
         doctor.generateDefaultAvailability(); // Generate default slots
         System.out.println("Default slots generated. You can modify them manually if needed.");
 
-        System.out.print("Do you want to mark any slot as unavailable? (yes/no): ");
-        String response = scanner.nextLine();
-
-        if (response.equalsIgnoreCase("yes")) {
+        boolean modifySlots = InputHandler.getYesNoInput("Do you want to mark any slot as unavailable?");
+        if (modifySlots) {
             List<TimeSlot> availability = doctor.getAvailability();
             System.out.println("Enter the index of the slot to mark unavailable (0-based):");
             for (int i = 0; i < availability.size(); i++) {
                 System.out.println(i + ": " + availability.get(i));
             }
 
-            int index = InputHandler.getIntInput(0, availability.size() - 1);
+            int index = InputHandler.getIntInput("Enter the slot index: ", 0, availability.size() - 1);
 
             if (index >= 0 && index < availability.size()) {
                 doctor.setCustomSlotAvailability(index, false);
@@ -106,11 +100,12 @@ public class DoctorMenu {
     private void acceptAppointment() {
         System.out.println("\n--- Accept Appointment ---");
         doctor.viewSchedule();
-        System.out.print("Enter the index of the appointment to accept: ");
-        int index = InputHandler.getIntInput(0, doctor.getSchedule().size() - 1);
+        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
+                doctor.getSchedule().size() - 1);
 
         if (index >= 0 && index < doctor.getSchedule().size()) {
             doctor.processAppointment(doctor.getSchedule().get(index), true);
+            System.out.println("Appointment accepted.");
         } else {
             System.out.println("Invalid selection.");
         }
@@ -119,11 +114,12 @@ public class DoctorMenu {
     private void declineAppointment() {
         System.out.println("\n--- Decline Appointment ---");
         doctor.viewSchedule();
-        System.out.print("Enter the index of the appointment to decline: ");
-        int index = InputHandler.getIntInput(0, doctor.getSchedule().size() - 1);
+        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
+                doctor.getSchedule().size() - 1);
 
         if (index >= 0 && index < doctor.getSchedule().size()) {
             doctor.processAppointment(doctor.getSchedule().get(index), false);
+            System.out.println("Appointment declined.");
         } else {
             System.out.println("Invalid selection.");
         }
@@ -131,20 +127,16 @@ public class DoctorMenu {
 
     private void addConsultationNotes() {
         System.out.println("\n--- Add Consultation Notes ---");
-        System.out.print("Enter Appointment ID: ");
-        String appointmentId = scanner.nextLine();
-        System.out.print("Enter Notes: ");
-        String notes = scanner.nextLine();
+        String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
+        String notes = InputHandler.getStringInput("Enter Notes: ");
         facade.addConsultationNotes(appointmentId, notes);
         System.out.println("Consultation notes added to appointment ID: " + appointmentId);
     }
 
     private void addPrescription() {
         System.out.println("\n--- Add Prescription ---");
-        System.out.print("Enter Appointment ID: ");
-        String appointmentId = scanner.nextLine();
-        System.out.print("Enter Medicine Name: ");
-        String medicineName = scanner.nextLine();
+        String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
+        String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
 
         Medicine medicine = new Medicine(medicineName, 0, 0);
         Prescription prescription = new Prescription(medicine);

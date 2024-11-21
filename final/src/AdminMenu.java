@@ -1,14 +1,11 @@
-import java.util.Scanner;
 import java.util.List;
 
 public class AdminMenu {
     private Admin admin;
-    private Scanner scanner;
     private MedicineInventory medicineInventory;
 
-    public AdminMenu(Admin admin, Scanner scanner) {
+    public AdminMenu(Admin admin) {
         this.admin = admin;
-        this.scanner = scanner;
         this.medicineInventory = MedicineInventory.getInstance(null);
     }
 

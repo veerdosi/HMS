@@ -1,19 +1,15 @@
-import java.util.Scanner;
-
 public class PharmacistMenu {
     private Pharmacist pharmacist;
     private AppointmentOutcomeRecord outcomeRecord;
-    private Scanner scanner;
 
-    public PharmacistMenu(Pharmacist pharmacist, Scanner scanner) {
+    public PharmacistMenu(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
-        this.scanner = scanner;
     }
 
     public boolean displayMenu() {
         while (true) {
-            System.out.println("\nPharmacist Menu:");
+            System.out.println("\n--- Pharmacist Menu ---");
             System.out.println("1. View Appointment Outcome Record");
             System.out.println("2. Update Prescription Status");
             System.out.println("3. View Medication Inventory");
@@ -26,7 +22,7 @@ public class PharmacistMenu {
                 switch (choice) {
                     case 1:
                         viewAppointmentOutcome();
-                        break; // Use break instead of return true
+                        break;
                     case 2:
                         updatePrescriptionStatus();
                         break;
@@ -38,7 +34,7 @@ public class PharmacistMenu {
                         break;
                     case 5:
                         System.out.println("Logging out...");
-                        return false; // Only logout returns false
+                        return false; // Logout and exit the menu
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -50,8 +46,7 @@ public class PharmacistMenu {
 
     private void viewAppointmentOutcome() {
         try {
-            System.out.print("Enter Appointment ID: ");
-            String appointmentID = scanner.nextLine();
+            String appointmentID = InputHandler.getStringInput("Enter Appointment ID: ");
 
             if (!validateInput(appointmentID)) {
                 System.out.println("Invalid Appointment ID. Please try again.");
@@ -72,16 +67,14 @@ public class PharmacistMenu {
 
     private void updatePrescriptionStatus() {
         try {
-            System.out.print("Enter Prescription ID: ");
-            String prescriptionID = scanner.nextLine();
+            String prescriptionID = InputHandler.getStringInput("Enter Prescription ID: ");
 
             if (!validateInput(prescriptionID)) {
                 System.out.println("Invalid Prescription ID. Please try again.");
                 return;
             }
 
-            System.out.print("Enter Medicine Name: ");
-            String medicineName = scanner.nextLine();
+            String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
 
             if (!validateInput(medicineName)) {
                 System.out.println("Invalid Medicine Name. Please try again.");
@@ -128,16 +121,14 @@ public class PharmacistMenu {
 
     private void submitReplenishmentRequest() {
         try {
-            System.out.print("Enter Medicine Name: ");
-            String medicineName = scanner.nextLine();
+            String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
 
             if (!validateInput(medicineName)) {
                 System.out.println("Invalid Medicine Name. Please try again.");
                 return;
             }
 
-            System.out.print("Enter Quantity to Replenish: ");
-            int quantity = InputHandler.getIntInput(1, 1000);
+            int quantity = InputHandler.getIntInput("Enter Quantity to Replenish (1-1000): ", 1, 1000);
 
             pharmacist.submitReplenishmentRequest(medicineName, quantity);
             System.out.println("Replenishment request submitted successfully.");
