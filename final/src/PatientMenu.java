@@ -5,7 +5,6 @@ import java.util.List;
 
 public class PatientMenu {
     private Patient patient;
-    private Scanner scanner;
     private AppointmentServiceFacade facade;
     private AppointmentOutcomeRecord outcomeRecord;
 
@@ -16,7 +15,7 @@ public class PatientMenu {
     }
 
     public boolean displayMenu() {
-        scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         while (true) {
                 System.out.println("---- Patient Menu ----");
                 System.out.println("1. View Medical Record");
@@ -30,6 +29,7 @@ public class PatientMenu {
                 System.out.println("9. Logout");
 
                 int choice = scanner.nextInt();
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1: 
@@ -64,7 +64,7 @@ public class PatientMenu {
         }
 
         private void updatePersonalInformation() {
-            scanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(System.in);
     
             while (true) {
                 System.out.println("---- Update Personal Information ----");
@@ -74,6 +74,7 @@ public class PatientMenu {
                 System.out.println("4. Back to Main Menu");
                 System.out.print("Enter your choice: ");
                 int option = scanner.nextInt();
+                scanner.nextLine();
     
                 switch (option) {
                     case 1:
@@ -105,6 +106,7 @@ public class PatientMenu {
     }
 
     private void updateContactNumber() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter new contact number (8 digits): ");
         String newContact = scanner.nextLine();
         if (validateContactNumber(newContact)) {
@@ -116,6 +118,7 @@ public class PatientMenu {
     }
 
     private void updateEmailAddress() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter new email address: ");
         String newEmail = scanner.nextLine();
         if (validateEmailAddress(newEmail)) {
@@ -127,6 +130,7 @@ public class PatientMenu {
     }
 
     private void updateBothContactInfo() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter new contact number (8 digits): ");
         String newContact = scanner.nextLine();
         System.out.print("Enter new email address: ");
@@ -163,6 +167,7 @@ public class PatientMenu {
     }
 
     private void scheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter Doctor ID: ");
         String doctorId = scanner.nextLine();
 
@@ -182,6 +187,7 @@ public class PatientMenu {
     }
 
     private void rescheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter Appointment ID to Reschedule: ");
         String appointmentId = scanner.nextLine();
 
@@ -199,6 +205,7 @@ public class PatientMenu {
     }
 
     private void cancelAppointment() {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter Appointment ID to Cancel: ");
         String appointmentId = scanner.nextLine();
         facade.cancelAppointment(appointmentId);
