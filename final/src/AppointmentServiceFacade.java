@@ -69,8 +69,8 @@ public class AppointmentServiceFacade {
         appointmentService.addPrescription(appointmentId, prescription);
     }
 
-    public void updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
-        prescriptionService.updatePrescriptionStatus(appointmentId, medicine, status);
+    public boolean updatePrescriptionStatus(String appointmentId, Medicine medicine, PrescriptionStatus status) {
+        return (prescriptionService.updatePrescriptionStatus(appointmentId, medicine, status));
     }
 
     // Public methods to access doctors and patients from DoctorService and PatientService
