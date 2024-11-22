@@ -61,11 +61,8 @@ public class DoctorMenu {
         }
     }
 
-    // View Patient Medical Records
     private void viewPatientMedicalRecords() {
         System.out.println("\n--- View Patient Medical Records ---");
-        System.out.println("Enter the Patient ID to view their medical records:");
-        System.out.println("0. Back to Main Menu");
 
         List<Appointment> confirmedAppointments = outcomeRecord
                 .getConfirmedAppointmentsByDoctor(doctor.getUserID());
@@ -74,20 +71,31 @@ public class DoctorMenu {
             return;
         }
 
-        // Logic to fetch and display patient medical records
-        // Use facade.getPatientById(patientId) to fetch details
+        System.out.println("Select an appointment to view the patient's medical record:");
+        int index = 1;
+        for (Appointment appointment : confirmedAppointments) {
+            System.out.printf("%d. Appointment ID: %s, Patient ID: %s, Date & Time: %s\n",
+                    index++, appointment.getId(), appointment.getPatientID(),
+                    appointment.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+        }
+
+        int selection = InputHandler.getIntInput(1, confirmedAppointments.size());
+        Appointment selectedAppointment = confirmedAppointments.get(selection - 1);
+
+        Patient patient = facade.getPatientById(selectedAppointment.getPatientID());
+        if (patient == null) {
+            System.out.println("Patient not found.");
+            return;
+        }
+
+        MedicalRecord record = patient.viewMedicalRecord(doctor);
+        if (record != null) {
+            record.displayRecord();
+        }
     }
 
-    // Update Patient Medical Records
     private void updatePatientMedicalRecords() {
-        while (true) {
-            System.out.println("\n--- Update Patient Medical Records ---");
-            System.out.println("Enter the Patient ID to update their medical records:");
-            System.out.println("Choose the information to update:");
-            System.out.println("1. Add Diagnosis");
-            System.out.println("2. Add Prescription");
-            System.out.println("3. Update Treatment Plan");
-            System.out.println("0. Back to Main Menu");
+        System.out.println("\n--- Update Patient Medical Records ---");
 
         List<Appointment> confirmedAppointments = outcomeRecord.getConfirmedAppointmentsByDoctor(doctor.getUserID());
         if (confirmedAppointments.isEmpty()) {
@@ -95,24 +103,41 @@ public class DoctorMenu {
             return;
         }
 
-            switch (choice) {
-                case 1:
-                    System.out.println("Enter Diagnosis Details:");
-                    // Logic to add diagnosis
-                    break;
-                case 2:
-                    System.out.println("Enter Prescription Details:");
-                    // Logic to add prescription
-                    break;
-                case 3:
-                    System.out.println("Enter Updated Treatment Plan:");
-                    // Logic to update treatment plan
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+        System.out.println("Select an appointment to update the patient's medical record:");
+        int index = 1;
+        for (Appointment appointment : confirmedAppointments) {
+            System.out.printf("%d. Appointment ID: %s, Patient ID: %s, Date & Time: %s\n",
+                    index++, appointment.getId(), appointment.getPatientID(),
+                    appointment.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+        }
+
+        int selection = InputHandler.getIntInput(1, confirmedAppointments.size());
+        Appointment selectedAppointment = confirmedAppointments.get(selection - 1);
+
+        Patient patient = facade.getPatientById(selectedAppointment.getPatientID());
+        if (patient == null) {
+            System.out.println("Patient not found.");
+            return;
+        }
+
+        MedicalRecord record = patient.viewMedicalRecord(doctor);
+        if (record == null) {
+            System.out.println("Access denied to update the medical record.");
+            return;
+        }
+
+        System.out.println("1. Add Diagnosis");
+        System.out.println("2. Add Treatment");
+        int choice = InputHandler.getIntInput(1, 2);
+
+        if (choice == 1) {
+            String diagnosis = InputHandler.getStringInput("Enter Diagnosis: ");
+            record.addDiagnosis(diagnosis);
+            System.out.println("Diagnosis added successfully.");
+        } else if (choice == 2) {
+            String treatment = InputHandler.getStringInput("Enter Treatment: ");
+            record.addTreatment(treatment);
+            System.out.println("Treatment added successfully.");
         }
     }
 
@@ -172,7 +197,6 @@ public class DoctorMenu {
         DoctorAvailabilityRepository.getInstance().setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
     }
 
-    // Handle Appointment Requests
     private void handleAppointmentRequests() {
         while (true) {
             System.out.println("\n--- Accept or Decline Appointment Requests ---");
@@ -203,19 +227,68 @@ public class DoctorMenu {
             System.out.println("1. Process Appointment Request");
             System.out.println("0. Back to Main Menu");
 
-            int choice = InputHandler.getIntInput(0, 2);
+            int choice = InputHandler.getIntInput(0, 1);
 
             switch (choice) {
                 case 1:
-                    System.out.println("Enter Appointment ID to Accept:");
-                    // Logic to accept appointment
+                    // Get appointment ID from user
+                    String appointmentId = InputHandler.getStringInput("Enter Appointment ID to process: ");
+
+                    // Verify the appointment exists and belongs to this doctor
+                    Appointment selectedAppointment = pendingAppointments.stream()
+                            .filter(apt -> apt.getId().equals(appointmentId))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (selectedAppointment == null) {
+                        System.out.println("Invalid Appointment ID or appointment not found.");
+                        continue;
+                    }
+
+                    // Get accept/decline decision
+                    System.out.println("\nDo you want to accept this appointment?");
+                    System.out.println("1. Accept");
+                    System.out.println("2. Decline");
+
+                    int decision = InputHandler.getIntInput(1, 2);
+                    boolean accept = decision == 1;
+
+                    try {
+                        // First update the doctor's schedule if accepting
+                        if (accept) {
+                            // Book the time slot
+                            if (!doctor.bookSlot(selectedAppointment.getDateTime().toLocalTime())) {
+                                System.out.println("Error: Time slot is no longer available.");
+                                continue;
+                            }
+
+                            // Add to doctor's schedule
+                            doctor.getSchedule().add(selectedAppointment);
+                        } else {
+                            // If declining, ensure the slot is freed
+                            doctor.freeSlot(selectedAppointment.getDateTime().toLocalTime());
+                            // Remove from doctor's schedule if it was there
+                            doctor.getSchedule().removeIf(apt -> apt.getId().equals(appointmentId));
+                        }
+
+                        // Then process the appointment through the facade
+                        facade.processAppointment(appointmentId, accept);
+
+                        System.out.println("Appointment " + (accept ? "accepted" : "declined") + " successfully.");
+
+                    } catch (Exception e) {
+                        System.out.println("Error processing appointment: " + e.getMessage());
+                        // Rollback changes to doctor's schedule if there was an error
+                        if (accept) {
+                            doctor.freeSlot(selectedAppointment.getDateTime().toLocalTime());
+                            doctor.getSchedule().removeIf(apt -> apt.getId().equals(appointmentId));
+                        }
+                    }
                     break;
-                case 2:
-                    System.out.println("Enter Appointment ID to Decline:");
-                    // Logic to decline appointment
-                    break;
+
                 case 0:
                     return;
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
