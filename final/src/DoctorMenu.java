@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class DoctorMenu {
     private Doctor doctor;
     private AppointmentServiceFacade facade;
@@ -121,29 +119,35 @@ if ("0".equals(patientId)) {
 
     // Set Availability
     private void setAvailability() {
-        System.out.println("\n--- Set Availability ---");
-        doctor.generateDefaultAvailability(); // Generate default slots
-        System.out.println("Default slots generated. You can modify them manually if needed.");
+        while (true) {
+            System.out.println("\n--- Set Availability for Appointments ---");
+            System.out.println("Choose an option:");
+            System.out.println("1. Add Availability Slot");
+            System.out.println("2. Remove Availability Slot");
+            System.out.println("3. View Current Availability");
+            System.out.println("0. Back to Main Menu");
 
-        boolean modifySlots = InputHandler.getYesNoInput("Do you want to mark any slot as unavailable?");
-        if (modifySlots) {
-            List<TimeSlot> availability = doctor.getAvailability();
-            System.out.println("Enter the index of the slot to mark unavailable (0-based):");
-            for (int i = 0; i < availability.size(); i++) {
-                System.out.println(i + ": " + availability.get(i));
-            }
+            int choice = InputHandler.getIntInput(0, 3);
 
-            int index = InputHandler.getIntInput("Enter the slot index: ", 0, availability.size() - 1);
-
-            if (index >= 0 && index < availability.size()) {
-                doctor.setCustomSlotAvailability(index, false);
-                System.out.println("Slot marked as unavailable.");
-            } else {
-                System.out.println("Invalid index.");
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Date and Time for Availability:");
+                    // Logic to add availability
+                    break;
+                case 2:
+                    System.out.println("Enter Date and Time to Remove Availability:");
+                    // Logic to remove availability
+                    break;
+                case 3:
+                    System.out.println("Your Current Availability:");
+                    // Logic to view availability
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
         }
-
-        DoctorAvailabilityRepository.getInstance().setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
     }
 
     // Handle Appointment Requests
@@ -181,51 +185,34 @@ if ("0".equals(patientId)) {
         InputHandler.getIntInput(0, 0);
     }
 
+    // Record Appointment Outcome
     private void recordAppointmentOutcome() {
         while (true) {
             System.out.println("\n--- Record Appointment Outcome ---");
-
-            // Get the Appointment ID from the user
-            String aptID = InputHandler.getStringInput("Enter the Appointment ID to record its outcome: ");
-
+            System.out.println("Enter the Appointment ID to record its outcome:");
             System.out.println("Choose an action:");
             System.out.println("1. Add Consultation Notes");
             System.out.println("2. Add Prescriptions");
+            System.out.println("3. Mark Appointment as Completed");
             System.out.println("0. Back to Main Menu");
 
-            int choice = InputHandler.getIntInput(0, 2);
+            int choice = InputHandler.getIntInput(0, 3);
 
             switch (choice) {
                 case 1:
-                    String notes = InputHandler.getStringInput("Enter Consultation Notes: ");
-                    try {
-                        facade.addConsultationNotes(aptID, notes);
-                        System.out.println("Consultation notes successfully added.");
-                    } catch (Exception e) {
-                        System.out.println("Error adding consultation notes: " + e.getMessage());
-                    }
+                    System.out.println("Enter Consultation Notes:");
+                    // Logic to add consultation notes
                     break;
-
                 case 2:
-                    String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
-
-                    // Create a Medicine object
-                    Medicine medicine = new Medicine(medicineName);
-
-                    // Create a Prescription object
-                    Prescription prescription = new Prescription(medicine);
-
-                    try {
-                        facade.addPrescription(aptID, prescription);
-                        System.out.println("Prescription successfully added.");
-                    } catch (Exception e) {
-                        System.out.println("Error adding prescription: " + e.getMessage());
-                    }
+                    System.out.println("Enter Prescription Details:");
+                    // Logic to add prescriptions
                     break;
-
+                case 3:
+                    System.out.println("Marking Appointment as Completed...");
+                    // Logic to mark appointment as completed
+                    break;
                 case 0:
                     return;
-
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
