@@ -143,17 +143,22 @@ public class User implements IPasswordUpdate {
  * @param passString The password to authenticate.
  * @return `true` if authentication is successful, `false` otherwise.
  */
-public boolean authenticatePassword(String password) {
-    if (this.password.equals(password)){
-        if(password.equals(DEFAULT_PASSWORD)){
-        System.out.println("");
-        System.out.println("First Login: Please reset your password!\n");
-        String newPass = InputHandler.getStringInput("New Password: ");
-        changePassword(newPass);
+public boolean authenticatePassword(String inputPassword) {
+    // Check if the input password matches the current password
+    if (this.password.equals(inputPassword)) {
+        // If it's the default password, prompt the user to change it
+        if (inputPassword.equals(DEFAULT_PASSWORD)) {
+            System.out.println("\nFirst Login: Please reset your password!");
+            String newPass = InputHandler.getStringInput("New Password: ");
+            changePassword(newPass); // Updates the password
+            System.out.println("Password updated successfully. Please log in again.");
+            return false; // Force re-login after password change
         }
+        return true; // Successful login
     }
-    return this.password.equals(password);
+    return false; // Incorrect password
 }
+
 
     /**
      * Changes the user's password and updates the corresponding record in the CSV
@@ -221,12 +226,28 @@ public boolean authenticatePassword(String password) {
      *         user ID is invalid.
      */
     private String determineFilePath() {
-        if (userID.startsWith("P")) {
-            return PATIENT_FILE_PATH;
-        } else if (userID.startsWith("D") || userID.startsWith("A")) {
-            return STAFF_FILE_PATH;
-        } else {
-            return null;
-        }
+    if (isIDInFile(userID, PATIENT_FILE_PATH)) {
+        return PATIENT_FILE_PATH;
+    } else if (isIDInFile(userID, STAFF_FILE_PATH)) {
+        return STAFF_FILE_PATH;
+    } else {
+        return null; // Invalid or non-existent ID
     }
+}
+
+private boolean isIDInFile(String userID, String filePath) {
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            String[] fields = line.split(",");
+            if (fields[0].trim().equals(userID)) {
+                return true;
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("Error reading the file: " + e.getMessage());
+    }
+    return false;
+}
+
 }

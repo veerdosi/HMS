@@ -86,25 +86,13 @@ public class PharmacistMenu {
      * the corresponding appointment outcome if found.
      */
     private void viewAppointmentOutcome() {
-        try {
-            String appointmentID = InputHandler.getStringInput("Enter Appointment ID: ");
-
-            if (!validateInput(appointmentID)) {
-                System.out.println("Invalid Appointment ID. Please try again.");
-                return;
-            }
-
-            Appointment appointment = outcomeRecord.getAppointmentById(appointmentID);
-            if (appointment != null) {
-                System.out.println("Appointment Outcome Record:");
-                System.out.println(appointment);
-            } else {
-                System.out.println("No outcome record found for the provided Appointment ID.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error viewing appointment outcome: " + e.getMessage());
-        }
+    try {
+        System.out.println("Displaying all appointment outcomes:\n");
+        outcomeRecord.displayAllAppointments(); // Call the method to display all appointments
+    } catch (Exception e) {
+        System.out.println("Error viewing appointment outcomes: " + e.getMessage());
     }
+}
 
     /**
      * Updates the status of a prescription.
@@ -150,8 +138,12 @@ public class PharmacistMenu {
                     return;
             }
 
-            pharmacist.updatePrescriptionStatus(prescriptionID, medicineName, status);
-            System.out.println("Prescription status updated successfully.");
+            if(pharmacist.updatePrescriptionStatus(prescriptionID, medicineName, status)){
+               // System.out.println("Prescription status updated successfully.");
+            }
+            else{
+                System.out.println("Prescription status not updated - please retry with valid inputs.");
+            }
         } catch (Exception e) {
             System.out.println("Error updating prescription status: " + e.getMessage());
         }

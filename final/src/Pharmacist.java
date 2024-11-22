@@ -70,14 +70,14 @@ public class Pharmacist extends User {
      * @param medicineName  the name of the medicine in the prescription.
      * @param status        the new status of the prescription.
      */
-    public void updatePrescriptionStatus(String appointmentId, String medicineName, PrescriptionStatus status) {
+    public boolean  updatePrescriptionStatus(String appointmentId, String medicineName, PrescriptionStatus status) {
         AppointmentServiceFacade facade = AppointmentServiceFacade.getInstance(null, null);
         MedicineInventory inventory = MedicineInventory.getInstance("path_to_medicine_file");
 
         Medicine medicine = inventory.getMedicineByName(medicineName);
         if (medicine == null) {
             System.out.println("Medicine not found in inventory: " + medicineName);
-            return;
+            return false;
         }
 
         if (facade.updatePrescriptionStatus(appointmentId, medicine, status)) {
@@ -85,6 +85,10 @@ public class Pharmacist extends User {
             if (status == PrescriptionStatus.DISPENSED) {
                 inventory.decreaseStock(medicineName);
             }
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

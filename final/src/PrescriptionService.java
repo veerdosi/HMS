@@ -44,7 +44,7 @@ public class PrescriptionService {
             for (Prescription prescription : appointment.getPrescriptions()) {
                 if (prescription.getMedicine().getName().equals(medicine.getName())) {
                     prescription.setStatus(status);
-                    System.out.println("Prescription status updated to " + status + " for " + medicine.getName());
+                   // System.out.println("Prescription status updated to " + status + " for " + medicine.getName());
                     return true;
                 }
             }
