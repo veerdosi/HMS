@@ -7,10 +7,7 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
 
-    // This constructor method `public Patient(String userID, String name, String
-    // password, String
-    // gender, String contactEmail, String contactNumber, String dateOfBirth, String
-    // bloodType)` is
+    // This constructor method is
     // initializing a new `Patient` object with the provided parameters. It calls
     // the constructor of
     // the superclass `User` using `super(userID, name, password, UserRole.PATIENT,
@@ -38,17 +35,14 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
      * @param user
      * @return MedicalRecord
      */
-    // The code snippet you provided is implementing the `viewMedicalRecord` method
-    // from the
-    // `IPatientMedicalRecordAccess` interface in the `Patient` class. This method
-    // allows a user to
-    // view the medical record of a patient. It takes a `User` object as a parameter
-    // and returns the
-    // medical record associated with the patient. The actual implementation of how
-    // the medical record
+    // This is implementing the `viewMedicalRecord` method from the
+    // `IPatientMedicalRecordAccess` interface in the `Patient` class. 
+    // This methodallows a user to view the medical record of a patient. 
+    // It takes a `User` object as a parameter and returns the
+    // medical record associated with the patient. 
+    // The actual implementation of how the medical record
     // is viewed is delegated to the `MedicalRecord` class, where the
-    // `viewMedicalRecord` method is
-    // called with the user object passed as an argument.
+    // `viewMedicalRecord` method is called with the user object passed as an argument.
     // Implementing PatientMedicalRecordAccess method for view-only access to
     // MedicalRecord
     @Override
