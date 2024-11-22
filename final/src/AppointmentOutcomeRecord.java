@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * The `AppointmentOutcomeRecord` class manages the records of past appointments.
- * It is implemented as a Singleton to ensure only one instance exists throughout the application.
- * The class provides methods to add, retrieve, and display appointment outcomes.
+ * The `AppointmentOutcomeRecord` class manages the records of past
+ * appointments.
+ * It is implemented as a Singleton to ensure only one instance exists
+ * throughout the application.
+ * The class provides methods to add, retrieve, and display appointment
+ * outcomes.
  */
 public class AppointmentOutcomeRecord {
     private static AppointmentOutcomeRecord instance;
@@ -75,6 +78,55 @@ public class AppointmentOutcomeRecord {
                 .collect(Collectors.toList());
     }
 
+    public List<Appointment> getCompletedAppointmentsByPatient(String patientId) {
+        return getAppointmentsByPatient(patientId).stream()
+                .filter(appointment -> appointment.getStatus() == AppointmentStatus.COMPLETED)
+                .collect(Collectors.toList());
+    }
+
+    public void displayCompletedAppointmentsByPatient(String patientId) {
+        // Get completed appointments for the patient
+        List<Appointment> completedAppointments = getCompletedAppointmentsByPatient(patientId);
+
+        // Check if the list is null or empty
+        if (completedAppointments == null || completedAppointments.isEmpty()) {
+            System.out.println("No completed appointments found for Patient ID: " + patientId);
+            return;
+        }
+
+        // Define a date-time formatter for consistent display
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Print the title
+        System.out.println("Completed Appointments for Patient ID: " + patientId);
+
+        // Print the table header
+        System.out.println(String.format("%-15s %-15s %-15s %-20s %-10s %-15s %-20s %-30s",
+                "Appointment ID", "Patient ID", "Doctor ID", "Date & Time", "Status", "Service Type",
+                "Consultation Notes", "Prescriptions"));
+
+        // Print each appointment as a row
+        for (Appointment appointment : completedAppointments) {
+            String prescriptions = appointment.getPrescriptions().isEmpty()
+                    ? "None"
+                    : appointment.getPrescriptions().toString();
+
+            String dateTimeString = appointment.getDateTime() != null
+                    ? appointment.getDateTime().format(dateTimeFormatter)
+                    : "N/A";
+
+            System.out.println(String.format("%-15s %-15s %-15s %-20s %-10s %-15s %-20s %-30s",
+                    appointment.getId(),
+                    appointment.getPatientID(),
+                    appointment.getDoctorID(),
+                    dateTimeString,
+                    appointment.getStatus(),
+                    (appointment.getTypeOfService() != null ? appointment.getTypeOfService() : "N/A"),
+                    (appointment.getConsultationNotes() != null ? appointment.getConsultationNotes() : "N/A"),
+                    prescriptions));
+        }
+    }
+
     /**
      * Retrieves all appointments associated with a specific doctor.
      *
@@ -88,11 +140,53 @@ public class AppointmentOutcomeRecord {
     }
 
     public List<Appointment> getConfirmedAppointmentsByDoctor(String doctorId) {
-    return getAppointmentsByDoctor(doctorId).stream()
-            .filter(appointment -> appointment.getStatus() == AppointmentStatus.CONFIRMED)
-            .collect(Collectors.toList());
-}
+        return getAppointmentsByDoctor(doctorId).stream()
+                .filter(appointment -> appointment.getStatus() == AppointmentStatus.CONFIRMED)
+                .collect(Collectors.toList());
+    }
 
+    public void displayConfirmedAppointmentsByDoctor(String doctorId) {
+        // Get confirmed appointments for the doctor
+        List<Appointment> confirmedAppointments = getConfirmedAppointmentsByDoctor(doctorId);
+
+        // Check if the list is null or empty
+        if (confirmedAppointments == null || confirmedAppointments.isEmpty()) {
+            System.out.println("No confirmed appointments found for Doctor ID: " + doctorId);
+            return;
+        }
+
+        // Define a date-time formatter for consistent display
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Print the title
+        System.out.println("Confirmed Appointments for Doctor ID: " + doctorId);
+
+        // Print the table header
+        System.out.println(String.format("%-15s %-15s %-15s %-20s %-10s %-15s %-20s %-30s",
+                "Appointment ID", "Patient ID", "Doctor ID", "Date & Time", "Status", "Service Type",
+                "Consultation Notes", "Prescriptions"));
+
+        // Print each appointment as a row
+        for (Appointment appointment : confirmedAppointments) {
+            String prescriptions = appointment.getPrescriptions().isEmpty()
+                    ? "None"
+                    : appointment.getPrescriptions().toString();
+
+            String dateTimeString = appointment.getDateTime() != null
+                    ? appointment.getDateTime().format(dateTimeFormatter)
+                    : "N/A";
+
+            System.out.println(String.format("%-15s %-15s %-15s %-20s %-10s %-15s %-20s %-30s",
+                    appointment.getId(),
+                    appointment.getPatientID(),
+                    appointment.getDoctorID(),
+                    dateTimeString,
+                    appointment.getStatus(),
+                    (appointment.getTypeOfService() != null ? appointment.getTypeOfService() : "N/A"),
+                    (appointment.getConsultationNotes() != null ? appointment.getConsultationNotes() : "N/A"),
+                    prescriptions));
+        }
+    }
 
     /**
      * Displays all past appointments in a formatted table. If no appointments
