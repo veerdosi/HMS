@@ -1,74 +1,48 @@
-import java.util.List;
-
-/**
- * The `DoctorMenu` class represents the menu system that allows a doctor to
- * manage
- * their appointments, availability, and prescriptions. It provides interaction
- * options for the doctor to perform various tasks related to their role.
- */
 public class DoctorMenu {
     private Doctor doctor;
     private AppointmentServiceFacade facade;
 
-    /**
-     * Constructs a `DoctorMenu` with the specified doctor and appointment service
-     * facade.
-     *
-     * @param doctor The doctor associated with this menu. All actions performed in
-     *               this menu
-     *               are specific to this doctor.
-     * @param facade The `AppointmentServiceFacade` instance that provides
-     *               operations for
-     *               managing appointments, prescriptions, and related activities.
-     */
     public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
         this.facade = facade;
     }
 
-    /**
-     * Displays the doctor's menu and processes the doctor's input to execute
-     * actions.
-     * The menu runs in a loop until the doctor chooses to log out.
-     *
-     * @return `false` when the doctor logs out, terminating the menu loop.
-     */
     public boolean displayMenu() {
         while (true) {
             System.out.println("\n--- Doctor Menu ---");
             System.out.println("1. View Patient Medical Records");
-            System.out.println("2. Update Patient Medical Records ");
+            System.out.println("2. Update Patient Medical Records");
             System.out.println("3. View Personal Schedule");
             System.out.println("4. Set Availability for Appointments");
-            System.out.println("5. Accept or Decline Appointment Requests ");
+            System.out.println("5. Accept or Decline Appointment Requests");
             System.out.println("6. View Upcoming Appointments");
             System.out.println("7. Record Appointment Outcome");
             System.out.println("8. Log Out");
 
             try {
-                int choice = InputHandler.getIntInput(1, 9);
+                int choice = InputHandler.getIntInput(1, 8);
 
                 switch (choice) {
                     case 1:
-                        
+                        viewPatientMedicalRecords();
                         break;
                     case 2:
-                        
+                        updatePatientMedicalRecords();
                         break;
                     case 3:
-                        
+                        viewPersonalSchedule();
                         break;
                     case 4:
-                        
+                        setAvailability();
                         break;
                     case 5:
-                        
+                        handleAppointmentRequests();
                         break;
                     case 6:
-                        
+                        viewUpcomingAppointments();
                         break;
                     case 7:
-                        
+                        recordAppointmentOutcome();
                         break;
                     case 8:
                         System.out.println("Logging Out...");
@@ -82,187 +56,163 @@ public class DoctorMenu {
         }
     }
 
-    /**
-     * Resets the doctor's password. Prompts the doctor for a new password and
-     * updates it.
-     */
-    private void resetPassword() {
-        String newPass = InputHandler.getStringInput("New Password: ");
-        doctor.changePassword(newPass);
+    // View Patient Medical Records
+    private void viewPatientMedicalRecords() {
+        System.out.println("\n--- View Patient Medical Records ---");
+        System.out.println("Enter the Patient ID to view their medical records:");
+        System.out.println("0. Back to Main Menu");
+
+        String patientId = InputHandler.getStringInput();
+
+        if ("0".equals(patientId)) {
+            return;
+        }
+
+        // Logic to fetch and display patient medical records
+        // Use facade.getPatientById(patientId) to fetch details
     }
 
-    /**
-     * Allows the doctor to set their availability. Generates default availability
-     * slots
-     * and provides an option to mark specific slots as unavailable.
-     */
+    // Update Patient Medical Records
+    private void updatePatientMedicalRecords() {
+        while (true) {
+            System.out.println("\n--- Update Patient Medical Records ---");
+            System.out.println("Enter the Patient ID to update their medical records:");
+            System.out.println("Choose the information to update:");
+            System.out.println("1. Add Diagnosis");
+            System.out.println("2. Add Prescription");
+            System.out.println("3. Update Treatment Plan");
+            System.out.println("0. Back to Main Menu");
+
+            int choice = InputHandler.getIntInput(0, 3);
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Diagnosis Details:");
+                    // Logic to add diagnosis
+                    break;
+                case 2:
+                    System.out.println("Enter Prescription Details:");
+                    // Logic to add prescription
+                    break;
+                case 3:
+                    System.out.println("Enter Updated Treatment Plan:");
+                    // Logic to update treatment plan
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    // View Personal Schedule
+    private void viewPersonalSchedule() {
+        System.out.println("\n--- View Personal Schedule ---");
+        // Logic to display personal schedule using facade
+        System.out.println("0. Back to Main Menu");
+        InputHandler.getIntInput(0, 0);
+    }
+
+    // Set Availability
     private void setAvailability() {
-        System.out.println("\n--- Set Availability ---");
-        doctor.generateDefaultAvailability(); // Generate default slots
-        System.out.println("Default slots generated. You can modify them manually if needed.");
+        while (true) {
+            System.out.println("\n--- Set Availability for Appointments ---");
+            System.out.println("Choose an option:");
+            System.out.println("1. Add Availability Slot");
+            System.out.println("2. Remove Availability Slot");
+            System.out.println("3. View Current Availability");
+            System.out.println("0. Back to Main Menu");
 
-        boolean modifySlots = InputHandler.getYesNoInput("Do you want to mark any slot as unavailable?");
-        if (modifySlots) {
-            List<TimeSlot> availability = doctor.getAvailability();
-            System.out.println("Enter the index of the slot to mark unavailable (0-based):");
-            for (int i = 0; i < availability.size(); i++) {
-                System.out.println(i + ": " + availability.get(i));
+            int choice = InputHandler.getIntInput(0, 3);
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Date and Time for Availability:");
+                    // Logic to add availability
+                    break;
+                case 2:
+                    System.out.println("Enter Date and Time to Remove Availability:");
+                    // Logic to remove availability
+                    break;
+                case 3:
+                    System.out.println("Your Current Availability:");
+                    // Logic to view availability
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
-
-            int index = InputHandler.getIntInput("Enter the slot index: ", 0, availability.size() - 1);
-
-            if (index >= 0 && index < availability.size()) {
-                doctor.setCustomSlotAvailability(index, false);
-                System.out.println("Slot marked as unavailable.");
-            } else {
-                System.out.println("Invalid index.");
-            }
-        }
-
-        DoctorAvailabilityRepository.getInstance().setDoctorAvailability(doctor.getUserID(), doctor.getAvailability());
-    }
-
-    /**
-     * Displays the doctor's current availability slots.
-     * If no availability is defined, a message is displayed to the doctor.
-     */
-    private void viewAvailableSlots() {
-        System.out.println("\n--- Available Slots ---");
-        List<TimeSlot> slots = doctor.getAvailability();
-
-        if (slots == null || slots.isEmpty()) {
-            System.out.println("No available slots.");
-            return;
-        }
-
-        // Print table header
-        System.out.println("+----------+-----------+------------+");
-        System.out.println("| Start    | End       | Status     |");
-        System.out.println("+----------+-----------+------------+");
-
-        // Print each slot in table format
-        for (TimeSlot slot : slots) {
-            System.out.printf("| %-8s | %-9s | %-10s |\n",
-                    slot.getStartTime(),
-                    slot.getEndTime(),
-                    slot.isAvailable() ? "Available" : "Booked");
-        }
-
-        System.out.println("+----------+-----------+------------+");
-    }
-
-    /**
-     * Allows the doctor to accept an appointment from their schedule.
-     * The appointment is marked as accepted and added to the doctor's schedule.
-     */
-    private void acceptAppointment() {
-        System.out.println("\n--- Accept Appointment ---");
-        List<Appointment> appointments = doctor.getSchedule();
-
-        if (appointments == null || appointments.isEmpty()) {
-            System.out.println("No pending appointments to accept.");
-            return;
-        }
-
-        // Display pending appointments
-        System.out.println("Pending Appointments:");
-        for (int i = 0; i < appointments.size(); i++) {
-            Appointment apt = appointments.get(i);
-            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
-                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
-                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
-            }
-        }
-
-        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
-                appointments.size() - 1);
-
-        if (index >= 0 && index < appointments.size()) {
-            Appointment appointment = appointments.get(index);
-            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
-                // Use facade to process the appointment
-                facade.processAppointment(appointment.getId(), true);
-
-                // Update the appointment status in doctor's schedule
-                appointment.setStatus(AppointmentStatus.CONFIRMED);
-                System.out.println("Appointment accepted successfully.");
-            } else {
-                System.out.println("This appointment is not in pending status.");
-            }
-        } else {
-            System.out.println("Invalid selection.");
         }
     }
 
-    /**
-     * Allows the doctor to decline an appointment from their schedule.
-     * The appointment is marked as declined and removed from the schedule.
-     */
-    private void declineAppointment() {
-        System.out.println("\n--- Decline Appointment ---");
-        List<Appointment> appointments = doctor.getSchedule();
+    // Handle Appointment Requests
+    private void handleAppointmentRequests() {
+        while (true) {
+            System.out.println("\n--- Accept or Decline Appointment Requests ---");
+            System.out.println("1. Accept Appointment");
+            System.out.println("2. Decline Appointment");
+            System.out.println("0. Back to Main Menu");
 
-        if (appointments == null || appointments.isEmpty()) {
-            System.out.println("No pending appointments to decline.");
-            return;
-        }
+            int choice = InputHandler.getIntInput(0, 2);
 
-        // Display pending appointments
-        System.out.println("Pending Appointments:");
-        for (int i = 0; i < appointments.size(); i++) {
-            Appointment apt = appointments.get(i);
-            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
-                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
-                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Appointment ID to Accept:");
+                    // Logic to accept appointment
+                    break;
+                case 2:
+                    System.out.println("Enter Appointment ID to Decline:");
+                    // Logic to decline appointment
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
-        }
-
-        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
-                appointments.size() - 1);
-
-        if (index >= 0 && index < appointments.size()) {
-            Appointment appointment = appointments.get(index);
-            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
-                // Use facade to process the appointment
-                facade.processAppointment(appointment.getId(), false);
-
-                // Remove the declined appointment from doctor's schedule
-                appointments.remove(index);
-                System.out.println("Appointment declined successfully.");
-            } else {
-                System.out.println("This appointment is not in pending status.");
-            }
-        } else {
-            System.out.println("Invalid selection.");
         }
     }
 
-    /**
-     * Adds consultation notes for a specific appointment.
-     * The doctor is prompted to enter the appointment ID and the consultation
-     * notes.
-     */
-    private void addConsultationNotes() {
-        System.out.println("\n--- Add Consultation Notes ---");
-        String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
-        String notes = InputHandler.getStringInput("Enter Notes: ");
-        facade.addConsultationNotes(appointmentId, notes);
-        System.out.println("Consultation notes added to appointment ID: " + appointmentId);
+    // View Upcoming Appointments
+    private void viewUpcomingAppointments() {
+        System.out.println("\n--- View Upcoming Appointments ---");
+        // Logic to fetch and display upcoming appointments using facade
+        System.out.println("0. Back to Main Menu");
+        InputHandler.getIntInput(0, 0);
     }
 
-    /**
-     * Adds a prescription for a specific appointment.
-     * The doctor is prompted to enter the appointment ID and the details of the
-     * prescription.
-     */
-    private void addPrescription() {
-        System.out.println("\n--- Add Prescription ---");
-        String appointmentId = InputHandler.getStringInput("Enter Appointment ID: ");
-        String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
+    // Record Appointment Outcome
+    private void recordAppointmentOutcome() {
+        while (true) {
+            System.out.println("\n--- Record Appointment Outcome ---");
+            System.out.println("Enter the Appointment ID to record its outcome:");
+            System.out.println("Choose an action:");
+            System.out.println("1. Add Consultation Notes");
+            System.out.println("2. Add Prescriptions");
+            System.out.println("3. Mark Appointment as Completed");
+            System.out.println("0. Back to Main Menu");
 
-        Medicine medicine = new Medicine(medicineName, 0, 0);
-        Prescription prescription = new Prescription(medicine);
-        facade.addPrescription(appointmentId, prescription);
-        System.out.println("Prescription added to appointment ID: " + appointmentId);
+            int choice = InputHandler.getIntInput(0, 3);
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enter Consultation Notes:");
+                    // Logic to add consultation notes
+                    break;
+                case 2:
+                    System.out.println("Enter Prescription Details:");
+                    // Logic to add prescriptions
+                    break;
+                case 3:
+                    System.out.println("Marking Appointment as Completed...");
+                    // Logic to mark appointment as completed
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
     }
 }
