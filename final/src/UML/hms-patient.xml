@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UMLModel>
+    <Classes>
+        <!-- Entity Classes -->
+        <Class name="Patient" package="hospital">
+            <Implements interface="IPersonalInfoUpdate" />
+            <Implements interface="IPasswordUpdate" />
+            <Attributes>
+                <Attribute name="dateOfBirth" type="String" visibility="private" />
+                <Attribute name="medicalRecord" type="MedicalRecord" visibility="private" />
+            </Attributes>
+            <Associations>
+                <Association target="MedicalRecord" type="composition" multiplicity="1" />
+            </Associations>
+        </Class>
+
+        <Class name="MedicalRecord" package="hospital">
+            <Implements interface="IPatientMedicalRecordAccess" />
+            <Attributes>
+                <Attribute name="patient" type="Patient" visibility="private" />
+                <Attribute name="bloodType" type="String" visibility="private" />
+                <Attribute name="pastDiagnoses" type="java.util.ArrayList&lt;String&gt;" visibility="private" />
+                <Attribute name="pastTreatments" type="java.util.ArrayList&lt;String&gt;" visibility="private" />
+            </Attributes>
+            <Associations>
+                <Association target="Patient" type="reference" multiplicity="1" />
+            </Associations>
+        </Class>
+
+        <!-- Boundary Classes -->
+        <Class name="PatientMenu" package="hospital.ui">
+            <Implements interface="Menu" />
+            <Attributes>
+                <Attribute name="patient" type="Patient" visibility="private" />
+                <Attribute name="infoUpdater" type="PatientInfoUpdater" visibility="private" />
+            </Attributes>
+            <Dependencies>
+                <Dependency target="PatientInfoUpdater" />
+                <Dependency target="AppointmentServiceFacade" />
+                <Dependency target="java.time.LocalDateTime" />
+            </Dependencies>
+        </Class>
+
+        <Class name="HMSUserApp" package="hospital">
+            <Attributes>
+                <Attribute name="authService" type="AuthenticationService" visibility="private" />
+                <Attribute name="facade" type="AppointmentServiceFacade" visibility="private" />
+            </Attributes>
+            <Dependencies>
+                <Dependency target="AuthenticationService" />
+                <Dependency target="AppointmentServiceFacade" />
+                <Dependency target="PatientMenu" />
+            </Dependencies>
+        </Class>
+
+        <!-- Control Classes -->
+        <Class name="PatientInfoUpdater" package="hospital.control">
+            <Attributes>
+                <Attribute name="isValidContactNumber" type="boolean" visibility="private" />
+                <Attribute name="isValidEmailAddress" type="boolean" visibility="private" />
+            </Attributes>
+            <Dependencies>
+                <Dependency target="java.util.regex.Pattern" />
+            </Dependencies>
+        </Class>
+
+        <Class name="AppointmentServiceFacade" package="hospital.control">
+            <Attributes>
+                <Attribute name="doctorService" type="DoctorService" visibility="private" />
+                <Attribute name="patientService" type="PatientService" visibility="private" />
+            </Attributes>
+            <Dependencies>
+                <Dependency target="java.util.List" />
+            </Dependencies>
+        </Class>
+    </Classes>
+
+    <Interfaces>
+        <Interface name="IPersonalInfoUpdate" package="hospital.interfaces">
+            <Methods>
+                <Method name="updateContactNumber" returnType="void" />
+                <Method name="updateEmailAddress" returnType="void" />
+            </Methods>
+        </Interface>
+
+        <Interface name="IPasswordUpdate" package="hospital.interfaces">
+            <Methods>
+                <Method name="changePassword" returnType="void" />
+            </Methods>
+        </Interface>
+
+        <Interface name="IPatientMedicalRecordAccess" package="hospital.interfaces">
+            <Methods>
+                <Method name="viewMedicalRecord" returnType="MedicalRecord" />
+            </Methods>
+        </Interface>
+    </Interfaces>
+
+    <Dependencies>
+        <Library name="java.util" />
+        <Library name="java.time" />
+    </Dependencies>
+</UMLModel>
