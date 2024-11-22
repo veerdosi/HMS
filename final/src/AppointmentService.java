@@ -1,77 +1,60 @@
 import java.time.LocalDateTime;
 
 /**
- * The `AppointmentService` class handles operations related to managing
- * appointments.
- * It provides functionalities such as scheduling, canceling, rescheduling, and
- * modifying
- * appointment details. The service integrates with the `DoctorService`,
- * `PatientService`,
+ * The `AppointmentService` class handles operations related to managing appointments.
+ * It provides functionalities such as scheduling, canceling, rescheduling, and modifying
+ * appointment details. The service integrates with the `DoctorService`, `PatientService`,
  * and the `AppointmentOutcomeRecord`.
  */
 public class AppointmentService {
     private DoctorService doctorService;
     private PatientService patientService;
-    private AppointmentOutcomeRecord outcomeRecord;
-    private int appointmentCounter = 1;
+    private AppointmentOutcomeRecord outcomeRecord; // Singleton instance for managing appointment records
+    private int appointmentCounter = 1; // Counter to generate unique appointment IDs
 
+    /**
+     * Constructs an `AppointmentService` with the specified doctor and patient services.
+     *
+     * @param doctorService  The service for managing doctor-related operations.
+     * @param patientService The service for managing patient-related operations.
+     */
     public AppointmentService(DoctorService doctorService, PatientService patientService) {
         this.doctorService = doctorService;
         this.patientService = patientService;
-        this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
+        this.outcomeRecord = AppointmentOutcomeRecord.getInstance(); // Singleton instantiation
     }
 
+    /**
+     * Generates a unique appointment ID using a counter.
+     *
+     * @return A unique appointment ID.
+     */
     private String generateAppointmentID() {
         return "A" + (appointmentCounter++);
     }
 
+    /**
+     * Schedules a new appointment for the specified patient and doctor.
+     *
+     * @param patient   The patient for whom the appointment is being scheduled.
+     * @param doctorId  The ID of the doctor for the appointment.
+     * @param dateTime  The date and time of the appointment.
+     */
     public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
-        // Create the appointment
         Appointment appointment = new Appointment(generateAppointmentID(), patient.getUserID(), doctorId, dateTime);
-
-        // Get the doctor
-        Doctor doctor = doctorService.getDoctorById(doctorId);
-        if (doctor == null) {
-            System.out.println("Error: Doctor not found.");
-            return;
-        }
-
-        // Check doctor's availability
-        if (!doctor.isAvailable(dateTime)) {
-            System.out.println("Error: Doctor is not available at the selected time.");
-            return;
-        }
-
-        // Book the time slot
-        if (!doctor.bookSlot(dateTime.toLocalTime())) {
-            System.out.println("Error: Failed to book the time slot.");
-            return;
-        }
-
-        // Add to doctor's schedule
-        doctor.getSchedule().add(appointment);
-
-        // Add to outcome record
         outcomeRecord.addOutcome(appointment);
-
-        System.out.println("Appointment scheduled successfully.");
-        System.out.println("Appointment ID: " + appointment.getId());
-        System.out.println("Doctor: " + doctor.getName());
-        System.out.println("Date/Time: " + dateTime);
+        System.out.println("Appointment scheduled.");
     }
 
+    /**
+     * Cancels an existing appointment by its ID. Updates the appointment's status
+     * to "CANCELLED".
+     *
+     * @param appointmentId The ID of the appointment to cancel.
+     */
     public void cancelAppointment(String appointmentId) {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
-            // Get the doctor
-            Doctor doctor = doctorService.getDoctorById(appointment.getDoctorID());
-            if (doctor != null) {
-                // Free the time slot
-                doctor.freeSlot(appointment.getDateTime().toLocalTime());
-                // Remove from doctor's schedule
-                doctor.getSchedule().removeIf(app -> app.getId().equals(appointmentId));
-            }
-
             appointment.setStatus(AppointmentStatus.CANCELLED);
             System.out.println("Appointment with ID " + appointmentId + " has been canceled.");
         } else {
@@ -79,20 +62,16 @@ public class AppointmentService {
         }
     }
 
+    /**
+     * Processes an appointment by confirming or declining it.
+     *
+     * @param appointmentId The ID of the appointment to process.
+     * @param accept         `true` to confirm the appointment, `false` to decline.
+     */
     public void processAppointment(String appointmentId, boolean accept) {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
             appointment.setStatus(accept ? AppointmentStatus.CONFIRMED : AppointmentStatus.DECLINED);
-
-            // If declined, free up the doctor's schedule
-            if (!accept) {
-                Doctor doctor = doctorService.getDoctorById(appointment.getDoctorID());
-                if (doctor != null) {
-                    doctor.freeSlot(appointment.getDateTime().toLocalTime());
-                    doctor.getSchedule().removeIf(app -> app.getId().equals(appointmentId));
-                }
-            }
-
             System.out.println("Appointment " + (accept ? "confirmed" : "declined") + ".");
         }
     }
