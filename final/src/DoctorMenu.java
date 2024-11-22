@@ -4,10 +4,12 @@ import java.util.List;
 public class DoctorMenu {
     private Doctor doctor;
     private AppointmentServiceFacade facade;
+    private final AppointmentOutcomeRecord outcomeRecord;
 
     public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
         this.facade = facade;
+        this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
     public boolean displayMenu() {
@@ -62,7 +64,7 @@ public class DoctorMenu {
     private void viewPatientMedicalRecords() {
         System.out.println("\n--- View Patient Medical Records ---");
 
-        List<Appointment> confirmedAppointments = AppointmentOutcomeRecord.getInstance()
+        List<Appointment> confirmedAppointments = outcomeRecord
                 .getConfirmedAppointmentsByDoctor(doctor.getUserID());
         if (confirmedAppointments.isEmpty()) {
             System.out.println("No confirmed appointments found.");
@@ -95,8 +97,7 @@ public class DoctorMenu {
     private void updatePatientMedicalRecords() {
         System.out.println("\n--- Update Patient Medical Records ---");
 
-        List<Appointment> confirmedAppointments = AppointmentOutcomeRecord.getInstance()
-                .getConfirmedAppointmentsByDoctor(doctor.getUserID());
+        List<Appointment> confirmedAppointments = outcomeRecord.getConfirmedAppointmentsByDoctor(doctor.getUserID());
         if (confirmedAppointments.isEmpty()) {
             System.out.println("No confirmed appointments found.");
             return;
@@ -201,8 +202,7 @@ public class DoctorMenu {
             System.out.println("\n--- Accept or Decline Appointment Requests ---");
 
             // Get all appointments for this doctor that are in REQUESTED status
-            List<Appointment> pendingAppointments = AppointmentOutcomeRecord.getInstance()
-                    .getRequestedAppointmentsByDoctor(doctor.getUserID());
+            List<Appointment> pendingAppointments = outcomeRecord.getRequestedAppointmentsByDoctor(doctor.getUserID());
 
             if (pendingAppointments.isEmpty()) {
                 System.out.println("No pending appointment requests.");
@@ -298,7 +298,7 @@ public class DoctorMenu {
     // View Upcoming Appointments
     private void viewUpcomingAppointments() {
         System.out.println("\n--- View Upcoming Appointments ---");
-        AppointmentOutcomeRecord.getInstance().displayConfirmedAppointmentsByDoctor(doctor.getUserID());
+        outcomeRecord.displayConfirmedAppointmentsByDoctor(doctor.getUserID());
         System.out.println("0. Back to Main Menu");
         InputHandler.getIntInput(0, 0);
     }
