@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -109,155 +110,313 @@ public class PatientMenu {
         }
     }
 
-    /**
-     * Displays available appointment slots for booking.
-     */
-    private void viewAvailableAppointments() {
-        System.out.println("\n--- Available Appointments ---");
-        List<DoctorAvailability> allAvailabilities = DoctorAvailabilityRepository.getInstance()
-                .getAllDoctorAvailabilities();
+/**
+ * Displays all available appointments for all doctors in a table format.
+ * Combines previous implementations for streamlined output.
+ */
+private void viewAvailableAppointments() {
+    System.out.println("\n--- Available Appointments ---");
 
-        if (allAvailabilities == null || allAvailabilities.isEmpty()) {
-            System.out.println("No available appointments found.");
-            return;
-        }
+    // Fetch all doctor availabilities
+    List<DoctorAvailability> allAvailabilities = DoctorAvailabilityRepository.getInstance()
+            .getAllDoctorAvailabilities();
 
-        // Print table header
-        System.out.println("+----------+---------+-----------+------------+");
-        System.out.println("| Doctor ID| Start   | End       | Status     |");
-        System.out.println("+----------+---------+-----------+------------+");
-
-        // Print each doctor's available slots
-        for (DoctorAvailability docAvail : allAvailabilities) {
-            List<TimeSlot> slots = docAvail.getSlots();
-            for (TimeSlot slot : slots) {
-                if (slot.isAvailable()) { // Only show available slots to patients
-                    System.out.printf("| %-8s | %-7s | %-9s | %-10s |\n",
-                            docAvail.getDoctorId(),
-                            slot.getStartTime(),
-                            slot.getEndTime(),
-                            "Available");
-                }
-            }
-        }
-
-        System.out.println("+----------+---------+-----------+------------+");
+    // Check if no availabilities exist
+    if (allAvailabilities == null || allAvailabilities.isEmpty()) {
+        System.out.println("No available appointments found.");
+        return;
     }
 
-    /**
-     * Schedules a new appointment for the patient.
-     */
-    private void scheduleAppointment() {
-        System.out.println("\n--- Schedule New Appointment ---");
+    // Print table header
+    System.out.println("+----------+---------+");
+    System.out.println("| Doctor ID| Time    |");
+    System.out.println("+----------+---------+");
 
-        // First show available slots and doctors
-        viewAvailableAppointments();
-
-        // Get all available doctors
-        List<Doctor> availableDoctors = facade.getAvailableDoctors();
-        if (availableDoctors.isEmpty()) {
-            System.out.println("No doctors are currently available for appointments.");
-            return;
-        }
-
-        // Show doctor list
-        System.out.println("\nAvailable Doctors:");
-        for (Doctor doctor : availableDoctors) {
-            System.out.println("Doctor ID: " + doctor.getUserID());
-        }
-
-        // Get doctor selection
-        String doctorId = InputHandler.getStringInput("Enter Doctor ID from the list above: ");
-
-        // Validate doctor selection
-        DoctorAvailability docAvail = facade.getDoctorAvailability(doctorId);
-        if (docAvail == null) {
-            System.out.println("Invalid doctor ID or no availability for this doctor.");
-            return;
-        }
-
-        // Get date from user
-        String dateStr = InputHandler.getStringInput("Enter Appointment Date (dd-MM-yyyy): ");
-
-        // Get hour ensuring it's within business hours
-        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
-
-        // Parse date and time
-        LocalDateTime dateTime = Helper.parseDateAndHour(dateStr, hour);
-        if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
-            System.out.println("Invalid appointment date or time. Please select a future date and time.");
-            return;
-        }
-
-        // Check if the selected time slot is available
-        boolean timeSlotAvailable = false;
-        for (TimeSlot slot : docAvail.getSlots()) {
-            if (slot.isAvailable() &&
-                    slot.getStartTime().equals(String.format("%02d:00", hour))) {
-                timeSlotAvailable = true;
-                break;
+    // Print each doctor's available slots in a table format
+    for (DoctorAvailability docAvail : allAvailabilities) {
+        List<TimeSlot> slots = docAvail.getSlots();
+        for (TimeSlot slot : slots) {
+            if (slot.isAvailable()) { // Only show available slots
+                System.out.printf("| %-8s | %-7s |\n",
+                        docAvail.getDoctorId(),
+                        slot.getStartTime());
             }
-        }
-
-        if (!timeSlotAvailable) {
-            System.out.println("The selected time slot is not available. Please choose another time.");
-            return;
-        }
-
-        try {
-            // Schedule the appointment
-            facade.scheduleAppointment(patient, doctorId, dateTime);
-            System.out.println("Appointment scheduled successfully!");
-            System.out.println("Date: " + dateStr);
-            System.out.println("Time: " + String.format("%02d:00", hour));
-            System.out.println("Doctor ID: " + doctorId);
-        } catch (Exception e) {
-            System.out.println("Failed to schedule appointment: " + e.getMessage());
         }
     }
 
+    System.out.println("+----------+---------+");
+}
+
+
     /**
-     * Reschedules an existing appointment.
+ * Schedules a new appointment for the patient using indexed selections.
+ */
+private void scheduleAppointment() {
+    System.out.println("\n--- Schedule New Appointment ---");
+
+    // Step 1: Display available appointments
+    viewAvailableAppointments();
+
+    // Step 2: Select Doctor
+    String doctorId = selectDoctorFromAvailableAppointments();
+    if (doctorId == null) return;
+
+    // Step 3: Select Time Slot
+    String startTime = selectTimeSlot(doctorId);
+    if (startTime == null) return;
+
+    // Step 4: Prompt for Appointment Date
+    String dateStr = InputHandler.getStringInput("Enter the appointment date (dd-MM-yyyy): ");
+    LocalDateTime dateTime;
+    try {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        dateTime = LocalDateTime.parse(dateStr + " " + startTime, dateFormatter);
+
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            System.out.println("Cannot schedule an appointment in the past.");
+            return;
+        }
+    } catch (Exception e) {
+        System.out.println("Invalid date format. Please use dd-MM-yyyy.");
+        return;
+    }
+
+    // Step 5: Schedule the Appointment
+    try {
+        facade.scheduleAppointment(patient, doctorId, dateTime);
+        System.out.println("Appointment successfully scheduled on " + dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+    } catch (Exception e) {
+        System.out.println("Failed to schedule appointment: " + e.getMessage());
+    }
+}
+
+
+        /**
+     * Reschedules an existing appointment using indexed selections.
      */
     private void rescheduleAppointment() {
-        String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Reschedule: ");
-        String dateStr = InputHandler.getStringInput("Enter New Appointment Date (dd-MM-yyyy): ");
-        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
+        System.out.println("\n--- Reschedule Appointment ---");
 
-        LocalDateTime newDateTime = Helper.parseDateAndHour(dateStr, hour);
+        // Step 1: Display Patient's Appointments and Select One
+        List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments to reschedule.");
+            return;
+        }
+
+        System.out.println("Select an appointment to reschedule:");
+        int index = 1;
+        for (Appointment app : appointments) {
+            System.out.printf("%d. Appointment ID: %s, Doctor ID: %s, Date: %s\n",
+                    index, app.getId(), app.getDoctorID(),
+                    app.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            index++;
+        }
+
+        int selection = InputHandler.getIntInput(1, appointments.size());
+        String appointmentId = appointments.get(selection - 1).getId();
+
+        // Step 2: Display Available Appointments and Select New Doctor
+        viewAvailableAppointments();
+
+        String newDoctorId = selectDoctorFromAvailableAppointments();
+        if (newDoctorId == null) return;
+
+        // Step 3: Select New Time Slot
+        String newStartTime = selectTimeSlot(newDoctorId);
+        if (newStartTime == null) return;
+
+        // Step 4: Prompt for New Date
+        String newDateStr = InputHandler.getStringInput("Enter the new appointment date (dd-MM-yyyy): ");
+        LocalDateTime newDateTime;
+        try {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            newDateTime = LocalDateTime.parse(newDateStr + " " + newStartTime, dateFormatter);
+
+            if (newDateTime.isBefore(LocalDateTime.now())) {
+                System.out.println("Cannot reschedule to a past date or time.");
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid date format. Please use dd-MM-yyyy.");
+            return;
+        }
+
+        // Step 5: Attempt Rescheduling
         if (facade.rescheduleAppointment(appointmentId, newDateTime)) {
-            System.out.println("Appointment rescheduled successfully.");
+            System.out.println("Appointment successfully rescheduled to " + newDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
         } else {
             System.out.println("Failed to reschedule the appointment.");
         }
     }
 
+
     /**
-     * Cancels an existing appointment.
+     * Cancels an existing appointment using indexed selection.
      */
     private void cancelAppointment() {
-        String appointmentId = InputHandler.getStringInput("Enter Appointment ID to Cancel: ");
-        facade.cancelAppointment(appointmentId);
-        System.out.println("Appointment canceled successfully.");
+        System.out.println("\n--- Cancel Appointment ---");
+
+        // Step 1: Fetch and Display Patient's Appointments
+        List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
+        List<Appointment> cancelableAppointments = appointments.stream()
+                .filter(app -> app.getStatus() != AppointmentStatus.COMPLETED)
+                .toList();
+
+        if (cancelableAppointments.isEmpty()) {
+            System.out.println("No appointments to cancel.");
+            return;
+        }
+
+        System.out.println("Select an appointment to cancel:");
+        int index = 1;
+        for (Appointment app : cancelableAppointments) {
+            System.out.printf("%d. Appointment ID: %s, Doctor ID: %s, Date: %s\n",
+                    index, app.getId(), app.getDoctorID(),
+                    app.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+            index++;
+        }
+
+        int selection = InputHandler.getIntInput(1, cancelableAppointments.size());
+        String appointmentId = cancelableAppointments.get(selection - 1).getId();
+
+        // Step 2: Cancel the Appointment
+        try {
+            facade.cancelAppointment(appointmentId);
+            System.out.println("Appointment canceled successfully.");
+        } catch (Exception e) {
+            System.out.println("Failed to cancel appointment: " + e.getMessage());
+        }
     }
 
-    /**
-     * Displays all scheduled appointments for the patient.
+
+        /**
+     * Displays all scheduled (upcoming) appointments for the patient in a tabular format.
      */
     private void viewScheduledAppointments() {
+        System.out.println("\n--- Scheduled Appointments ---");
+
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
-        appointments.stream()
+        List<Appointment> scheduledAppointments = appointments.stream()
                 .filter(app -> app.getStatus() != AppointmentStatus.COMPLETED)
-                .forEach(System.out::println);
+                .toList();
+
+        if (scheduledAppointments.isEmpty()) {
+            System.out.println("No scheduled appointments found.");
+            return;
+        }
+
+        // Print table header
+        System.out.println("+---------------+----------+----------+---------------------+");
+        System.out.println("| Appointment ID| Doctor ID| Status   | Date & Time         |");
+        System.out.println("+---------------+----------+----------+---------------------+");
+
+        // Print each scheduled appointment
+        for (Appointment app : scheduledAppointments) {
+            System.out.printf("| %-13s | %-8s | %-8s | %-19s |\n",
+                    app.getId(),
+                    app.getDoctorID(),
+                    app.getStatus(),
+                    app.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")));
+        }
+
+        System.out.println("+---------------+----------+----------+---------------------+");
     }
 
-    /**
-     * Displays all past appointments and their outcomes.
+
+        /**
+     * Displays all past appointments and their outcomes in a tabular format.
      */
     private void viewPastAppointmentOutcomes() {
+        System.out.println("\n--- Past Appointment Outcomes ---");
+
         List<Appointment> appointments = outcomeRecord.getAppointmentsByPatient(patient.getUserID());
-        appointments.stream()
+        List<Appointment> pastAppointments = appointments.stream()
                 .filter(app -> app.getStatus() == AppointmentStatus.COMPLETED)
-                .forEach(System.out::println);
+                .toList();
+
+        if (pastAppointments.isEmpty()) {
+            System.out.println("No past appointments found.");
+            return;
+        }
+
+        // Print table header
+        System.out.println("+---------------+----------+----------+---------------------+------------------+");
+        System.out.println("| Appointment ID| Doctor ID| Status   | Date & Time         | Notes            |");
+        System.out.println("+---------------+----------+----------+---------------------+------------------+");
+
+        // Print each past appointment
+        for (Appointment app : pastAppointments) {
+            System.out.printf("| %-13s | %-8s | %-8s | %-19s | %-16s |\n",
+                    app.getId(),
+                    app.getDoctorID(),
+                    app.getStatus(),
+                    app.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                    app.getConsultationNotes() == null ? "None" : app.getConsultationNotes());
+        }
+
+        System.out.println("+---------------+----------+----------+---------------------+------------------+");
     }
+
+
+    
+    
+    
+    
+    //Utility methods for appointment-related functions
+    
+    
+    
+    
+    /**
+    * Prompts the user to select a doctor from the list of available appointments.
+     *
+     * @return The selected Doctor ID, or null if no valid selection is made.
+    */
+    private String selectDoctorFromAvailableAppointments() {
+        List<DoctorAvailability> allAvailabilities = facade.getAllDoctorAvailabilities();
+        if (allAvailabilities == null || allAvailabilities.isEmpty()) {
+            System.out.println("No available appointments found.");
+            return null;
+        }
+
+        System.out.println("Select a doctor by entering the corresponding number:");
+        int index = 1;
+        for (DoctorAvailability docAvail : allAvailabilities) {
+            System.out.println(index + ". Doctor ID: " + docAvail.getDoctorId());
+            index++;
+        }
+
+        int selection = InputHandler.getIntInput(1, allAvailabilities.size());
+        return allAvailabilities.get(selection - 1).getDoctorId();
+    }
+    /**
+     * Prompts the user to select a time slot for a given doctor.
+     *
+     * @param doctorId The ID of the doctor whose availability is displayed.
+     * @return The selected time slot as a string, or null if no valid selection is made.
+     */
+    private String selectTimeSlot(String doctorId) {
+        DoctorAvailability docAvail = facade.getDoctorAvailability(doctorId);
+        if (docAvail == null) {
+            System.out.println("No availability found for the selected doctor.");
+            return null;
+        }
+
+        System.out.println("\nAvailable Time Slots:");
+        List<TimeSlot> slots = docAvail.getSlots();
+        int index = 1;
+        for (TimeSlot slot : slots) {
+            if (slot.isAvailable()) {
+                System.out.println(index + ". " + slot.getStartTime() + "-" + slot.getEndTime());
+                index++;
+            }
+        }
+
+        int selection = InputHandler.getIntInput(1, slots.size());
+        return slots.get(selection - 1).getStartTime();
+    }
+
+
+    
 }
