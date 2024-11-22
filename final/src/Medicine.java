@@ -1,5 +1,6 @@
 /**
- * The `Medicine` class represents a pharmaceutical product in the inventory, including its
+ * The `Medicine` class represents a pharmaceutical product in the inventory,
+ * including its
  * stock levels and low-stock alert threshold.
  */
 public class Medicine {
@@ -8,7 +9,8 @@ public class Medicine {
     private int lowStockAlert;
 
     /**
-     * Constructs a `Medicine` with the specified name, initial stock, and low-stock alert level.
+     * Constructs a `Medicine` with the specified name, initial stock, and low-stock
+     * alert level.
      *
      * @param name          the name of the medicine.
      * @param initialStock  the initial stock level.
@@ -18,6 +20,10 @@ public class Medicine {
         this.name = name;
         this.currentStock = initialStock;
         this.lowStockAlert = lowStockAlert;
+    }
+
+    public Medicine(String name) {
+        this.name = name;
     }
 
     /**
@@ -110,7 +116,8 @@ public class Medicine {
     }
 
     /**
-     * Returns a string representation of the medicine, including its name, stock level, and alert threshold.
+     * Returns a string representation of the medicine, including its name, stock
+     * level, and alert threshold.
      *
      * @return a string representation of the medicine.
      */
