@@ -1,4 +1,4 @@
-/**
+/**@author Revathi Selvasevaran
  * The `IPatientMedicalRecordAccess` interface provides a contract for accessing
  * medical records of patients.
  */

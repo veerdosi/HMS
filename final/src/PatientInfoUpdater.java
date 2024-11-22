@@ -1,6 +1,6 @@
 import java.util.regex.Pattern;
 
-/**
+/**@author Revathi Selvasevaran
  * The `PatientInfoUpdater` class provides functionality to update a patient's
  * personal information, including their contact number and email address.
  * It validates input and interacts with objects implementing the 

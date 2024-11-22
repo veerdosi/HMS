@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/**@author Revathi Selvasevaran
  * The `MedicalRecord` class represents a patient's medical history, including past diagnoses,
  * treatments, and blood type. It provides methods for viewing and updating medical records.
  */

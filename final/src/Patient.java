@@ -1,4 +1,4 @@
-/**
+/** @author Revathi Selvasevaran
  * The `Patient` class extends `User` and implements interfaces for accessing
  * medical records and
  * updating personal information.

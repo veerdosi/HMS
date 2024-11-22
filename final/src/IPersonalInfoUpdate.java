@@ -1,4 +1,4 @@
-/**
+/**@author Revathi Selvasevaran
  * The `IPersonalInfoUpdate` interface provides a contract for objects that allow
  * personal contact information updates, such as email and phone number.
  */

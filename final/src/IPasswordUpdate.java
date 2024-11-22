@@ -1,4 +1,4 @@
-/**
+/** @author Revathi Selvasevaran
  * The `IPasswordUpdate` interface defines a contract for objects
  * that support password update functionality.
  */

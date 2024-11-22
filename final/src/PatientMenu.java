@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
+/**@author Revathi Selvasevaran
  * The `PatientMenu` class provides an interactive menu for patients to
  * manage appointments, update personal information, and reset passwords.
  * It interacts with the `AppointmentServiceFacade` and 
