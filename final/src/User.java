@@ -170,7 +170,7 @@ public boolean authenticatePassword(String password) {
     /**
      * Updates the user's password in the corresponding CSV file (patients or staff).
      */
-    private void updatePasswordInExcel() {
+    protected void updatePasswordInExcel() {
         String filePath = determineFilePath();
         if (filePath == null) {
             System.err.println("Invalid user ID for file determination.");

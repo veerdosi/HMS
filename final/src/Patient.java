@@ -3,7 +3,7 @@
  * medical records and
  * updating personal information.
  */
-public class Patient extends User implements IPatientMedicalRecordAccess, IPersonalInfoUpdate {
+public class Patient extends User implements IPatientMedicalRecordAccess, IPersonalInfoUpdate, IPasswordUpdate {
     private String dateOfBirth;
     private MedicalRecord medicalRecord;
 
@@ -121,4 +121,16 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
         return medicalRecord;
     }
 
+    @Override
+    // The `changePassword` method in the `Patient` class is responsible for updating the password of a
+    // patient object. It takes a new password as a parameter (`newPass`) and assigns this new password
+    // to the `password` attribute of the patient object. Additionally, it calls the
+    // `updatePasswordInExcel` method to ensure that the changes are reflected in an Excel CSV file,
+    // presumably where user information is stored. This method helps in maintaining the security and
+    // integrity of patient data by allowing password updates and ensuring that the changes are
+    // persisted in an external data source.
+    public void changePassword(String newPass) {
+        this.password = newPass;
+        updatePasswordInExcel(); // Ensures CSV file is updated
+    }
 }

@@ -115,7 +115,10 @@ public class HMSUserApp {
                     break;
 
                 case PATIENT:
-                    PatientMenu patientMenu = new PatientMenu((Patient) user);
+                    // Create an instance of PatientInfoUpdater
+                    PatientInfoUpdater patientInfoUpdater = new PatientInfoUpdater();
+                    // Pass the PatientInfoUpdater instance to PatientMenu
+                    PatientMenu patientMenu = new PatientMenu((Patient) user, patientInfoUpdater);
                     keepRunning = patientMenu.displayMenu();
                     break;
 

@@ -1,33 +1,38 @@
-import java.util.regex.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * The `PatientMenu` class provides an interactive menu for patients to access
- * various medical appointment-related functionalities, such as viewing and managing
- * appointments, updating personal information, and accessing medical records.
+ * The `PatientMenu` class provides an interactive menu for patients to
+ * manage appointments, update personal information, and reset passwords.
+ * It interacts with the `AppointmentServiceFacade` and 
+ * `AppointmentOutcomeRecord` for appointment-related operations and uses
+ * the `PatientInfoUpdater` for managing personal information updates.
  */
 public class PatientMenu {
-    private Patient patient;
-    private AppointmentServiceFacade facade;
-    private AppointmentOutcomeRecord outcomeRecord;
+    private final Patient patient;
+    private final AppointmentServiceFacade facade;
+    private final AppointmentOutcomeRecord outcomeRecord;
+    private final PatientInfoUpdater infoUpdater;
 
     /**
-     * Constructs a new `PatientMenu` instance.
+     * Constructs a new `PatientMenu` for the specified patient.
      *
-     * @param patient The patient associated with this menu.
+     * @param patient    The patient using the menu.
+     * @param infoUpdater An instance of `PatientInfoUpdater` for managing personal information updates.
      */
-    public PatientMenu(Patient patient) {
+    public PatientMenu(Patient patient, PatientInfoUpdater infoUpdater) {
         this.patient = patient;
+        this.infoUpdater = infoUpdater;
         this.facade = AppointmentServiceFacade.getInstance(null, null);
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
     /**
-     * Displays the main menu for the patient and processes the selected options.
+     * Displays the main menu for the patient and handles menu navigation.
      *
      * @return `false` when the user chooses to log out, ending the menu loop.
      */
+    
     public boolean displayMenu() {
         while (true) {
             System.out.println("");
@@ -51,7 +56,7 @@ public class PatientMenu {
                     viewMedicalRecord();
                     break;
                 case 2:
-                    updatePersonalInformation();
+                    infoUpdater.displayUpdateInfoMenu(patient);
                     break;
                 case 3:
                     viewAvailableAppointments();
@@ -85,109 +90,7 @@ public class PatientMenu {
         Patient p = this.patient;
         p.changePassword(newPass);
     }
-    /**
-     * Displays a submenu for updating the patient's personal information,
-     * including contact number and email address.
-     */
-    private void updatePersonalInformation() {
-        while (true) {
-            System.out.println("");
-            System.out.println("---- Update Personal Information ----");
-            System.out.println("1. Update Contact Number");
-            System.out.println("2. Update Email Address");
-            System.out.println("3. Update Both");
-            System.out.println("4. Back to Main Menu");
-            System.out.println("");
-            System.out.print("Enter your choice: ");
-            int option = InputHandler.getIntInput(1, 4);
 
-            switch (option) {
-                case 1:
-                    updateContactNumber();
-                    break;
-                case 2:
-                    updateEmailAddress();
-                    break;
-                case 3:
-                    updateBothContactInfo();
-                    break;
-                case 4:
-                    System.out.println("Returning to main menu...");
-                    return; // Exit the submenu
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        }
-    }
-
-    /**
-     * Validates if a contact number is valid (must be exactly 8 digits).
-     *
-     * @param contactNumber The contact number to validate.
-     * @return `true` if valid, `false` otherwise.
-     */
-    private boolean validateContactNumber(String contactNumber) {
-        String regex = "^[0-9]{8}$";
-        return Pattern.matches(regex, contactNumber);
-    }
-
-    /**
-     * Validates if an email address is in a valid format.
-     *
-     * @param email The email address to validate.
-     * @return `true` if valid, `false` otherwise.
-     */
-    private boolean validateEmailAddress(String email) {
-        String regex = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
-        return Pattern.matches(regex, email);
-    }
-
-    /**
-     * Updates the patient's contact number.
-     */
-    private void updateContactNumber() {
-        String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
-        if (validateContactNumber(newContact)) {
-            patient.updateContactNumber(newContact);
-            System.out.println("Contact number updated successfully.");
-        } else {
-            System.out.println("Invalid contact number. It must be exactly 8 digits.");
-        }
-    }
-
-    /**
-     * Updates the patient's email address.
-     */
-    private void updateEmailAddress() {
-        String newEmail = InputHandler.getStringInput("Enter new email address: ");
-        if (validateEmailAddress(newEmail)) {
-            patient.updateEmailAddress(newEmail);
-            System.out.println("Email address updated successfully.");
-        } else {
-            System.out.println("Invalid email address format.");
-        }
-    }
-
-    /**
-     * Updates both the patient's contact number and email address.
-     */
-    private void updateBothContactInfo() {
-        String newContact = InputHandler.getStringInput("Enter new contact number (8 digits): ");
-        String newEmail = InputHandler.getStringInput("Enter new email address: ");
-
-        boolean isContactValid = validateContactNumber(newContact);
-        boolean isEmailValid = validateEmailAddress(newEmail);
-
-        if (isContactValid && isEmailValid) {
-            patient.updateContactInfo(newEmail, newContact);
-            System.out.println("Contact information updated successfully.");
-        } else {
-            if (!isContactValid)
-                System.out.println("Invalid contact number.");
-            if (!isEmailValid)
-                System.out.println("Invalid email address.");
-        }
-    }
 
     /**
      * Fetches and displays the patient's medical record.
