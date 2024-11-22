@@ -1,9 +1,12 @@
 import java.time.LocalDateTime;
 
 /**
- * The `AppointmentService` class handles operations related to managing appointments.
- * It provides functionalities such as scheduling, canceling, rescheduling, and modifying
- * appointment details. The service integrates with the `DoctorService`, `PatientService`,
+ * The `AppointmentService` class handles operations related to managing
+ * appointments.
+ * It provides functionalities such as scheduling, canceling, rescheduling, and
+ * modifying
+ * appointment details. The service integrates with the `DoctorService`,
+ * `PatientService`,
  * and the `AppointmentOutcomeRecord`.
  */
 public class AppointmentService {
@@ -13,7 +16,8 @@ public class AppointmentService {
     private int appointmentCounter = 1; // Counter to generate unique appointment IDs
 
     /**
-     * Constructs an `AppointmentService` with the specified doctor and patient services.
+     * Constructs an `AppointmentService` with the specified doctor and patient
+     * services.
      *
      * @param doctorService  The service for managing doctor-related operations.
      * @param patientService The service for managing patient-related operations.
@@ -24,14 +28,14 @@ public class AppointmentService {
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance(); // Singleton instantiation
     }
 
-       private String generateAppointmentID() {
+    private String generateAppointmentID() {
         return "A" + (appointmentCounter++);
     }
 
     public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
         // Create the appointment
         Appointment appointment = new Appointment(generateAppointmentID(), patient.getUserID(), doctorId, dateTime);
-        
+
         // Get the doctor
         Doctor doctor = doctorService.getDoctorById(doctorId);
         if (doctor == null) {
@@ -51,16 +55,20 @@ public class AppointmentService {
             return;
         }
 
+        // If we get here, all checks have passed and the slot is booked
         // Add to doctor's schedule
         doctor.getSchedule().add(appointment);
 
         // Add to outcome record
         outcomeRecord.addOutcome(appointment);
 
-        System.out.println("Appointment scheduled successfully.");
+        // Only print success messages after everything is confirmed
+        System.out.println("\nAppointment scheduled successfully!");
+        System.out.println("-----------------------------");
         System.out.println("Appointment ID: " + appointment.getId());
         System.out.println("Doctor: " + doctor.getName());
         System.out.println("Date/Time: " + dateTime);
+        System.out.println("-----------------------------");
     }
 
     public void cancelAppointment(String appointmentId) {
@@ -74,7 +82,7 @@ public class AppointmentService {
                 // Remove from doctor's schedule
                 doctor.getSchedule().removeIf(app -> app.getId().equals(appointmentId));
             }
-            
+
             appointment.setStatus(AppointmentStatus.CANCELLED);
             System.out.println("Appointment with ID " + appointmentId + " has been canceled.");
         } else {
@@ -86,7 +94,7 @@ public class AppointmentService {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
             appointment.setStatus(accept ? AppointmentStatus.CONFIRMED : AppointmentStatus.DECLINED);
-            
+
             // If declined, free up the doctor's schedule
             if (!accept) {
                 Doctor doctor = doctorService.getDoctorById(appointment.getDoctorID());
@@ -95,7 +103,7 @@ public class AppointmentService {
                     doctor.getSchedule().removeIf(app -> app.getId().equals(appointmentId));
                 }
             }
-            
+
             System.out.println("Appointment " + (accept ? "confirmed" : "declined") + ".");
         }
     }

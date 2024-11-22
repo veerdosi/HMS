@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * The `Doctor` class represents a doctor in the system. It includes
  * information about the doctor's age, availability, and schedule.
- * The class provides methods to manage appointments, availability, 
+ * The class provides methods to manage appointments, availability,
  * and scheduling.
  */
 public class Doctor extends User {
@@ -28,7 +28,7 @@ public class Doctor extends User {
      * @param age           The age of the doctor.
      */
     public Doctor(String userID, String name, String password, String gender,
-                  String contactEmail, String contactNumber, int age) {
+            String contactEmail, String contactNumber, int age) {
         super(userID, name, password, UserRole.Doctor, gender, contactEmail, contactNumber);
         this.age = age;
         this.availabilityRepository = repository;
@@ -64,7 +64,8 @@ public class Doctor extends User {
     }
 
     /**
-     * Updates the doctor's availability and synchronizes it with the centralized repository.
+     * Updates the doctor's availability and synchronizes it with the centralized
+     * repository.
      *
      * @param availability The new availability for the doctor.
      */
@@ -93,7 +94,8 @@ public class Doctor extends User {
     }
 
     /**
-     * Generates default daily availability slots for the doctor and syncs with the repository.
+     * Generates default daily availability slots for the doctor and syncs with the
+     * repository.
      */
     public void generateDefaultAvailability() {
         availability = AppointmentSlotUtil.generateDailySlots();
@@ -137,16 +139,22 @@ public class Doctor extends User {
 
     /**
      * Checks if the doctor is available at a specific date and time.
+     * Currently only checks if the time matches any available time slot.
      *
      * @param newDateTime The date and time to check.
-     * @return `true` if the doctor is available, `false` otherwise.
+     * @return `true` if the doctor has that time slot, `false` otherwise.
      */
     public boolean isAvailable(LocalDateTime newDateTime) {
         if (availability == null || availability.isEmpty()) {
             return false;
         }
+
+        // Only check if the time matches a slot, regardless of date
+        String timeStr = newDateTime.toLocalTime().toString();
+        timeStr = timeStr.substring(0, 5); // Get just HH:mm part
+
         for (TimeSlot slot : availability) {
-            if (slot.isAvailable() && slot.getStartTime().equals(newDateTime.toLocalTime())) {
+            if (slot.getStartTime().equals(timeStr)) {
                 return true;
             }
         }
@@ -157,7 +165,8 @@ public class Doctor extends User {
      * Updates the availability of a specific time slot.
      *
      * @param index       The index of the time slot in the availability list.
-     * @param isAvailable `true` to mark the slot as available, `false` to mark it as unavailable.
+     * @param isAvailable `true` to mark the slot as available, `false` to mark it
+     *                    as unavailable.
      */
     public void setCustomSlotAvailability(int index, boolean isAvailable) {
         if (availability == null || index < 0 || index >= availability.size()) {
