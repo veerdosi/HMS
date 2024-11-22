@@ -67,16 +67,10 @@ public class DoctorMenu {
         System.out.println("Enter the Patient ID to view their medical records:");
         System.out.println("0. Back to Main Menu");
 
-<<<<<<< HEAD
         List<Appointment> confirmedAppointments = outcomeRecord
                 .getConfirmedAppointmentsByDoctor(doctor.getUserID());
         if (confirmedAppointments.isEmpty()) {
             System.out.println("No confirmed appointments found.");
-=======
-        String patientId = InputHandler.getStringInput("default");
-
-        if ("0".equals(patientId)) {
->>>>>>> cd573750beeef5f2eac0a6d72d91c051e99e238e
             return;
         }
 
@@ -95,15 +89,11 @@ public class DoctorMenu {
             System.out.println("3. Update Treatment Plan");
             System.out.println("0. Back to Main Menu");
 
-<<<<<<< HEAD
         List<Appointment> confirmedAppointments = outcomeRecord.getConfirmedAppointmentsByDoctor(doctor.getUserID());
         if (confirmedAppointments.isEmpty()) {
             System.out.println("No confirmed appointments found.");
             return;
         }
-=======
-            int choice = InputHandler.getIntInput(0, 3);
->>>>>>> cd573750beeef5f2eac0a6d72d91c051e99e238e
 
             switch (choice) {
                 case 1:
@@ -186,7 +176,6 @@ public class DoctorMenu {
     private void handleAppointmentRequests() {
         while (true) {
             System.out.println("\n--- Accept or Decline Appointment Requests ---");
-<<<<<<< HEAD
 
             // Get all appointments for this doctor that are in REQUESTED status
             List<Appointment> pendingAppointments = outcomeRecord.getRequestedAppointmentsByDoctor(doctor.getUserID());
@@ -212,10 +201,6 @@ public class DoctorMenu {
 
             System.out.println("\nChoose an action:");
             System.out.println("1. Process Appointment Request");
-=======
-            System.out.println("1. Accept Appointment");
-            System.out.println("2. Decline Appointment");
->>>>>>> cd573750beeef5f2eac0a6d72d91c051e99e238e
             System.out.println("0. Back to Main Menu");
 
             int choice = InputHandler.getIntInput(0, 2);
