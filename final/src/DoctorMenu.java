@@ -64,10 +64,7 @@ public class DoctorMenu {
         System.out.println("Enter the Patient ID to view their medical records:");
         System.out.println("0. Back to Main Menu");
 
-        String patientId = InputHandler.getStringInput("Enter Patient ID (or 0 to return): ");
-if ("0".equals(patientId)) {
-    return;
-}
+        String patientId = InputHandler.getStringInput();
 
         if ("0".equals(patientId)) {
             return;
@@ -111,12 +108,33 @@ if ("0".equals(patientId)) {
         }
     }
 
-    // View Personal Schedule
+    /**
+     * Displays the doctor's current availability slots.
+     * If no availability is defined, a message is displayed to the doctor.
+     */
     private void viewPersonalSchedule() {
-        System.out.println("\n--- View Personal Schedule ---");
-        // Logic to display personal schedule using facade
-        System.out.println("0. Back to Main Menu");
-        InputHandler.getIntInput(0, 0);
+        System.out.println("\n--- Available Slots ---");
+        List<TimeSlot> slots = doctor.getAvailability();
+
+        if (slots == null || slots.isEmpty()) {
+            System.out.println("No available slots.");
+            return;
+        }
+
+        // Print table header
+        System.out.println("+----------+-----------+------------+");
+        System.out.println("| Start    | End       | Status     |");
+        System.out.println("+----------+-----------+------------+");
+
+        // Print each slot in table format
+        for (TimeSlot slot : slots) {
+            System.out.printf("| %-8s | %-9s | %-10s |\n",
+                    slot.getStartTime(),
+                    slot.getEndTime(),
+                    slot.isAvailable() ? "Available" : "Booked");
+        }
+
+        System.out.println("+----------+-----------+------------+");
     }
 
     // Set Availability
