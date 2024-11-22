@@ -16,7 +16,7 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
     public Patient(String userID, String name, String password, String gender, String contactEmail,
             String contactNumber,
             String dateOfBirth, String bloodType) {
-        super(userID, name, password, UserRole.PATIENT, gender, contactEmail, contactNumber);
+        super(userID, name, password, UserRole.Patient, gender, contactEmail, contactNumber);
         this.dateOfBirth = dateOfBirth;
         this.medicalRecord = new MedicalRecord(this, bloodType);
     }

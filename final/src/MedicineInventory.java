@@ -161,12 +161,16 @@ public class MedicineInventory {
      * @param name     the name of the medicine.
      * @param quantity the quantity to add (positive) or subtract (negative).
      */
-    public void updateStock(String name, int quantity) {
+    public boolean updateStock(String name, int quantity) {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             medicine.updateStock(quantity);
             System.out.println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
             updateCsvFile();
+            return true;
+        }
+        else{
+            return false;
         }
     }
 

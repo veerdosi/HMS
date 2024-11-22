@@ -131,6 +131,7 @@ public class AdminMenu {
             int roleChoice = InputHandler.getIntInput(1, 3);
 
             String gender = InputHandler.getStringInput("Enter Gender (M/F): ");
+            System.out.println("Age details required");
             int age = InputHandler.getIntInput(18, 100);
             String email = InputHandler.getStringInput("Enter Contact Email: ");
             String contactNumber = InputHandler.getStringInput("Enter Contact Number: ");
@@ -307,8 +308,9 @@ public class AdminMenu {
             String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
             int quantity = InputHandler.getIntInput(0, 1000);
 
-            medicineInventory.updateStock(medicineName, quantity);
-            System.out.println("Medicine stock updated successfully.");
+            if (medicineInventory.updateStock(medicineName, quantity)){
+                     System.out.println("Medicine stock updated successfully.");
+            }
         } catch (Exception e) {
             System.out.println("Error updating medicine stock: " + e.getMessage());
         }

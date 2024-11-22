@@ -17,7 +17,7 @@ public class Pharmacist extends User {
      * @param age          the age of the pharmacist.
      */
     public Pharmacist(String userID, String name, String password, String gender, String contactEmail, String contactNumber, int age) {
-        super(userID, name, password, UserRole.PHARMACIST, gender, contactEmail, contactNumber);
+        super(userID, name, password, UserRole.Pharmacist, gender, contactEmail, contactNumber);
         this.age = age;
     }
 

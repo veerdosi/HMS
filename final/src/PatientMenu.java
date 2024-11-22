@@ -42,6 +42,7 @@ public class PatientMenu {
         while (true) {
             System.out.println("");
             System.out.println("---- Patient Menu ----");
+            System.out.println("0. Logout");
             System.out.println("1. View Medical Record");
             System.out.println("2. Update Personal Information");
             System.out.println("3. View Available Appointment Slots");
@@ -51,7 +52,6 @@ public class PatientMenu {
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Records");
             System.out.println("9. Reset Password");
-            System.out.println("0. Logout");
             System.out.println("");
 
             int choice = InputHandler.getIntInput(0, 9);

@@ -102,7 +102,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
      */
     @Override
     public MedicalRecord viewMedicalRecord(User user) {
-        if (user.getUserID().equals(patient.getUserID()) || user.getRole() == UserRole.DOCTOR) {
+        if (user.getUserID().equals(patient.getUserID()) || user.getRole() == UserRole.Doctor) {
             displayRecord();
             return this;
         } else {

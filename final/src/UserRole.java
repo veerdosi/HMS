@@ -6,20 +6,20 @@ public enum UserRole {
     /**
      * Represents a doctor role.
      */
-    DOCTOR,
+    Doctor,
 
     /**
      * Represents a patient role.
      */
-    PATIENT,
+    Patient,
 
     /**
      * Represents an administrator role.
      */
-    ADMIN,
+    Administrator,
 
     /**
      * Represents a pharmacist role.
      */
-    PHARMACIST
+    Pharmacist
 }

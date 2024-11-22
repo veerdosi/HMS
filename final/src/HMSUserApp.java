@@ -8,6 +8,7 @@ public class HMSUserApp {
     private AuthenticationService authService;
     private AppointmentServiceFacade facade;
     private MedicineInventory medicineInventory;
+    private StaffList stafflist;
     private boolean running;
 
     // The `private HMSUserApp()` constructor in the `HMSUserApp` class is a private constructor method
@@ -22,6 +23,7 @@ public class HMSUserApp {
 
         facade = AppointmentServiceFacade.getInstance(patientFilePath, staffFilePath);
         medicineInventory = MedicineInventory.getInstance(medicineFilePath);
+        stafflist = StaffList.getInstance(staffFilePath);
     }
 
    /**
@@ -109,12 +111,12 @@ public class HMSUserApp {
 
         while (keepRunning) {
             switch (user.getRole()) {
-                case DOCTOR:
+                case Doctor:
                     DoctorMenu doctorMenu = new DoctorMenu((Doctor) user, facade);
                     keepRunning = doctorMenu.displayMenu();
                     break;
 
-                case PATIENT:
+                case Patient:
                     // Create an instance of PatientInfoUpdater
                     PatientInfoUpdater patientInfoUpdater = new PatientInfoUpdater();
                     // Pass the PatientInfoUpdater instance to PatientMenu
@@ -122,12 +124,12 @@ public class HMSUserApp {
                     keepRunning = patientMenu.displayMenu();
                     break;
 
-                case ADMIN:
+                case Administrator:
                     AdminMenu adminMenu = new AdminMenu((Admin) user);
                     keepRunning = adminMenu.display();
                     break;
 
-                case PHARMACIST:
+                case Pharmacist:
                     PharmacistMenu pharmacistMenu = new PharmacistMenu((Pharmacist) user);
                     keepRunning = pharmacistMenu.displayMenu();
                     break;

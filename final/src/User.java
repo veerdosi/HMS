@@ -143,22 +143,17 @@ public class User implements IPasswordUpdate {
  * @param passString The password to authenticate.
  * @return `true` if authentication is successful, `false` otherwise.
  */
-public boolean authenticatePassword(String inputPassword) {
-    // Check if the input password matches the current password
-    if (this.password.equals(inputPassword)) {
-        // If it's the default password, prompt the user to change it
-        if (inputPassword.equals(DEFAULT_PASSWORD)) {
-            System.out.println("\nFirst Login: Please reset your password!");
-            String newPass = InputHandler.getStringInput("New Password: ");
-            changePassword(newPass); // Updates the password
-            System.out.println("Password updated successfully. Please log in again.");
-            return false; // Force re-login after password change
+public boolean authenticatePassword(String password) {
+    if (this.password.equals(password)){
+        if(password.equals(DEFAULT_PASSWORD)){
+        System.out.println("");
+        System.out.println("First Login: Please reset your password!\n");
+        String newPass = InputHandler.getStringInput("New Password: ");
+        changePassword(newPass);
         }
-        return true; // Successful login
     }
-    return false; // Incorrect password
+    return this.password.equals(password);
 }
-
 
     /**
      * Changes the user's password and updates the corresponding record in the CSV
@@ -225,7 +220,7 @@ public boolean authenticatePassword(String inputPassword) {
      * @return The file path to the CSV file (patients or staff), or `null` if the
      *         user ID is invalid.
      */
-    private String determineFilePath() {
+   private String determineFilePath() {
     if (isIDInFile(userID, PATIENT_FILE_PATH)) {
         return PATIENT_FILE_PATH;
     } else if (isIDInFile(userID, STAFF_FILE_PATH)) {

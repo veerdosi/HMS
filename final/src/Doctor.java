@@ -29,7 +29,7 @@ public class Doctor extends User {
      */
     public Doctor(String userID, String name, String password, String gender,
                   String contactEmail, String contactNumber, int age) {
-        super(userID, name, password, UserRole.DOCTOR, gender, contactEmail, contactNumber);
+        super(userID, name, password, UserRole.Doctor, gender, contactEmail, contactNumber);
         this.age = age;
         this.availabilityRepository = repository;
         this.availability = new ArrayList<>();
