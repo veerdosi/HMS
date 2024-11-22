@@ -1,12 +1,15 @@
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**@author Revathi Selvasevaran
- * The `PatientMenu` class provides an interactive menu for patients to
- * manage appointments, update personal information, and reset passwords.
- * It interacts with the `AppointmentServiceFacade` and 
- * `AppointmentOutcomeRecord` for appointment-related operations and uses
- * the `PatientInfoUpdater` for managing personal information updates.
+/**
+ * @author Revathi Selvasevaran
+ *         The `PatientMenu` class provides an interactive menu for patients to
+ *         manage appointments, update personal information, and reset
+ *         passwords.
+ *         It interacts with the `AppointmentServiceFacade` and
+ *         `AppointmentOutcomeRecord` for appointment-related operations and
+ *         uses
+ *         the `PatientInfoUpdater` for managing personal information updates.
  */
 public class PatientMenu {
     private final Patient patient;
@@ -17,8 +20,9 @@ public class PatientMenu {
     /**
      * Constructs a new `PatientMenu` for the specified patient.
      *
-     * @param patient    The patient using the menu.
-     * @param infoUpdater An instance of `PatientInfoUpdater` for managing personal information updates.
+     * @param patient     The patient using the menu.
+     * @param infoUpdater An instance of `PatientInfoUpdater` for managing personal
+     *                    information updates.
      */
     public PatientMenu(Patient patient, PatientInfoUpdater infoUpdater) {
         this.patient = patient;
@@ -32,7 +36,7 @@ public class PatientMenu {
      *
      * @return `false` when the user chooses to log out, ending the menu loop.
      */
-    
+
     public boolean displayMenu() {
         while (true) {
             System.out.println("");
@@ -85,12 +89,12 @@ public class PatientMenu {
             }
         }
     }
-    private void resetPassword(){
+
+    private void resetPassword() {
         String newPass = InputHandler.getStringInput("New Password: ");
         Patient p = this.patient;
         p.changePassword(newPass);
     }
-
 
     /**
      * Fetches and displays the patient's medical record.
@@ -109,28 +113,107 @@ public class PatientMenu {
      * Displays available appointment slots for booking.
      */
     private void viewAvailableAppointments() {
-        System.out.println("Available Appointments:");
-        facade.getAllDoctorAvailabilities();
-        //facade.getAvailableDoctors().forEach(System.out::println);
-        System.out.println("");
+        System.out.println("\n--- Available Appointments ---");
+        List<DoctorAvailability> allAvailabilities = DoctorAvailabilityRepository.getInstance()
+                .getAllDoctorAvailabilities();
+
+        if (allAvailabilities == null || allAvailabilities.isEmpty()) {
+            System.out.println("No available appointments found.");
+            return;
+        }
+
+        // Print table header
+        System.out.println("+----------+---------+-----------+------------+");
+        System.out.println("| Doctor ID| Start   | End       | Status     |");
+        System.out.println("+----------+---------+-----------+------------+");
+
+        // Print each doctor's available slots
+        for (DoctorAvailability docAvail : allAvailabilities) {
+            List<TimeSlot> slots = docAvail.getSlots();
+            for (TimeSlot slot : slots) {
+                if (slot.isAvailable()) { // Only show available slots to patients
+                    System.out.printf("| %-8s | %-7s | %-9s | %-10s |\n",
+                            docAvail.getDoctorId(),
+                            slot.getStartTime(),
+                            slot.getEndTime(),
+                            "Available");
+                }
+            }
+        }
+
+        System.out.println("+----------+---------+-----------+------------+");
     }
 
     /**
      * Schedules a new appointment for the patient.
      */
     private void scheduleAppointment() {
-        String doctorId = InputHandler.getStringInput("Enter Doctor ID: ");
-        String dateStr = InputHandler.getStringInput("Enter Appointment Date (dd-MM-yyyy): ");
-        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
+        System.out.println("\n--- Schedule New Appointment ---");
 
-        LocalDateTime dateTime = Helper.parseDateAndHour(dateStr, hour);
-        if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
-            System.out.println("Invalid appointment date or time.");
+        // First show available slots and doctors
+        viewAvailableAppointments();
+
+        // Get all available doctors
+        List<Doctor> availableDoctors = facade.getAvailableDoctors();
+        if (availableDoctors.isEmpty()) {
+            System.out.println("No doctors are currently available for appointments.");
             return;
         }
 
-        facade.scheduleAppointment(patient, doctorId, dateTime);
-        System.out.println("Appointment scheduled successfully.");
+        // Show doctor list
+        System.out.println("\nAvailable Doctors:");
+        for (Doctor doctor : availableDoctors) {
+            System.out.println("Doctor ID: " + doctor.getUserID());
+        }
+
+        // Get doctor selection
+        String doctorId = InputHandler.getStringInput("Enter Doctor ID from the list above: ");
+
+        // Validate doctor selection
+        DoctorAvailability docAvail = facade.getDoctorAvailability(doctorId);
+        if (docAvail == null) {
+            System.out.println("Invalid doctor ID or no availability for this doctor.");
+            return;
+        }
+
+        // Get date from user
+        String dateStr = InputHandler.getStringInput("Enter Appointment Date (dd-MM-yyyy): ");
+
+        // Get hour ensuring it's within business hours
+        int hour = InputHandler.getIntInput("Enter Appointment Hour (9-16): ", 9, 16);
+
+        // Parse date and time
+        LocalDateTime dateTime = Helper.parseDateAndHour(dateStr, hour);
+        if (dateTime == null || dateTime.isBefore(LocalDateTime.now())) {
+            System.out.println("Invalid appointment date or time. Please select a future date and time.");
+            return;
+        }
+
+        // Check if the selected time slot is available
+        boolean timeSlotAvailable = false;
+        for (TimeSlot slot : docAvail.getSlots()) {
+            if (slot.isAvailable() &&
+                    slot.getStartTime().equals(String.format("%02d:00", hour))) {
+                timeSlotAvailable = true;
+                break;
+            }
+        }
+
+        if (!timeSlotAvailable) {
+            System.out.println("The selected time slot is not available. Please choose another time.");
+            return;
+        }
+
+        try {
+            // Schedule the appointment
+            facade.scheduleAppointment(patient, doctorId, dateTime);
+            System.out.println("Appointment scheduled successfully!");
+            System.out.println("Date: " + dateStr);
+            System.out.println("Time: " + String.format("%02d:00", hour));
+            System.out.println("Doctor ID: " + doctorId);
+        } catch (Exception e) {
+            System.out.println("Failed to schedule appointment: " + e.getMessage());
+        }
     }
 
     /**
