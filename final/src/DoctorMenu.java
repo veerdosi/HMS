@@ -161,13 +161,38 @@ public class DoctorMenu {
      */
     private void acceptAppointment() {
         System.out.println("\n--- Accept Appointment ---");
-        doctor.viewSchedule();
-        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
-                doctor.getSchedule().size() - 1);
+        List<Appointment> appointments = doctor.getSchedule();
 
-        if (index >= 0 && index < doctor.getSchedule().size()) {
-            doctor.processAppointment(doctor.getSchedule().get(index), true);
-            System.out.println("Appointment accepted.");
+        if (appointments == null || appointments.isEmpty()) {
+            System.out.println("No pending appointments to accept.");
+            return;
+        }
+
+        // Display pending appointments
+        System.out.println("Pending Appointments:");
+        for (int i = 0; i < appointments.size(); i++) {
+            Appointment apt = appointments.get(i);
+            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
+                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
+                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
+            }
+        }
+
+        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
+                appointments.size() - 1);
+
+        if (index >= 0 && index < appointments.size()) {
+            Appointment appointment = appointments.get(index);
+            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
+                // Use facade to process the appointment
+                facade.processAppointment(appointment.getId(), true);
+
+                // Update the appointment status in doctor's schedule
+                appointment.setStatus(AppointmentStatus.CONFIRMED);
+                System.out.println("Appointment accepted successfully.");
+            } else {
+                System.out.println("This appointment is not in pending status.");
+            }
         } else {
             System.out.println("Invalid selection.");
         }
@@ -175,17 +200,42 @@ public class DoctorMenu {
 
     /**
      * Allows the doctor to decline an appointment from their schedule.
-     * The appointment is marked as declined and not added to the schedule.
+     * The appointment is marked as declined and removed from the schedule.
      */
     private void declineAppointment() {
         System.out.println("\n--- Decline Appointment ---");
-        doctor.viewSchedule();
-        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
-                doctor.getSchedule().size() - 1);
+        List<Appointment> appointments = doctor.getSchedule();
 
-        if (index >= 0 && index < doctor.getSchedule().size()) {
-            doctor.processAppointment(doctor.getSchedule().get(index), false);
-            System.out.println("Appointment declined.");
+        if (appointments == null || appointments.isEmpty()) {
+            System.out.println("No pending appointments to decline.");
+            return;
+        }
+
+        // Display pending appointments
+        System.out.println("Pending Appointments:");
+        for (int i = 0; i < appointments.size(); i++) {
+            Appointment apt = appointments.get(i);
+            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
+                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
+                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
+            }
+        }
+
+        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
+                appointments.size() - 1);
+
+        if (index >= 0 && index < appointments.size()) {
+            Appointment appointment = appointments.get(index);
+            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
+                // Use facade to process the appointment
+                facade.processAppointment(appointment.getId(), false);
+
+                // Remove the declined appointment from doctor's schedule
+                appointments.remove(index);
+                System.out.println("Appointment declined successfully.");
+            } else {
+                System.out.println("This appointment is not in pending status.");
+            }
         } else {
             System.out.println("Invalid selection.");
         }
