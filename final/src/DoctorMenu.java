@@ -62,7 +62,10 @@ public class DoctorMenu {
         System.out.println("Enter the Patient ID to view their medical records:");
         System.out.println("0. Back to Main Menu");
 
-        String patientId = InputHandler.getStringInput();
+        String patientId = InputHandler.getStringInput("Enter Patient ID (or 0 to return): ");
+if ("0".equals(patientId)) {
+    return;
+}
 
         if ("0".equals(patientId)) {
             return;
@@ -177,7 +180,7 @@ public class DoctorMenu {
     // View Upcoming Appointments
     private void viewUpcomingAppointments() {
         System.out.println("\n--- View Upcoming Appointments ---");
-        // Logic to fetch and display upcoming appointments using facade
+        AppointmentOutcomeRecord.getInstance().displayConfirmedAppointmentsByDoctor(doctor.getUserID());
         System.out.println("0. Back to Main Menu");
         InputHandler.getIntInput(0, 0);
     }
