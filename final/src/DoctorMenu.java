@@ -36,45 +36,41 @@ public class DoctorMenu {
     public boolean displayMenu() {
         while (true) {
             System.out.println("\n--- Doctor Menu ---");
-            System.out.println("1. View Schedule");
-            System.out.println("2. Set Availability");
-            System.out.println("3. View Available Slots");
-            System.out.println("4. Accept Appointment");
-            System.out.println("5. Decline Appointment");
-            System.out.println("6. Add Consultation Notes");
-            System.out.println("7. Add Prescription");
-            System.out.println("8. Reset Password");
-            System.out.println("9. Log Out");
+            System.out.println("1. View Patient Medical Records");
+            System.out.println("2. Update Patient Medical Records ");
+            System.out.println("3. View Personal Schedule");
+            System.out.println("4. Set Availability for Appointments");
+            System.out.println("5. Accept or Decline Appointment Requests ");
+            System.out.println("6. View Upcoming Appointments");
+            System.out.println("7. Record Appointment Outcome");
+            System.out.println("8. Log Out");
 
             try {
                 int choice = InputHandler.getIntInput(1, 9);
 
                 switch (choice) {
                     case 1:
-                        doctor.viewSchedule();
+                        
                         break;
                     case 2:
-                        setAvailability();
+                        
                         break;
                     case 3:
-                        viewAvailableSlots();
+                        
                         break;
                     case 4:
-                        acceptAppointment();
+                        
                         break;
                     case 5:
-                        declineAppointment();
+                        
                         break;
                     case 6:
-                        addConsultationNotes();
+                        
                         break;
                     case 7:
-                        addPrescription();
+                        
                         break;
                     case 8:
-                        resetPassword();
-                        break;
-                    case 9:
                         System.out.println("Logging Out...");
                         return false;
                     default:
@@ -161,13 +157,38 @@ public class DoctorMenu {
      */
     private void acceptAppointment() {
         System.out.println("\n--- Accept Appointment ---");
-        doctor.viewSchedule();
-        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
-                doctor.getSchedule().size() - 1);
+        List<Appointment> appointments = doctor.getSchedule();
 
-        if (index >= 0 && index < doctor.getSchedule().size()) {
-            doctor.processAppointment(doctor.getSchedule().get(index), true);
-            System.out.println("Appointment accepted.");
+        if (appointments == null || appointments.isEmpty()) {
+            System.out.println("No pending appointments to accept.");
+            return;
+        }
+
+        // Display pending appointments
+        System.out.println("Pending Appointments:");
+        for (int i = 0; i < appointments.size(); i++) {
+            Appointment apt = appointments.get(i);
+            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
+                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
+                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
+            }
+        }
+
+        int index = InputHandler.getIntInput("Enter the index of the appointment to accept: ", 0,
+                appointments.size() - 1);
+
+        if (index >= 0 && index < appointments.size()) {
+            Appointment appointment = appointments.get(index);
+            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
+                // Use facade to process the appointment
+                facade.processAppointment(appointment.getId(), true);
+
+                // Update the appointment status in doctor's schedule
+                appointment.setStatus(AppointmentStatus.CONFIRMED);
+                System.out.println("Appointment accepted successfully.");
+            } else {
+                System.out.println("This appointment is not in pending status.");
+            }
         } else {
             System.out.println("Invalid selection.");
         }
@@ -175,17 +196,42 @@ public class DoctorMenu {
 
     /**
      * Allows the doctor to decline an appointment from their schedule.
-     * The appointment is marked as declined and not added to the schedule.
+     * The appointment is marked as declined and removed from the schedule.
      */
     private void declineAppointment() {
         System.out.println("\n--- Decline Appointment ---");
-        doctor.viewSchedule();
-        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
-                doctor.getSchedule().size() - 1);
+        List<Appointment> appointments = doctor.getSchedule();
 
-        if (index >= 0 && index < doctor.getSchedule().size()) {
-            doctor.processAppointment(doctor.getSchedule().get(index), false);
-            System.out.println("Appointment declined.");
+        if (appointments == null || appointments.isEmpty()) {
+            System.out.println("No pending appointments to decline.");
+            return;
+        }
+
+        // Display pending appointments
+        System.out.println("Pending Appointments:");
+        for (int i = 0; i < appointments.size(); i++) {
+            Appointment apt = appointments.get(i);
+            if (apt.getStatus() == AppointmentStatus.REQUESTED) {
+                System.out.printf("%d. Appointment ID: %s, Patient ID: %s, DateTime: %s\n",
+                        i, apt.getId(), apt.getPatientID(), apt.getDateTime());
+            }
+        }
+
+        int index = InputHandler.getIntInput("Enter the index of the appointment to decline: ", 0,
+                appointments.size() - 1);
+
+        if (index >= 0 && index < appointments.size()) {
+            Appointment appointment = appointments.get(index);
+            if (appointment.getStatus() == AppointmentStatus.REQUESTED) {
+                // Use facade to process the appointment
+                facade.processAppointment(appointment.getId(), false);
+
+                // Remove the declined appointment from doctor's schedule
+                appointments.remove(index);
+                System.out.println("Appointment declined successfully.");
+            } else {
+                System.out.println("This appointment is not in pending status.");
+            }
         } else {
             System.out.println("Invalid selection.");
         }

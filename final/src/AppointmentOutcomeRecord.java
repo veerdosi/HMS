@@ -87,6 +87,13 @@ public class AppointmentOutcomeRecord {
                 .collect(Collectors.toList());
     }
 
+    public List<Appointment> getConfirmedAppointmentsByDoctor(String doctorId) {
+    return getAppointmentsByDoctor(doctorId).stream()
+            .filter(appointment -> appointment.getStatus() == AppointmentStatus.CONFIRMED)
+            .collect(Collectors.toList());
+}
+
+
     /**
      * Displays all past appointments in a formatted table. If no appointments
      * are available, a message indicating this is shown.
