@@ -1,6 +1,5 @@
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,23 +145,21 @@ public class Doctor extends User {
      * @return `true` if the doctor has that time slot, `false` otherwise.
      */
     public boolean isAvailable(LocalDateTime newDateTime) {
-    if (availability == null || availability.isEmpty()) {
+        if (availability == null || availability.isEmpty()) {
+            return false;
+        }
+
+        // Only check if the time matches a slot, regardless of date
+        String timeStr = newDateTime.toLocalTime().toString();
+        timeStr = timeStr.substring(0, 5); // Get just HH:mm part
+
+        for (TimeSlot slot : availability) {
+            if (slot.getStartTime().equals(timeStr)) {
+                return true;
+            }
+        }
         return false;
     }
-
-    String timeStr = newDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-
-    for (TimeSlot slot : availability) {
-        String slotStart = slot.getStartTime(); // Assuming HH:mm format
-        String slotEnd = slot.getEndTime();    // Assuming HH:mm format
-
-        if (timeStr.compareTo(slotStart) >= 0 && timeStr.compareTo(slotEnd) < 0) {
-            return true; // `timeStr` is within the slot range
-        }
-    }
-    return false;
-}
-
 
     /**
      * Updates the availability of a specific time slot.

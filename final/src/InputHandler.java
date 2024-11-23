@@ -31,7 +31,7 @@ public class InputHandler {
      * @return A validated integer input
      */
     public static int getIntInput(int min, int max) {
-        return getIntInput("Enter your choice: ", min, max);
+        return getIntInput(" ", min, max);
     }
 
     /**

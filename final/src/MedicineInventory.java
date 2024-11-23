@@ -45,6 +45,15 @@ public class MedicineInventory {
         return instance;
     }
 
+    public List<String> getMedicineNames() {
+    List<String> medicineNames = new ArrayList<>();
+    for (Medicine medicine : medicines) { // Assuming `medicines` is a list of Medicine objects
+        medicineNames.add(medicine.getName()); // Assuming `getName()` retrieves the medicine's name
+    }
+    return medicineNames;
+}
+
+
     /**
      * Loads medicines from the specified CSV file into the inventory.
      *

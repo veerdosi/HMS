@@ -1,3 +1,6 @@
+
+import java.util.List;
+
 /**
  * The `AdminMenu` class provides an interactive menu for administrators to
  * perform various administrative tasks, including managing hospital staff,
@@ -131,7 +134,7 @@ public class AdminMenu {
             int roleChoice = InputHandler.getIntInput(1, 3);
 
             String gender = InputHandler.getStringInput("Enter Gender (M/F): ");
-            System.out.println("Age details required");
+            System.out.println("Enter age:");
             int age = InputHandler.getIntInput(18, 100);
             String email = InputHandler.getStringInput("Enter Contact Email: ");
             String contactNumber = InputHandler.getStringInput("Enter Contact Number: ");
@@ -144,7 +147,7 @@ public class AdminMenu {
             };
 
             admin.addStaff(newStaff);
-            System.out.println("Staff member added successfully.");
+            displayAllStaff();
 
         } catch (Exception e) {
             System.out.println("Error adding staff: " + e.getMessage());
@@ -178,7 +181,7 @@ public class AdminMenu {
 
             String newValue = InputHandler.getStringInput("Enter new value: ");
             admin.updateStaff(staffID, field, newValue);
-            System.out.println("Staff member updated successfully.");
+            displayAllStaff();
 
         } catch (Exception e) {
             System.out.println("Error updating staff: " + e.getMessage());
@@ -197,7 +200,7 @@ public class AdminMenu {
             String confirm = InputHandler.getStringInput("Are you sure you want to remove this staff member? (yes/no): ");
             if (confirm.equalsIgnoreCase("yes")) {
                 admin.removeStaff(staffID);
-                System.out.println("Staff member removed successfully.");
+                displayAllStaff();
             } else {
                 System.out.println("Removal cancelled.");
             }
@@ -303,13 +306,23 @@ public class AdminMenu {
     private void updateMedicineStock() {
         try {
             System.out.println("\n--- Update Medicine Stock ---");
-            viewAllMedicines();
+            // Display a numbered menu for available medicines
+            List<String> medicineNames = medicineInventory.getMedicineNames(); // Fetch all medicine names
+            for (int i = 0; i < medicineNames.size(); i++) {
+                System.out.println((i + 1) + ". " + medicineNames.get(i));
+            }
+            // Get user input for selecting a medicine
+            int choice = InputHandler.getIntInput(1, medicineNames.size()); // Get a number between 1 and the size of the list
+            String selectedMedicine = medicineNames.get(choice - 1); // Get the corresponding medicine name
 
-            String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
+            System.out.println("Enter the quantity:");
             int quantity = InputHandler.getIntInput(0, 1000);
 
-            if (medicineInventory.updateStock(medicineName, quantity)){
+            if (medicineInventory.updateStock(selectedMedicine, quantity)){
                      System.out.println("Medicine stock updated successfully.");
+            }
+            else {
+            System.out.println("Error: Failed to update stock for " + selectedMedicine + ".");
             }
         } catch (Exception e) {
             System.out.println("Error updating medicine stock: " + e.getMessage());
