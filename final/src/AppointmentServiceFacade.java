@@ -2,7 +2,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * The `AppointmentServiceFacade` class provides a simplified interface for managing
+ * The `AppointmentServiceFacade` class provides a simplified interface for
+ * managing
  * appointments, doctor availabilities, and patient data. It integrates multiple
  * services, including `DoctorService`, `PatientService`, `AppointmentService`,
  * and `PrescriptionService`, and follows the Singleton design pattern.
@@ -16,7 +17,8 @@ public class AppointmentServiceFacade {
 
     /**
      * Private constructor to enforce Singleton pattern.
-     * Initializes the services with the file paths to their respective data sources.
+     * Initializes the services with the file paths to their respective data
+     * sources.
      *
      * @param patientFilePath The file path to the patient data.
      * @param staffFilePath   The file path to the staff data.
@@ -29,7 +31,8 @@ public class AppointmentServiceFacade {
     }
 
     /**
-     * Retrieves the Singleton instance of the `AppointmentServiceFacade`, initializing it
+     * Retrieves the Singleton instance of the `AppointmentServiceFacade`,
+     * initializing it
      * with file paths if it has not been created yet.
      *
      * @param patientFilePath The file path to the patient data.
@@ -77,9 +80,9 @@ public class AppointmentServiceFacade {
     /**
      * Schedules an appointment for a specific patient and doctor.
      *
-     * @param patient   The patient for whom the appointment is being scheduled.
-     * @param doctorId  The ID of the doctor for the appointment.
-     * @param dateTime  The date and time of the appointment.
+     * @param patient  The patient for whom the appointment is being scheduled.
+     * @param doctorId The ID of the doctor for the appointment.
+     * @param dateTime The date and time of the appointment.
      */
     public void scheduleAppointment(Patient patient, String doctorId, LocalDateTime dateTime) {
         appointmentService.scheduleAppointment(patient, doctorId, dateTime);
@@ -98,7 +101,7 @@ public class AppointmentServiceFacade {
      * Processes an appointment by confirming or declining it.
      *
      * @param appointmentId The ID of the appointment to process.
-     * @param accept         `true` to confirm the appointment, `false` to decline.
+     * @param accept        `true` to confirm the appointment, `false` to decline.
      */
     public void processAppointment(String appointmentId, boolean accept) {
         appointmentService.processAppointment(appointmentId, accept);
@@ -177,4 +180,5 @@ public class AppointmentServiceFacade {
     public boolean rescheduleAppointment(String appointmentID, LocalDateTime newDateTime) {
         return appointmentService.rescheduleAppointment(appointmentID, newDateTime);
     }
+
 }

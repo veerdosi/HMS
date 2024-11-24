@@ -221,16 +221,37 @@ public class AppointmentService {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
             appointment.setConsultationNotes(notes);
+
+            // Check if both notes and prescriptions are present to auto-complete
+            if (!appointment.getPrescriptions().isEmpty()) {
+                appointment.setStatus(AppointmentStatus.COMPLETED);
+                System.out.println(
+                        "Appointment automatically marked as completed as both notes and prescriptions are present.");
+            }
+
+            outcomeRecord.addOutcome(appointment);
             System.out.println("Consultation notes added to appointment ID: " + appointmentId);
         } else {
             System.out.println("Appointment not found for ID: " + appointmentId);
         }
     }
 
+    /**
+     * Retrieves an appointment by its ID.
+     *
+     * @param appointmentId The unique identifier of the appointment.
+     * @return The appointment if found, null otherwise.
+     */
+    public Appointment getAppointmentById(String appointmentId) {
+        return outcomeRecord.getAppointmentById(appointmentId);
+    }
+
     public void setTypeOfService(String appointmentId, TypeOfService serviceType) {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
             appointment.setTypeOfService(serviceType);
+            // Make sure to update the record
+            outcomeRecord.addOutcome(appointment);
             System.out.println("Type of service set to " + serviceType + " for appointment ID: " + appointmentId);
         } else {
             System.out.println("Appointment not found for ID: " + appointmentId);
@@ -241,13 +262,18 @@ public class AppointmentService {
         Appointment appointment = outcomeRecord.getAppointmentById(appointmentId);
         if (appointment != null) {
             appointment.addPrescription(prescription);
+
+            // Check if both notes and prescriptions are present to auto-complete
+            if (appointment.getConsultationNotes() != null && !appointment.getConsultationNotes().isEmpty()) {
+                appointment.setStatus(AppointmentStatus.COMPLETED);
+                System.out.println(
+                        "Appointment automatically marked as completed as both notes and prescriptions are present.");
+            }
+
+            outcomeRecord.addOutcome(appointment);
             System.out.println("Prescription added to appointment ID: " + appointmentId);
         } else {
             System.out.println("Appointment not found for ID: " + appointmentId);
         }
-    }
-
-    public Appointment getAppointmentById(String appointmentId) {
-        return outcomeRecord.getAppointmentById(appointmentId);
     }
 }
