@@ -174,33 +174,42 @@ public class AppointmentService {
             return false;
         }
 
-        // Check if the new time is available
-        if (!doctor.isAvailable(newDateTime)) {
-            System.out.println("The doctor is not available at the requested time.");
+        // Check if the new time slot exists and is available
+        if (!availabilityRepository.slotExists(doctor.getUserID(), newDateTime)) {
+            System.out.println("Error: Selected time slot does not exist.");
+            return false;
+        }
+
+        if (!availabilityRepository.isSlotAvailable(doctor.getUserID(), newDateTime)) {
+            System.out.println("Error: Selected time slot is not available.");
             return false;
         }
 
         LocalDateTime oldDateTime = appointment.getDateTime();
 
-        // Try to book the new slot first
-        if (!doctor.bookSlot(newDateTime)) {
-            System.out.println("Failed to book the new time slot.");
-            return false;
-        }
-
         try {
-            // Free the old slot
-            doctor.freeSlot(oldDateTime);
+            // 1. Book the new slot first
+            if (!availabilityRepository.bookSlot(doctor.getUserID(), newDateTime)) {
+                System.out.println("Failed to book new time slot.");
+                return false;
+            }
 
-            // Update the appointment
+            // 2. Free up the old slot
+            availabilityRepository.freeSlot(doctor.getUserID(), oldDateTime);
+
+            // 3. Update the appointment's datetime
             appointment.setDateTime(newDateTime);
+
+            // 4. No need to change status - keep existing status (CONFIRMED/REQUESTED)
+
             System.out.println("Appointment rescheduled successfully to " +
                     AppointmentSlotUtil.formatDateTime(newDateTime));
             return true;
+
         } catch (Exception e) {
             // If anything goes wrong, try to restore the original state
-            doctor.freeSlot(newDateTime);
-            doctor.bookSlot(oldDateTime);
+            availabilityRepository.freeSlot(doctor.getUserID(), newDateTime);
+            availabilityRepository.bookSlot(doctor.getUserID(), oldDateTime);
             System.out.println("Error during rescheduling: " + e.getMessage());
             return false;
         }

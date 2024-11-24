@@ -41,6 +41,9 @@ public class AppointmentOutcomeRecord {
      * @param appointment The appointment to add.
      */
     public void addOutcome(Appointment appointment) {
+        // Remove any existing appointment with the same ID
+        pastAppointments.removeIf(apt -> apt.getId().equals(appointment.getId()));
+        // Add the updated appointment
         pastAppointments.add(appointment);
     }
 

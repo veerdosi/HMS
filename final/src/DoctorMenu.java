@@ -285,12 +285,20 @@ public class DoctorMenu {
             if (aptID.equals("0"))
                 return;
 
+            // Get the appointment first to ensure it exists
+            Appointment appointment = outcomeRecord.getAppointmentById(aptID);
+            if (appointment == null) {
+                System.out.println("Appointment not found.");
+                continue;
+            }
+
             System.out.println("Choose an action:");
             System.out.println("1. Add Consultation Notes");
             System.out.println("2. Add Prescriptions");
+            System.out.println("3. Mark Appointment as Completed");
             System.out.println("0. Back to Main Menu");
 
-            int choice = InputHandler.getIntInput(0, 2);
+            int choice = InputHandler.getIntInput(0, 3);
             switch (choice) {
                 case 0:
                     return;
@@ -298,6 +306,9 @@ public class DoctorMenu {
                     String notes = InputHandler.getStringInput("Enter Consultation Notes: ");
                     try {
                         facade.addConsultationNotes(aptID, notes);
+                        // Update the appointment in outcomeRecord
+                        appointment.setConsultationNotes(notes);
+                        outcomeRecord.addOutcome(appointment);
                         System.out.println("Consultation notes successfully added.");
                     } catch (Exception e) {
                         System.out.println("Error adding consultation notes: " + e.getMessage());
@@ -309,9 +320,21 @@ public class DoctorMenu {
                     Prescription prescription = new Prescription(medicine);
                     try {
                         facade.addPrescription(aptID, prescription);
+                        // Update the appointment in outcomeRecord
+                        appointment.addPrescription(prescription);
+                        outcomeRecord.addOutcome(appointment);
                         System.out.println("Prescription successfully added.");
                     } catch (Exception e) {
                         System.out.println("Error adding prescription: " + e.getMessage());
+                    }
+                    break;
+                case 3:
+                    try {
+                        appointment.setStatus(AppointmentStatus.COMPLETED);
+                        outcomeRecord.addOutcome(appointment);
+                        System.out.println("Appointment marked as completed.");
+                    } catch (Exception e) {
+                        System.out.println("Error marking appointment as completed: " + e.getMessage());
                     }
                     break;
             }
