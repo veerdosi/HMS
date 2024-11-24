@@ -81,6 +81,10 @@ public class AppointmentOutcomeRecord {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param patientId
+     * @return List<Appointment>
+     */
     public List<Appointment> getCompletedAppointmentsByPatient(String patientId) {
         return getAppointmentsByPatient(patientId).stream()
                 .filter(appointment -> appointment.getStatus() == AppointmentStatus.COMPLETED)

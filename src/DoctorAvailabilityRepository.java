@@ -19,6 +19,9 @@ public class DoctorAvailabilityRepository {
         this.doctorAvailabilityMap = new HashMap<>();
     }
 
+    /**
+     * @return DoctorAvailabilityRepository
+     */
     public static synchronized DoctorAvailabilityRepository getInstance() {
         if (instance == null) {
             instance = new DoctorAvailabilityRepository();

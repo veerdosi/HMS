@@ -27,6 +27,9 @@ public class Doctor extends User {
         this.schedule = new ArrayList<>();
     }
 
+    /**
+     * @return int
+     */
     public int getAge() {
         return age;
     }

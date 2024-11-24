@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The `MedicineInventory` class manages the inventory of medicines in the system. It provides
- * functionalities for adding, updating, and tracking medicines, as well as monitoring low-stock
+ * The `MedicineInventory` class manages the inventory of medicines in the
+ * system. It provides
+ * functionalities for adding, updating, and tracking medicines, as well as
+ * monitoring low-stock
  * levels and maintaining a persistent record of inventory in a CSV file.
  * <p>
- * This class follows the Singleton design pattern to ensure a single, centralized instance of
+ * This class follows the Singleton design pattern to ensure a single,
+ * centralized instance of
  * the inventory is used throughout the application.
  */
 public class MedicineInventory {
@@ -21,7 +24,8 @@ public class MedicineInventory {
 
     /**
      * Private constructor for the `MedicineInventory` class.
-     * Initializes the inventory by loading medicine data from the specified CSV file.
+     * Initializes the inventory by loading medicine data from the specified CSV
+     * file.
      *
      * @param filePath the path to the CSV file containing medicine data.
      */
@@ -35,7 +39,8 @@ public class MedicineInventory {
      * Retrieves the singleton instance of `MedicineInventory`.
      * If no instance exists, a new one is created using the specified file path.
      *
-     * @param filePath the file path to initialize the instance if it is not already created.
+     * @param filePath the file path to initialize the instance if it is not already
+     *                 created.
      * @return the singleton instance of `MedicineInventory`.
      */
     public static MedicineInventory getInstance(String filePath) {
@@ -45,14 +50,16 @@ public class MedicineInventory {
         return instance;
     }
 
+    /**
+     * @return List<String>
+     */
     public List<String> getMedicineNames() {
-    List<String> medicineNames = new ArrayList<>();
-    for (Medicine medicine : medicines) { // Assuming `medicines` is a list of Medicine objects
-        medicineNames.add(medicine.getName()); // Assuming `getName()` retrieves the medicine's name
+        List<String> medicineNames = new ArrayList<>();
+        for (Medicine medicine : medicines) { // Assuming `medicines` is a list of Medicine objects
+            medicineNames.add(medicine.getName()); // Assuming `getName()` retrieves the medicine's name
+        }
+        return medicineNames;
     }
-    return medicineNames;
-}
-
 
     /**
      * Loads medicines from the specified CSV file into the inventory.
@@ -108,7 +115,8 @@ public class MedicineInventory {
      * Retrieves a medicine from the inventory by its name.
      *
      * @param name the name of the medicine to retrieve.
-     * @return the `Medicine` object if found, or `null` if the medicine does not exist.
+     * @return the `Medicine` object if found, or `null` if the medicine does not
+     *         exist.
      */
     public Medicine getMedicineByName(String name) {
         for (Medicine medicine : medicines) {
@@ -156,7 +164,8 @@ public class MedicineInventory {
         if (medicine != null) {
             if (medicine.getCurrentStock() > 0) {
                 medicine.updateStock(-1);
-                System.out.println("Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+                System.out.println(
+                        "Decreased stock for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
                 updateCsvFile();
             } else {
                 System.out.println("Stock for " + medicine.getName() + " is already zero. Cannot decrease further.");
@@ -165,7 +174,8 @@ public class MedicineInventory {
     }
 
     /**
-     * Updates the stock level of a specific medicine and reflects the change in the CSV file.
+     * Updates the stock level of a specific medicine and reflects the change in the
+     * CSV file.
      *
      * @param name     the name of the medicine.
      * @param quantity the quantity to add (positive) or subtract (negative).
@@ -174,11 +184,11 @@ public class MedicineInventory {
         Medicine medicine = getMedicineByName(name);
         if (medicine != null) {
             medicine.updateStock(quantity);
-            System.out.println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
+            System.out
+                    .println("Stock updated for " + medicine.getName() + ". New stock: " + medicine.getCurrentStock());
             updateCsvFile();
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

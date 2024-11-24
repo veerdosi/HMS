@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The `User` class represents a user in the system with attributes such as user ID,
+ * The `User` class represents a user in the system with attributes such as user
+ * ID,
  * name, role, gender, and contact information. It also manages password-related
- * operations, including first login password reset and updating the password in the
+ * operations, including first login password reset and updating the password in
+ * the
  * corresponding CSV file.
  */
 public class User implements IPasswordUpdate {
@@ -35,7 +37,7 @@ public class User implements IPasswordUpdate {
      * @param contactNumber The user's contact number.
      */
     public User(String userID, String name, String password, UserRole role, String gender, String contactEmail,
-                String contactNumber) {
+            String contactNumber) {
         this.userID = userID;
         this.name = name;
         this.password = DEFAULT_PASSWORD;
@@ -136,24 +138,26 @@ public class User implements IPasswordUpdate {
     }
 
     /**
- * Authenticates the user using the provided password. If the provided password matches
- * the current password and the current password is the default password, the user is
- * prompted to reset their password.
- *
- * @param passString The password to authenticate.
- * @return `true` if authentication is successful, `false` otherwise.
- */
-public boolean authenticatePassword(String password) {
-    if (this.password.equals(password)){
-        if(password.equals(DEFAULT_PASSWORD)){
-        System.out.println("");
-        System.out.println("First Login: Please reset your password!\n");
-        String newPass = InputHandler.getStringInput("New Password: ");
-        changePassword(newPass);
+     * Authenticates the user using the provided password. If the provided password
+     * matches
+     * the current password and the current password is the default password, the
+     * user is
+     * prompted to reset their password.
+     *
+     * @param passString The password to authenticate.
+     * @return `true` if authentication is successful, `false` otherwise.
+     */
+    public boolean authenticatePassword(String password) {
+        if (this.password.equals(password)) {
+            if (password.equals(DEFAULT_PASSWORD)) {
+                System.out.println("");
+                System.out.println("First Login: Please reset your password!\n");
+                String newPass = InputHandler.getStringInput("New Password: ");
+                changePassword(newPass);
+            }
         }
+        return this.password.equals(password);
     }
-    return this.password.equals(password);
-}
 
     /**
      * Changes the user's password and updates the corresponding record in the CSV
@@ -168,7 +172,8 @@ public boolean authenticatePassword(String password) {
     }
 
     /**
-     * Updates the user's password in the corresponding CSV file (patients or staff).
+     * Updates the user's password in the corresponding CSV file (patients or
+     * staff).
      */
     protected void updatePasswordInExcel() {
         String filePath = determineFilePath();
@@ -220,29 +225,34 @@ public boolean authenticatePassword(String password) {
      * @return The file path to the CSV file (patients or staff), or `null` if the
      *         user ID is invalid.
      */
-   private String determineFilePath() {
-    if (isIDInFile(userID, PATIENT_FILE_PATH)) {
-        return PATIENT_FILE_PATH;
-    } else if (isIDInFile(userID, STAFF_FILE_PATH)) {
-        return STAFF_FILE_PATH;
-    } else {
-        return null; // Invalid or non-existent ID
-    }
-}
-
-private boolean isIDInFile(String userID, String filePath) {
-    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            String[] fields = line.split(",");
-            if (fields[0].trim().equals(userID)) {
-                return true;
-            }
+    private String determineFilePath() {
+        if (isIDInFile(userID, PATIENT_FILE_PATH)) {
+            return PATIENT_FILE_PATH;
+        } else if (isIDInFile(userID, STAFF_FILE_PATH)) {
+            return STAFF_FILE_PATH;
+        } else {
+            return null; // Invalid or non-existent ID
         }
-    } catch (IOException e) {
-        System.err.println("Error reading the file: " + e.getMessage());
     }
-    return false;
-}
+
+    /**
+     * @param userID
+     * @param filePath
+     * @return boolean
+     */
+    private boolean isIDInFile(String userID, String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                if (fields[0].trim().equals(userID)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the file: " + e.getMessage());
+        }
+        return false;
+    }
 
 }

@@ -28,6 +28,9 @@ public class TimeSlot {
         this.isAvailable = true;
     }
 
+    /**
+     * @return LocalDateTime
+     */
     public LocalDateTime getStartDateTime() {
         return startDateTime;
     }

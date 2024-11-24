@@ -1,7 +1,9 @@
-/** @author Revathi Selvasevaran
- * The `Patient` class extends `User` and implements interfaces for accessing
- * medical records and
- * updating personal information.
+/**
+ * @author Revathi Selvasevaran
+ *         The `Patient` class extends `User` and implements interfaces for
+ *         accessing
+ *         medical records and
+ *         updating personal information.
  */
 public class Patient extends User implements IPatientMedicalRecordAccess, IPersonalInfoUpdate, IPasswordUpdate {
     private String dateOfBirth;
@@ -36,13 +38,14 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
      * @return MedicalRecord
      */
     // This is implementing the `viewMedicalRecord` method from the
-    // `IPatientMedicalRecordAccess` interface in the `Patient` class. 
-    // This methodallows a user to view the medical record of a patient. 
+    // `IPatientMedicalRecordAccess` interface in the `Patient` class.
+    // This methodallows a user to view the medical record of a patient.
     // It takes a `User` object as a parameter and returns the
-    // medical record associated with the patient. 
+    // medical record associated with the patient.
     // The actual implementation of how the medical record
     // is viewed is delegated to the `MedicalRecord` class, where the
-    // `viewMedicalRecord` method is called with the user object passed as an argument.
+    // `viewMedicalRecord` method is called with the user object passed as an
+    // argument.
     // Implementing PatientMedicalRecordAccess method for view-only access to
     // MedicalRecord
     @Override
@@ -99,7 +102,7 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
      *                   type that represents the new contact number that will be
      *                   updated in the contact information.
      */
-  
+
     @Override
     public void updateContactInfo(String newEmail, String newContact) {
         this.contactEmail = newEmail;
@@ -115,13 +118,21 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
         return medicalRecord;
     }
 
+    /**
+     * @param newPass
+     */
     @Override
-    // The `changePassword` method in the `Patient` class is responsible for updating the password of a
-    // patient object. It takes a new password as a parameter (`newPass`) and assigns this new password
+    // The `changePassword` method in the `Patient` class is responsible for
+    // updating the password of a
+    // patient object. It takes a new password as a parameter (`newPass`) and
+    // assigns this new password
     // to the `password` attribute of the patient object. Additionally, it calls the
-    // `updatePasswordInExcel` method to ensure that the changes are reflected in an Excel CSV file,
-    // presumably where user information is stored. This method helps in maintaining the security and
-    // integrity of patient data by allowing password updates and ensuring that the changes are
+    // `updatePasswordInExcel` method to ensure that the changes are reflected in an
+    // Excel CSV file,
+    // presumably where user information is stored. This method helps in maintaining
+    // the security and
+    // integrity of patient data by allowing password updates and ensuring that the
+    // changes are
     // persisted in an external data source.
     public void changePassword(String newPass) {
         this.password = newPass;

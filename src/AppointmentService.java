@@ -25,6 +25,9 @@ public class AppointmentService {
         this.availabilityRepository = DoctorAvailabilityRepository.getInstance();
     }
 
+    /**
+     * @return String
+     */
     private String generateAppointmentID() {
         return "A" + (appointmentCounter++);
     }

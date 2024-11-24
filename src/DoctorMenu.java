@@ -13,6 +13,9 @@ public class DoctorMenu {
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
     }
 
+    /**
+     * @return boolean
+     */
     public boolean displayMenu() {
         while (true) {
             System.out.println("\n--- Doctor Menu ---");

@@ -4,6 +4,11 @@ public class Billing extends User {
         super(userID, name, DEFAULT_PASSWORD, role, gender, contactEmail, contactNumber); // Pass default password
     }
 
+    /**
+     * @param patientId
+     * @param serviceDetails
+     * @param amount
+     */
     public void generateInvoice(String patientId, String serviceDetails, double amount) {
         System.out.println("Generating invoice for Patient ID: " + patientId);
         System.out.println("Service Details: " + serviceDetails);

@@ -16,6 +16,9 @@ public class DoctorAvailability {
         this.slots = new ArrayList<>(slots);
     }
 
+    /**
+     * @return String
+     */
     public String getDoctorId() {
         return doctorId;
     }
