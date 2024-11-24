@@ -1,3 +1,113 @@
+<<<<<<< Updated upstream
+/**
+ * The `Patient` class extends `User` and implements interfaces for accessing
+ * medical records, updating personal information, and updating passwords.
+ *
+ * This class represents a patient with associated personal details and medical records.
+ * It provides functionality to manage contact information, access medical records, and update
+ * account credentials.
+ *
+ * The `Patient` class is designed to integrate with systems requiring medical data access,
+ * secure updates, and user information management.
+ *
+ */
+public class Patient extends User implements IPatientMedicalRecordAccess, IPersonalInfoUpdate, IPasswordUpdate {
+    private String dateOfBirth;
+    private MedicalRecord medicalRecord;
+
+    /**
+     * Constructs a `Patient` object with the provided parameters, initializing
+     * user details and creating a new `MedicalRecord` for the patient.
+     *
+     * @param userID        The unique identifier for the patient.
+     * @param name          The name of the patient.
+     * @param password      The patient's password.
+     * @param gender        The gender of the patient.
+     * @param contactEmail  The contact email address of the patient.
+     * @param contactNumber The contact number of the patient.
+     * @param dateOfBirth   The date of birth of the patient.
+     * @param bloodType     The blood type of the patient.
+     */
+    public Patient(String userID, String name, String password, String gender, String contactEmail,
+                   String contactNumber, String dateOfBirth, String bloodType) {
+        super(userID, name, password, UserRole.Patient, gender, contactEmail, contactNumber);
+        this.dateOfBirth = dateOfBirth;
+        this.medicalRecord = new MedicalRecord(this, bloodType);
+    }
+
+    /**
+     * Retrieves the date of birth of the patient.
+     *
+     * @return The date of birth as a `String`.
+     */
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    /**
+     * Allows authorized users to view the medical record of the patient.
+     *
+     * @param user The user requesting access to the medical record.
+     * @return The `MedicalRecord` if access is granted, or `null` if access is denied.
+     */
+    @Override
+    public MedicalRecord viewMedicalRecord(User user) {
+        return medicalRecord.viewMedicalRecord(user);
+    }
+
+    /**
+     * Updates the contact number of the patient.
+     *
+     * @param newContact The new contact number to set.
+     */
+    @Override
+    public void updateContactNumber(String newContact) {
+        this.contactNumber = newContact;
+    }
+
+    /**
+     * Updates the email address of the patient.
+     *
+     * @param newEmail The new email address to set.
+     */
+    @Override
+    public void updateEmailAddress(String newEmail) {
+        this.contactEmail = newEmail;
+    }
+
+    /**
+     * Updates both the contact email and contact number of the patient.
+     *
+     * @param newEmail   The new email address to set.
+     * @param newContact The new contact number to set.
+     */
+    @Override
+    public void updateContactInfo(String newEmail, String newContact) {
+        this.contactEmail = newEmail;
+        this.contactNumber = newContact;
+    }
+
+    /**
+     * Retrieves the medical record associated with the patient.
+     *
+     * @return The `MedicalRecord` of the patient.
+     */
+    public MedicalRecord getMedicalRecord() {
+        return medicalRecord;
+    }
+
+    /**
+     * Updates the password for the patient and persists the change to an external data source.
+     *
+     * @param newPass The new password to set.
+     */
+    @Override
+    public void changePassword(String newPass) {
+        this.password = newPass;
+        updatePasswordInExcel(); // Ensures the CSV file storing passwords is updated
+    }
+}
+=======
 /**
  * @author Revathi Selvasevaran
  *         The `Patient` class extends `User` and implements interfaces for
@@ -139,3 +249,4 @@ public class Patient extends User implements IPatientMedicalRecordAccess, IPerso
         updatePasswordInExcel(); // Ensures CSV file is updated
     }
 }
+>>>>>>> Stashed changes
