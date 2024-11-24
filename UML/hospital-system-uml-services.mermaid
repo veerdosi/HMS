@@ -1,0 +1,68 @@
+classDiagram
+    %% Services and Facades
+    class AppointmentServiceFacade {
+        -static AppointmentServiceFacade instance
+        -DoctorService doctorService
+        -PatientService patientService
+        -AppointmentService appointmentService
+        -PrescriptionService prescriptionService
+        +getInstance(String, String) AppointmentServiceFacade
+        +scheduleAppointment(Patient, String, LocalDateTime)
+        +cancelAppointment(String)
+        +processAppointment(String, boolean)
+        +addConsultationNotes(String, String)
+        +setTypeOfService(String, TypeOfService)
+        +addPrescription(String, Prescription)
+        +updatePrescriptionStatus(String, Medicine, PrescriptionStatus) boolean
+    }
+
+    class StaffServiceFacade {
+        -static StaffServiceFacade instance
+        +getInstance() StaffServiceFacade
+        +updateStaff(String, String, String) boolean
+        +addStaff(User)
+        +removeStaff(String)
+        +getStaffById(String) User
+        +getAllStaff() List~User~
+        +filterStaff(String, String) List~User~
+        +displayFilteredStaff(String, String)
+        +displayAllStaff()
+    }
+
+    class AuthenticationService {
+        -Map~String, User~ users
+        +authenticateUser(String, String) User
+        -loadPatients()
+        -loadStaff()
+    }
+
+    class AppointmentService {
+        -DoctorService doctorService
+        -PatientService patientService
+        -AppointmentOutcomeRecord outcomeRecord
+        -DoctorAvailabilityRepository availabilityRepository
+        +scheduleAppointment(Patient, String, LocalDateTime)
+        +cancelAppointment(String)
+        +processAppointment(String, boolean)
+        +rescheduleAppointment(String, LocalDateTime) boolean
+    }
+
+    class DoctorService {
+        -List~Doctor~ doctors
+        +getAvailableDoctors() List~Doctor~
+        +getDoctorById(String) Doctor
+        -loadDoctorsFromCsv(String) List~Doctor~
+    }
+
+    class PatientService {
+        -List~Patient~ patients
+        +getAllPatients() List~Patient~
+        +getPatientById(String) Patient
+        -loadPatientsFromCsv(String) List~Patient~
+    }
+
+    class PrescriptionService {
+        -AppointmentService appointmentService
+        +addPrescription(String, Prescription)
+        +updatePrescriptionStatus(String, Medicine, PrescriptionStatus) boolean
+    }

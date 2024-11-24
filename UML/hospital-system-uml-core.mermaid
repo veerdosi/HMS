@@ -1,0 +1,109 @@
+classDiagram
+    %% Core User Hierarchy
+    User <|-- Admin
+    User <|-- Doctor
+    User <|-- Patient
+    User <|-- Pharmacist
+    IPasswordUpdate <|.. User
+    IPersonalInfoUpdate <|.. Patient
+    IPatientMedicalRecordAccess <|.. Patient
+    IDoctorMedicalRecordAccess <|.. Doctor
+
+    class User {
+        #String userID
+        #String name
+        #String password
+        #UserRole role
+        #String gender
+        #String contactEmail
+        #String contactNumber
+        +authenticatePassword(String) boolean
+        +changePassword(String)
+        #updatePasswordInExcel()
+        +getRole() UserRole
+        +getUserID() String
+        +getName() String
+        +getGender() String
+        +getContactEmail() String
+        +getContactNumber() String
+    }
+
+    class Admin {
+        -int age
+        +getAge() int
+        +setAge(int)
+        +updateStaff(String, String, String)
+        +addStaff(User)
+        +removeStaff(String)
+        +viewStaffDetails(String)
+        +displayFilteredStaff(String, String)
+        +displayAllStaff()
+        +approveRequest(int)
+        +rejectRequest(int)
+        +viewAllRequests()
+        +viewRequestsByStatus(RequestStatus)
+        +viewLowStockMedicines()
+    }
+
+    class Doctor {
+        -int age
+        -List~TimeSlot~ availability
+        -List~Appointment~ schedule
+        -DoctorAvailabilityRepository availabilityRepository
+        +getAge() int
+        +setAge(int)
+        +getAvailability() List~TimeSlot~
+        +setAvailability(List~TimeSlot~)
+        +generateDefaultAvailability()
+        +isAvailable(LocalDateTime) boolean
+        +bookSlot(LocalDateTime) boolean
+        +freeSlot(LocalDateTime) boolean
+        +viewSchedule()
+        +processAppointment(Appointment, boolean)
+    }
+
+    class Patient {
+        -String dateOfBirth
+        -MedicalRecord medicalRecord
+        +getDateOfBirth() String
+        +viewMedicalRecord(User) MedicalRecord
+        +updateContactNumber(String)
+        +updateEmailAddress(String)
+        +updateContactInfo(String, String)
+        +getMedicalRecord() MedicalRecord
+    }
+
+    class Pharmacist {
+        -int age
+        +getAge() int
+        +setAge(int)
+        +submitReplenishmentRequest(String, int)
+        +viewMyRequests()
+        +updatePrescriptionStatus(String, String, PrescriptionStatus) boolean
+        +viewMedicineInventory()
+        +checkLowStock()
+    }
+
+    %% Interfaces
+    class IPasswordUpdate {
+        <<interface>>
+        +changePassword(String)
+    }
+
+    class IPersonalInfoUpdate {
+        <<interface>>
+        +updateContactNumber(String)
+        +updateEmailAddress(String)
+        +updateContactInfo(String, String)
+    }
+
+    class IPatientMedicalRecordAccess {
+        <<interface>>
+        +viewMedicalRecord(User) MedicalRecord
+    }
+
+    class IDoctorMedicalRecordAccess {
+        <<interface>>
+        +viewMedicalRecord(Appointment) MedicalRecord
+        +updateMedicalRecord(Appointment, String, String) boolean
+    }

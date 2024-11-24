@@ -1,0 +1,91 @@
+classDiagram
+    %% Domain Classes
+    class Appointment {
+        -String id
+        -String patientID
+        -String doctorID
+        -LocalDateTime dateTime
+        -AppointmentStatus status
+        -String consultationNotes
+        -TypeOfService typeOfService
+        -List~Prescription~ prescriptions
+        +getId() String
+        +getPatientID() String
+        +getDoctorID() String
+        +getStatus() AppointmentStatus
+        +getDateTime() LocalDateTime
+        +getPrescriptions() List~Prescription~
+        +addPrescription(Prescription)
+    }
+
+    class Medicine {
+        -String name
+        -int currentStock
+        -int lowStockAlert
+        +updateStock(int)
+        +isLowStock() boolean
+        +replenishStock(int)
+        +getName() String
+        +getCurrentStock() int
+        +getLowStockAlert() int
+    }
+
+    class MedicalRecord {
+        -Patient patient
+        -String bloodType
+        -List~String~ pastDiagnoses
+        -List~String~ pastTreatments
+        +getBloodType() String
+        +getPatient() Patient
+        +getPastDiagnoses() List~String~
+        +getPastTreatments() List~String~
+        +addDiagnosis(String)
+        +addTreatment(String)
+        +displayRecord()
+    }
+
+    class TimeSlot {
+        -LocalDateTime startDateTime
+        -LocalDateTime endDateTime
+        -boolean isAvailable
+        +getStartDateTime() LocalDateTime
+        +getEndDateTime() LocalDateTime
+        +isAvailable() boolean
+        +setAvailable(boolean)
+        +overlaps(TimeSlot) boolean
+        +contains(LocalDateTime) boolean
+    }
+
+    class Prescription {
+        -Medicine medicine
+        -PrescriptionStatus status
+        -Date prescribedDate
+        +getMedicine() Medicine
+        +getStatus() PrescriptionStatus
+        +setStatus(PrescriptionStatus)
+    }
+
+    class ReplenishmentRequest {
+        -int requestId
+        -String medicineName
+        -int requestedQuantity
+        -String pharmacistId
+        -RequestStatus status
+        +getRequestId() int
+        +getMedicineName() String
+        +getRequestedQuantity() int
+        +getPharmacistId() String
+        +getStatus() RequestStatus
+        +setStatus(RequestStatus)
+    }
+
+    class DoctorAvailability {
+        -String doctorId
+        -List~TimeSlot~ slots
+        +getDoctorId() String
+        +getSlots() List~TimeSlot~
+        +getAvailableSlots(LocalDateTime) List~TimeSlot~
+        +bookSlot(LocalDateTime) boolean
+        +freeSlot(LocalDateTime) boolean
+        +isAvailable(LocalDateTime) boolean
+    }

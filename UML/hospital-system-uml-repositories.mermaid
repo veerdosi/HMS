@@ -1,0 +1,60 @@
+classDiagram
+    %% Repositories and Records
+    class DoctorAvailabilityRepository {
+        -static DoctorAvailabilityRepository instance
+        -Map~String, DoctorAvailability~ doctorAvailabilityMap
+        +getInstance() DoctorAvailabilityRepository
+        +setDoctorAvailability(String, List~TimeSlot~)
+        +bookSlot(String, LocalDateTime) boolean
+        +freeSlot(String, LocalDateTime) boolean
+        +getDoctorAvailability(String) DoctorAvailability
+        +getAvailableSlots(String, LocalDateTime) List~TimeSlot~
+        +isSlotAvailable(String, LocalDateTime) boolean
+    }
+
+    class AppointmentOutcomeRecord {
+        -static AppointmentOutcomeRecord instance
+        -List~Appointment~ pastAppointments
+        +getInstance() AppointmentOutcomeRecord
+        +addOutcome(Appointment)
+        +getAllOutcomes() List~Appointment~
+        +getAppointmentById(String) Appointment
+        +getAppointmentsByPatient(String) List~Appointment~
+        +getAppointmentsByDoctor(String) List~Appointment~
+    }
+
+    class RequestRecord {
+        -static RequestRecord instance
+        -List~ReplenishmentRequest~ requests
+        +getInstance() RequestRecord
+        +addRequest(ReplenishmentRequest)
+        +getAllRequests() List~ReplenishmentRequest~
+        +getRequestsByStatus(RequestStatus) List~ReplenishmentRequest~
+        +getRequestById(int) ReplenishmentRequest
+    }
+
+    class StaffList {
+        -static StaffList instance
+        -List~User~ staff
+        -String filePath
+        +getInstance(String) StaffList
+        +updateStaff(String, String, String) boolean
+        +getStaffById(String) User
+        +filterStaff(String, String) List~User~
+        +getStaff() List~User~
+        +addStaff(User)
+        +removeStaff(String) boolean
+    }
+
+    class MedicineInventory {
+        -static MedicineInventory instance
+        -List~Medicine~ medicines
+        -String filePath
+        +getInstance(String) MedicineInventory
+        +addMedicine(String, int, int)
+        +getMedicineByName(String) Medicine
+        +listAllMedicines()
+        +checkLowStock()
+        +decreaseStock(String)
+        +updateStock(String, int) boolean
+    }
