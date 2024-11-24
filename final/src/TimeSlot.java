@@ -1,63 +1,76 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- * The `TimeSlot` class represents a specific time period for scheduling appointments.
- * It includes a start time, an end time, and the availability of the time slot.
+ * The `TimeSlot` class represents a specific time period for scheduling
+ * appointments.
+ * It includes a start datetime, an end datetime, and the availability of the
+ * time slot.
  */
 public class TimeSlot {
-    private String startTime; // e.g., "09:00"
-    private String endTime; // e.g., "10:00"
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
     private boolean isAvailable;
 
     /**
-     * Constructs a `TimeSlot` with the specified start and end times.
+     * Constructs a `TimeSlot` with the specified start and end datetimes.
      * The slot is marked as available by default.
      *
-     * @param startTime The start time of the slot (e.g., "09:00").
-     * @param endTime   The end time of the slot (e.g., "10:00").
+     * @param startDateTime The start date and time of the slot
+     * @param endDateTime   The end date and time of the slot
      */
-    public TimeSlot(String startTime, String endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.isAvailable = true; // Default to available
+    public TimeSlot(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        if (startDateTime.isAfter(endDateTime)) {
+            throw new IllegalArgumentException("Start time cannot be after end time");
+        }
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.isAvailable = true;
     }
 
-    /**
-     * @return The start time of the slot.
-     */
-    public String getStartTime() {
-        return startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    /**
-     * @return The end time of the slot.
-     */
-    public String getEndTime() {
-        return endTime;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
 
-    /**
-     * @return `true` if the slot is available, otherwise `false`.
-     */
     public boolean isAvailable() {
         return isAvailable;
     }
 
-    /**
-     * Sets the availability of the time slot.
-     *
-     * @param available `true` to mark the slot as available, `false` otherwise.
-     */
     public void setAvailable(boolean available) {
         this.isAvailable = available;
     }
 
     /**
-     * Provides a string representation of the time slot, including its
-     * availability status.
+     * Checks if this time slot overlaps with another time slot
      *
-     * @return A string in the format "startTime-endTime (Available/Unavailable)".
+     * @param other The other time slot to check against
+     * @return true if the slots overlap, false otherwise
      */
+    public boolean overlaps(TimeSlot other) {
+        return !this.startDateTime.isAfter(other.endDateTime) &&
+                !this.endDateTime.isBefore(other.startDateTime);
+    }
+
+    /**
+     * Checks if a specific datetime falls within this time slot
+     *
+     * @param dateTime The datetime to check
+     * @return true if the datetime is within this slot, false otherwise
+     */
+    public boolean contains(LocalDateTime dateTime) {
+        return !dateTime.isBefore(startDateTime) && !dateTime.isAfter(endDateTime);
+    }
+
     @Override
     public String toString() {
-        return startTime + "-" + endTime + (isAvailable ? " (Available)" : " (Unavailable)");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return String.format("%s to %s%s",
+                startDateTime.format(formatter),
+                endDateTime.format(formatter),
+                isAvailable ? " (Available)" : " (Booked)");
     }
 }

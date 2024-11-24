@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "HMSUserApp",
+            "request": "launch",
+            "mainClass": "HMSUserApp",
+            "projectName": "HMS_70aaf891"
+        },
+        {
             "type": "jdk",
             "request": "launch",
             "name": "Launch Java App"

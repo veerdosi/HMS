@@ -140,11 +140,10 @@ public class AppointmentOutcomeRecord {
     }
 
     public List<Appointment> getRequestedAppointmentsByDoctor(String doctorId) {
-    return getAppointmentsByDoctor(doctorId).stream()
-            .filter(appointment -> appointment.getStatus() == AppointmentStatus.REQUESTED)
-            .collect(Collectors.toList());
-}
-
+        return getAppointmentsByDoctor(doctorId).stream()
+                .filter(appointment -> appointment.getStatus() == AppointmentStatus.REQUESTED)
+                .collect(Collectors.toList());
+    }
 
     public List<Appointment> getConfirmedAppointmentsByDoctor(String doctorId) {
         return getAppointmentsByDoctor(doctorId).stream()

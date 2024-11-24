@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,95 +15,178 @@ public class Doctor extends User {
     private List<TimeSlot> availability;
     private List<Appointment> schedule;
     private DoctorAvailabilityRepository availabilityRepository;
-    DoctorAvailabilityRepository repository;
 
     /**
      * Constructs a `Doctor` object with the specified details.
-     *
-     * @param userID        The unique identifier of the doctor.
-     * @param name          The name of the doctor.
-     * @param password      The doctor's password.
-     * @param gender        The doctor's gender.
-     * @param contactEmail  The doctor's contact email.
-     * @param contactNumber The doctor's contact number.
-     * @param age           The age of the doctor.
      */
     public Doctor(String userID, String name, String password, String gender,
             String contactEmail, String contactNumber, int age) {
         super(userID, name, password, UserRole.Doctor, gender, contactEmail, contactNumber);
         this.age = age;
-        this.availabilityRepository = repository;
+        this.availabilityRepository = DoctorAvailabilityRepository.getInstance();
         this.availability = new ArrayList<>();
         this.schedule = new ArrayList<>();
     }
 
-    /**
-     * Gets the age of the doctor.
-     *
-     * @return The doctor's age.
-     */
     public int getAge() {
         return age;
     }
 
-    /**
-     * Sets the age of the doctor.
-     *
-     * @param age The doctor's new age.
-     */
     public void setAge(int age) {
         this.age = age;
     }
 
-    /**
-     * Gets the availability of the doctor as a list of time slots.
-     *
-     * @return The doctor's availability.
-     */
     public List<TimeSlot> getAvailability() {
-        return availability;
+        DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+        if (docAvailability != null) {
+            return docAvailability.getSlots();
+        }
+        return new ArrayList<>();
     }
 
-    /**
-     * Updates the doctor's availability and synchronizes it with the centralized
-     * repository.
-     *
-     * @param availability The new availability for the doctor.
-     */
     public void setAvailability(List<TimeSlot> availability) {
-        this.availability = availability;
+        this.availability = new ArrayList<>(availability);
+        availabilityRepository.setDoctorAvailability(getUserID(), this.availability);
         System.out.println("Availability updated for Doctor: " + this.getName());
-        DoctorAvailabilityRepository.getInstance().setDoctorAvailability(getUserID(), availability);
     }
 
-    /**
-     * Gets the doctor's schedule of appointments.
-     *
-     * @return The doctor's schedule.
-     */
     public List<Appointment> getSchedule() {
         return schedule;
     }
 
-    /**
-     * Sets the doctor's schedule of appointments.
-     *
-     * @param schedule The new schedule for the doctor.
-     */
     public void setSchedule(List<Appointment> schedule) {
         this.schedule = schedule;
     }
 
-    /**
-     * Generates default daily availability slots for the doctor and syncs with the
-     * repository.
-     */
     public void generateDefaultAvailability() {
-        availability = AppointmentSlotUtil.generateDailySlots();
-        System.out.println("Default availability generated for Doctor: " + getName());
-        if (availabilityRepository != null) {
-            availabilityRepository.setDoctorAvailability(getUserID(), availability);
+        // Clear any existing availability
+        this.availability = new ArrayList<>();
+
+        // Get tomorrow's date at midnight
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        List<TimeSlot> slots = new ArrayList<>();
+
+        // Generate slots for the next 14 days
+        for (int day = 0; day < 14; day++) {
+            LocalDateTime currentDate = startDate.plusDays(day);
+
+            // Morning slots: 9 AM to 12 PM
+            LocalDateTime morningStart = currentDate.withHour(9).withMinute(0);
+            TimeSlot slot1 = new TimeSlot(morningStart, morningStart.plusHours(1));
+            TimeSlot slot2 = new TimeSlot(morningStart.plusHours(1), morningStart.plusHours(2));
+            TimeSlot slot3 = new TimeSlot(morningStart.plusHours(2), morningStart.plusHours(3));
+            slots.add(slot1);
+            slots.add(slot2);
+            slots.add(slot3);
+
+            // Afternoon slots: 2 PM to 5 PM
+            LocalDateTime afternoonStart = currentDate.withHour(14).withMinute(0);
+            TimeSlot slot4 = new TimeSlot(afternoonStart, afternoonStart.plusHours(1));
+            TimeSlot slot5 = new TimeSlot(afternoonStart.plusHours(1), afternoonStart.plusHours(2));
+            TimeSlot slot6 = new TimeSlot(afternoonStart.plusHours(2), afternoonStart.plusHours(3));
+            slots.add(slot4);
+            slots.add(slot5);
+            slots.add(slot6);
         }
+
+        System.out.println("Generated " + slots.size() + " slots for the next 14 days.");
+
+        try {
+            // Update repository first
+            availabilityRepository.setDoctorAvailability(getUserID(), slots);
+            // If successful, update local availability
+            this.availability = new ArrayList<>(slots);
+            System.out.println("Default availability generated for Doctor: " + getName());
+        } catch (Exception e) {
+            System.out.println("Error setting availability: " + e.getMessage());
+            // Clear availability if repository update fails
+            this.availability = new ArrayList<>();
+        }
+    }
+
+    /**
+     * Checks if the doctor is available at a specific date and time.
+     */
+    public boolean isAvailable(LocalDateTime dateTime) {
+        DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+        if (docAvailability == null) {
+            return false;
+        }
+
+        // Get all available slots for this doctor
+        List<TimeSlot> availableSlots = docAvailability.getSlots();
+        if (availableSlots == null || availableSlots.isEmpty()) {
+            return false;
+        }
+
+        // Check if the datetime is at least 24 hours in advance
+        LocalDateTime minimumBookingTime = LocalDateTime.now().plusHours(24);
+        if (dateTime.isBefore(minimumBookingTime)) {
+            System.out.println("Appointments must be booked at least 24 hours in advance.");
+            return false;
+        }
+
+        // First check if there's already an appointment at this time
+        boolean hasExistingAppointment = schedule.stream()
+                .anyMatch(apt -> apt.getDateTime().equals(dateTime) &&
+                        apt.getStatus() != AppointmentStatus.CANCELLED &&
+                        apt.getStatus() != AppointmentStatus.DECLINED);
+
+        if (hasExistingAppointment) {
+            return false;
+        }
+
+        // Then check if there's an available slot at this time
+        return availableSlots.stream()
+                .filter(TimeSlot::isAvailable)
+                .anyMatch(slot -> {
+                    LocalDateTime slotStart = slot.getStartDateTime();
+                    return slotStart.toLocalDate().equals(dateTime.toLocalDate()) &&
+                            slotStart.toLocalTime().equals(dateTime.toLocalTime());
+                });
+    }
+
+    /**
+     * Books a specific time slot.
+     */
+    public boolean bookSlot(LocalDateTime dateTime) {
+        DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+        if (docAvailability == null) {
+            return false;
+        }
+
+        List<TimeSlot> slots = new ArrayList<>(docAvailability.getSlots());
+        for (TimeSlot slot : slots) {
+            if (slot.getStartDateTime().equals(dateTime)) {
+                if (!slot.isAvailable()) {
+                    return false;
+                }
+                slot.setAvailable(false);
+                availabilityRepository.setDoctorAvailability(getUserID(), slots);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Frees a specific time slot.
+     */
+    public boolean freeSlot(LocalDateTime dateTime) {
+        DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+        if (docAvailability == null) {
+            return false;
+        }
+
+        List<TimeSlot> slots = new ArrayList<>(docAvailability.getSlots());
+        for (TimeSlot slot : slots) {
+            if (slot.getStartDateTime().equals(dateTime)) {
+                slot.setAvailable(true);
+                availabilityRepository.setDoctorAvailability(getUserID(), slots);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -113,123 +197,93 @@ public class Doctor extends User {
         if (schedule == null || schedule.isEmpty()) {
             System.out.println("No scheduled appointments.");
         } else {
-            for (int i = 0; i < schedule.size(); i++) {
-                System.out.println(i + ": " + schedule.get(i));
+            System.out.println("+---------------+-------------+-------------------------+------------+");
+            System.out.println("| Appointment ID| Patient ID  | Date & Time            | Status     |");
+            System.out.println("+---------------+-------------+-------------------------+------------+");
+
+            for (Appointment apt : schedule) {
+                System.out.printf("| %-13s | %-11s | %-21s | %-10s |\n",
+                        apt.getId(),
+                        apt.getPatientID(),
+                        apt.getDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                        apt.getStatus());
             }
+            System.out.println("+---------------+-------------+-------------------------+------------+");
         }
     }
 
     /**
+     * Updates the availability of a specific time slot.
+     */
+    public void setCustomSlotAvailability(int index, boolean isAvailable) {
+        DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+        if (docAvailability == null || index < 0 || index >= docAvailability.getSlots().size()) {
+            System.out.println("Invalid slot index or no availability found.");
+            return;
+        }
+
+        List<TimeSlot> slots = new ArrayList<>(docAvailability.getSlots());
+        slots.get(index).setAvailable(isAvailable);
+        availabilityRepository.setDoctorAvailability(getUserID(), slots);
+        this.availability = slots;
+        System.out.println("Updated availability for slot: " + slots.get(index));
+    }
+
+    /**
      * Processes an appointment by accepting or declining it.
-     *
-     * @param appointment The appointment to process.
-     * @param accept      `true` to accept the appointment, `false` to decline.
      */
     public void processAppointment(Appointment appointment, boolean accept) {
         if (appointment == null || appointment.getId() == null) {
             System.out.println("Invalid appointment data.");
             return;
         }
+
         if (accept) {
+            LocalDateTime appointmentDateTime = appointment.getDateTime();
+
+            // Get the specific slot for this appointment
+            DoctorAvailability docAvailability = availabilityRepository.getDoctorAvailability(getUserID());
+            if (docAvailability == null) {
+                System.out.println("No availability found for doctor.");
+                return;
+            }
+
+            List<TimeSlot> slots = docAvailability.getSlots();
+            TimeSlot targetSlot = slots.stream()
+                    .filter(slot -> slot.getStartDateTime().equals(appointmentDateTime))
+                    .findFirst()
+                    .orElse(null);
+
+            if (targetSlot == null) {
+                System.out.println("Time slot not found.");
+                return;
+            }
+
+            // Check for any conflicting appointments (excluding the current one)
+            boolean hasConflict = schedule.stream()
+                    .filter(apt -> !apt.getId().equals(appointment.getId())) // Exclude current appointment
+                    .anyMatch(apt -> apt.getDateTime().equals(appointmentDateTime) &&
+                            apt.getStatus() != AppointmentStatus.CANCELLED &&
+                            apt.getStatus() != AppointmentStatus.DECLINED);
+
+            if (hasConflict) {
+                System.out.println("Another appointment already exists at this time.");
+                return;
+            }
+
+            // Add to schedule - no need to check availability since this is a pending
+            // appointment
             schedule.add(appointment);
-        }
-        System.out.println("Appointment " + (accept ? "accepted" : "declined") +
-                " for patient: " + (appointment.getPatientID() != null ? appointment.getPatientID() : "Unknown"));
-    }
-
-    /**
-     * Checks if the doctor is available at a specific date and time.
-     * Currently only checks if the time matches any available time slot.
-     *
-     * @param newDateTime The date and time to check.
-     * @return `true` if the doctor has that time slot, `false` otherwise.
-     */
-    public boolean isAvailable(LocalDateTime newDateTime) {
-        if (availability == null || availability.isEmpty()) {
-            return false;
-        }
-
-        // Only check if the time matches a slot, regardless of date
-        String timeStr = newDateTime.toLocalTime().toString();
-        timeStr = timeStr.substring(0, 5); // Get just HH:mm part
-
-        for (TimeSlot slot : availability) {
-            if (slot.getStartTime().equals(timeStr)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Updates the availability of a specific time slot.
-     *
-     * @param index       The index of the time slot in the availability list.
-     * @param isAvailable `true` to mark the slot as available, `false` to mark it
-     *                    as unavailable.
-     */
-    public void setCustomSlotAvailability(int index, boolean isAvailable) {
-        if (availability == null || index < 0 || index >= availability.size()) {
-            System.out.println("Invalid slot index.");
-            return;
-        }
-        availability.get(index).setAvailable(isAvailable);
-        System.out.println("Updated availability for slot: " + availability.get(index));
-        if (availabilityRepository != null) {
-            availabilityRepository.setDoctorAvailability(getUserID(), availability);
+            appointment.setStatus(AppointmentStatus.CONFIRMED);
+            System.out.println("Appointment accepted successfully.");
+        } else {
+            // If declining, free the slot and update status
+            freeSlot(appointment.getDateTime());
+            appointment.setStatus(AppointmentStatus.DECLINED);
+            System.out.println("Appointment declined successfully.");
         }
     }
 
-    /**
-     * Frees a specific time slot by making it available.
-     *
-     * @param time The time of the slot to free.
-     * @return `true` if the slot was successfully freed, `false` otherwise.
-     */
-    public boolean freeSlot(LocalTime time) {
-        int index = getSlotIndexForTime(time);
-        if (index != -1) {
-            availability.get(index).setAvailable(true);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Books a specific time slot by making it unavailable.
-     *
-     * @param time The time of the slot to book.
-     * @return `true` if the slot was successfully booked, `false` otherwise.
-     */
-    public boolean bookSlot(LocalTime time) {
-        int index = getSlotIndexForTime(time);
-        if (index != -1 && availability.get(index).isAvailable()) {
-            availability.get(index).setAvailable(false);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets the index of a time slot in the availability list for a specific time.
-     *
-     * @param time The time to search for.
-     * @return The index of the slot, or -1 if not found.
-     */
-    private int getSlotIndexForTime(LocalTime time) {
-        for (int i = 0; i < availability.size(); i++) {
-            if (availability.get(i).getStartTime().equals(time)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Returns a string representation of the doctor for debugging.
-     *
-     * @return A string containing the doctor's details.
-     */
     @Override
     public String toString() {
         return "Doctor{" +
