@@ -1,12 +1,6 @@
 import java.util.Scanner;
 import java.util.function.Predicate;
 
-
-/**
- * The `InputHandler` class provides utility methods for handling user input.
- * It includes methods for obtaining integer, string, and yes/no inputs, with
- * optional validation and custom prompts.
- */
 public class InputHandler {
     private static Scanner scanner = new Scanner(System.in);
 

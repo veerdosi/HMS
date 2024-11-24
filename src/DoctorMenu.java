@@ -1,8 +1,3 @@
-/**
- * The `DoctorMenu` class provides an interface for doctors to manage their schedules,
- * patient records, and appointment requests. It allows viewing and updating medical records,
- * managing availability, processing appointment requests, and recording appointment outcomes.
- */
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -12,12 +7,6 @@ public class DoctorMenu {
     private final AppointmentOutcomeRecord outcomeRecord;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-    /**
-     * Constructs a DoctorMenu instance for the specified doctor.
-     *
-     * @param doctor The doctor associated with this menu.
-     * @param facade The facade providing access to appointment services.
-     */
     public DoctorMenu(Doctor doctor, AppointmentServiceFacade facade) {
         this.doctor = doctor;
         this.facade = facade;
@@ -25,13 +14,7 @@ public class DoctorMenu {
     }
 
     /**
-<<<<<<< Updated upstream
-     * Displays the doctor menu and handles user input for various actions.
-     *
-     * @return A boolean indicating whether the menu was exited successfully.
-=======
      * @return boolean
->>>>>>> Stashed changes
      */
     public boolean displayMenu() {
         while (true) {
@@ -79,9 +62,7 @@ public class DoctorMenu {
             }
         }
     }
-    /**
-     * Displays the medical records of patients associated with confirmed appointments.
-     */
+
     private void viewPatientMedicalRecords() {
         System.out.println("\n--- View Patient Medical Records ---");
         List<Appointment> confirmedAppointments = outcomeRecord
@@ -108,9 +89,6 @@ public class DoctorMenu {
         }
     }
 
-    /**
-     * Allows the doctor to update the medical records of a patient.
-     */
     private void updatePatientMedicalRecords() {
         System.out.println("\n--- Update Patient Medical Records ---");
         List<Appointment> confirmedAppointments = outcomeRecord
@@ -152,14 +130,6 @@ public class DoctorMenu {
         }
     }
 
-<<<<<<< Updated upstream
-    /**
-     * Displays a list of appointments for selecting a record to access or modify.
-     *
-     * @param appointments The list of appointments to display.
-     */
-=======
->>>>>>> Stashed changes
     private void displayAppointmentsForRecordAccess(List<Appointment> appointments) {
         System.out.println("\nSelect an appointment:");
         System.out.println("+-----+---------------+-------------+-------------------------+");
@@ -177,12 +147,6 @@ public class DoctorMenu {
         System.out.println("+-----+---------------+-------------+-------------------------+");
     }
 
-<<<<<<< Updated upstream
-    /**
-     * Displays the doctor's personal schedule and availability.
-     */
-=======
->>>>>>> Stashed changes
     private void viewPersonalSchedule() {
         System.out.println("\n--- Available Slots ---");
         List<TimeSlot> slots = doctor.getAvailability();
@@ -205,12 +169,6 @@ public class DoctorMenu {
         System.out.println("+-------------------------+-------------------------+------------+");
     }
 
-<<<<<<< Updated upstream
-    /**
-     * Provides options for setting the doctor's availability for appointments.
-     */
-=======
->>>>>>> Stashed changes
     private void setAvailability() {
         while (true) {
             System.out.println("\n--- Set Availability ---");
@@ -232,8 +190,6 @@ public class DoctorMenu {
                     break;
             }
         }
-<<<<<<< Updated upstream
-=======
     }
 
     private void modifySpecificSlots() {
@@ -257,38 +213,8 @@ public class DoctorMenu {
         boolean makeAvailable = availabilityChoice == 1;
 
         doctor.setCustomSlotAvailability(slotIndex, makeAvailable);
->>>>>>> Stashed changes
     }
 
-    /**
-     * Allows the doctor to modify specific time slots in their availability.
-     */
-    private void modifySpecificSlots() {
-        viewPersonalSchedule();
-        List<TimeSlot> slots = doctor.getAvailability();
-        if (slots.isEmpty()) {
-            System.out.println("No slots available to modify.");
-            return;
-        }
-
-        System.out.println("\nEnter the slot number to modify (0 to cancel): ");
-        int slotIndex = InputHandler.getIntInput(0, slots.size());
-        if (slotIndex == 0)
-            return;
-
-        slotIndex--; // Convert to 0-based index
-        System.out.println("1. Mark as Available");
-        System.out.println("2. Mark as Unavailable");
-
-        int availabilityChoice = InputHandler.getIntInput(1, 2);
-        boolean makeAvailable = availabilityChoice == 1;
-
-        doctor.setCustomSlotAvailability(slotIndex, makeAvailable);
-    }
-
-    /**
-     * Handles pending appointment requests by allowing the doctor to accept or decline them.
-     */
     private void handleAppointmentRequests() {
         while (true) {
             System.out.println("\n--- Accept or Decline Appointment Requests ---");
@@ -347,12 +273,6 @@ public class DoctorMenu {
         }
     }
 
-<<<<<<< Updated upstream
-    /**
-     * Displays a list of upcoming confirmed appointments for the doctor.
-     */
-=======
->>>>>>> Stashed changes
     private void viewUpcomingAppointments() {
         System.out.println("\n--- View Upcoming Appointments ---");
         outcomeRecord.displayConfirmedAppointmentsByDoctor(doctor.getUserID());
@@ -360,10 +280,6 @@ public class DoctorMenu {
         InputHandler.getIntInput(0, 0);
     }
 
-    /**
-     * Allows the doctor to record the outcome of a specific appointment, such as adding notes,
-     * prescriptions, or marking it as completed.
-     */
     private void recordAppointmentOutcome() {
         while (true) {
             System.out.println("\n--- Record Appointment Outcome ---");

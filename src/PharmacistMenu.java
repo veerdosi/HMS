@@ -1,6 +1,3 @@
-
-import java.util.List;
-
 /**
  * The `PharmacistMenu` class provides an interactive command-line interface (CLI) menu for pharmacists.
  * It allows pharmacists to view appointment outcomes, update prescription statuses, manage the medication inventory, 
@@ -11,15 +8,7 @@ import java.util.List;
 public class PharmacistMenu {
     private Pharmacist pharmacist; // The pharmacist using the menu
     private AppointmentOutcomeRecord outcomeRecord; // The record of appointment outcomes
-    private MedicineInventory medicineInventory;
 
-    /**
-     * Constructs an `AdminMenu` instance for the specified administrator.
-     *
-     * @param admin The admin object associated with this menu.
-     */
-    
-    
     /**
      * Constructs a `PharmacistMenu` object for the specified pharmacist.
      *
@@ -28,7 +17,6 @@ public class PharmacistMenu {
     public PharmacistMenu(Pharmacist pharmacist) {
         this.pharmacist = pharmacist;
         this.outcomeRecord = AppointmentOutcomeRecord.getInstance();
-        this.medicineInventory = MedicineInventory.getInstance(null);
     }
 
     /**
@@ -184,19 +172,16 @@ public class PharmacistMenu {
      */
     private void submitReplenishmentRequest() {
         try {
-            System.out.println("Choose the medicine to replenish:");
-            List<String> medicineNames = medicineInventory.getMedicineNames(); // Fetch all medicine names
-            for (int i = 0; i < medicineNames.size(); i++) {
-                System.out.println((i + 1) + ". " + medicineNames.get(i));
-            }
-            // Get user input for selecting a medicine
-            int choice = InputHandler.getIntInput(1, medicineNames.size()); // Get a number between 1 and the size of the list
-            String selectedMedicine = medicineNames.get(choice - 1); // Get the corresponding medicine name
+            String medicineName = InputHandler.getStringInput("Enter Medicine Name: ");
 
+            if (!validateInput(medicineName)) {
+                System.out.println("Invalid Medicine Name. Please try again.");
+                return;
+            }
 
             int quantity = InputHandler.getIntInput("Enter Quantity to Replenish (1-1000): ", 1, 1000);
 
-            pharmacist.submitReplenishmentRequest(selectedMedicine, quantity);
+            pharmacist.submitReplenishmentRequest(medicineName, quantity);
             System.out.println("Replenishment request submitted successfully.");
         } catch (Exception e) {
             System.out.println("Error submitting replenishment request: " + e.getMessage());

@@ -1,16 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/**@author Revathi Selvasevaran
  * The `MedicalRecord` class represents a patient's medical history, including past diagnoses,
  * treatments, and blood type. It provides methods for viewing and updating medical records.
- *
- * This class implements the `IPatientMedicalRecordAccess` interface, allowing authorized users
- * to view the medical record.
- *
- * The medical record is associated with a specific patient and includes detailed personal
- * information and a history of diagnoses and treatments.
- *
  */
 public class MedicalRecord implements IPatientMedicalRecordAccess {
     private Patient patient;
@@ -21,8 +14,8 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Constructs a `MedicalRecord` for a specific patient.
      *
-     * @param patient   The patient to whom this medical record belongs.
-     * @param bloodType The blood type of the patient.
+     * @param patient   the patient to whom this medical record belongs.
+     * @param bloodType the blood type of the patient.
      */
     public MedicalRecord(Patient patient, String bloodType) {
         this.patient = patient;
@@ -34,7 +27,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Retrieves the patient's blood type.
      *
-     * @return The blood type of the patient.
+     * @return the blood type of the patient.
      */
     public String getBloodType() {
         return bloodType;
@@ -43,7 +36,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Retrieves the patient associated with this medical record.
      *
-     * @return The `Patient` object.
+     * @return the `Patient` object.
      */
     public Patient getPatient() {
         return patient;
@@ -52,7 +45,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Retrieves a list of the patient's past diagnoses.
      *
-     * @return A copy of the list of past diagnoses.
+     * @return a copy of the list of past diagnoses.
      */
     public List<String> getPastDiagnoses() {
         return new ArrayList<>(pastDiagnoses);
@@ -61,7 +54,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Retrieves a list of the patient's past treatments.
      *
-     * @return A copy of the list of past treatments.
+     * @return a copy of the list of past treatments.
      */
     public List<String> getPastTreatments() {
         return new ArrayList<>(pastTreatments);
@@ -70,7 +63,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Adds a new diagnosis to the patient's medical record.
      *
-     * @param diagnosis The diagnosis to add.
+     * @param diagnosis the diagnosis to add.
      */
     public void addDiagnosis(String diagnosis) {
         pastDiagnoses.add(diagnosis);
@@ -79,7 +72,7 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Adds a new treatment to the patient's medical record.
      *
-     * @param treatment The treatment to add.
+     * @param treatment the treatment to add.
      */
     public void addTreatment(String treatment) {
         pastTreatments.add(treatment);
@@ -104,8 +97,8 @@ public class MedicalRecord implements IPatientMedicalRecordAccess {
     /**
      * Allows authorized users (e.g., doctors or the patient) to view the medical record.
      *
-     * @param user The user attempting to view the record.
-     * @return The `MedicalRecord` if access is granted, or `null` if access is denied.
+     * @param user the user attempting to view the record.
+     * @return the `MedicalRecord` if access is granted, or `null` if access is denied.
      */
     @Override
     public MedicalRecord viewMedicalRecord(User user) {

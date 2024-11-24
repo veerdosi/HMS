@@ -1,12 +1,4 @@
 Medicine Name,Initial Stock,Low Stock Alert
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-Paracetamol,101,20
-Ibuprofen,100,10
-=======
->>>>>>> Stashed changes
 Paracetamol,99,20
 Ibuprofen,50,10
->>>>>>> afd51ae5e53cc8eb241b6c950a38ab392a146425
 Amoxicillin,75,15
